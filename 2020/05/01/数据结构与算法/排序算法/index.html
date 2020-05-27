@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/Icon/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="CBH">
+  <meta name="keywords" content="">
+  <title>十大经典排序算法（Swift） - ZNCheng</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+<link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_fmb4a04yx8h.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>ZNCheng</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/">
+              <i class="iconfont icon-home-fill"></i>
+              Home</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/archives/">
+              <i class="iconfont icon-archive-fill"></i>
+              Archives</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/categories/">
+              <i class="iconfont icon-category-fill"></i>
+              Categories</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/tags/">
+              <i class="iconfont icon-tags-fill"></i>
+              Tags</a>
+          </li>
+        
+          
+          
+          
+          <li class="nav-item">
+            <a class="nav-link" href="/about/">
+              <i class="iconfont icon-user-fill"></i>
+              About</a>
+          </li>
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+                <div class="mt-3 post-meta">
+                  <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+                  <time datetime="2020-05-01 11:36">
+                    Friday, May 1st 2020, 11:36 am
+                  </time>
+                </div>
+              
+
+              <div class="mt-1">
+                
+                  
+                  <span class="post-meta mr-2">
+                    <i class="iconfont icon-chart"></i>
+                    2.1k 字
+                  </span>
+                
+
+                
+                  
+                  <span class="post-meta mr-2">
+                      <i class="iconfont icon-clock-fill"></i>
+                    
+                    
+                    21
+                     分钟
+                  </span>
+                
+
+                
+              </div>
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><ol>
+<li><p>比较类排序<br>通过比较来决定元素间的相对次序，由于其时间复杂度不能突破 O(logn)，（在数学上证明了），因此也称为非线性时间比较类排序</p>
+</li>
+<li><p>非比较类排序<br>不通过比较来决定元素间的相对次序，他可以突破基于比较排序的时间下界，以线性时间运行，一次也称为线性时间非比较类排序</p>
+</li>
+</ol>
+<h2 id="初级排序-O-n-n"><a href="#初级排序-O-n-n" class="headerlink" title="初级排序 O(n*n)"></a>初级排序 O(n*n)</h2><ol>
+<li><p>选择排序<br>每次找最小值，然后放到待排序的起始位置</p>
+</li>
+<li><p>插入排序<br>从前到后逐步构建有序序列，对于未排序的数据，在已排序序列中从后向前扫描，找到相应的位置插入</p>
+</li>
+<li><p>冒泡排序<br>嵌套循环，每次查看相邻的元素，如果逆序则交换</p>
+</li>
+</ol>
+<h2 id="高级排序-O-nLogn"><a href="#高级排序-O-nLogn" class="headerlink" title="高级排序 O(nLogn)"></a>高级排序 O(nLogn)</h2><ol>
+<li><p>快速排序<br>数组取标杆 pivot，将小元素放 pivot 左边，大元素放 pivot 右边，然后依次对左边和右边的子数组继续快排，已达到整个序列有序的目的</p>
+</li>
+<li><p>归并排序 - 分治<br>把长度为 n 的输入序列分成两个长度为 n/2 的子序列<br>对这两个子序列分别采用归并排序<br>将两个排好序的子序列合并成一个最终的排序序列</p>
+</li>
+<li><p>堆排序 - 堆插入 O(logn)<br> 数组元素依次建立小顶堆<br> 依次取堆顶元素，并删除</p>
+</li>
+</ol>
+<h2 id="特殊排序"><a href="#特殊排序" class="headerlink" title="特殊排序"></a>特殊排序</h2><ol>
+<li><p>计数排序（Counting Sort）<br>计数排序要求在输入的数据时有确定范围的整数。将输入的数据值转化为键存储在额外开辟的数组空间中。然后依次把计数大于 1 的填充会原数组</p>
+</li>
+<li><p>桶排序（Bucket Sort）<br>桶排序的工作原理：假设输入数据服从均匀分布，将数据分到有限数量的桶里，每个桶再分别排序（有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排序）</p>
+</li>
+<li><p>基数排序（Radix Sort）<br>基数排序是按照低位先排序然后收集，再按照高位排序，然后再收集。依次类推，直到最高位。有时候有些属性是有优先级顺序的，先按低优先级排序，再按高优先级排序</p>
+</li>
+</ol>
+<p><img src="/images/Sort/Sorts-Compare.jpg" srcset="/img/loading.gif" alt="sorts"></p>
+<p>面试重点在于在于三个时间复杂度为 O(NlogN) 的算法： 归并，快排，堆</p>
+<p>参考资料<br><a href="https://xiaozhuanlan.com/topic/4297536018" target="_blank" rel="noopener">小专栏 - 五分钟学算法</a><br><a href="https://www.cnblogs.com/onepixel/p/7674659.html" target="_blank" rel="noopener">一像素博客</a></p>
+<h2 id="代码模板"><a href="#代码模板" class="headerlink" title="代码模板"></a>代码模板</h2><h3 id="冒泡"><a href="#冒泡" class="headerlink" title="冒泡"></a>冒泡</h3><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;
+    let size &#x3D; arr.count
+    for j in 0..&lt;size &#123;
+        for i in 1..&lt;size-j &#123;
+            if arr[i] &lt; arr[i-1] &#123;
+                let tmp &#x3D; arr[i]
+                arr[i] &#x3D; arr[i-1]
+                arr[i-1] &#x3D; tmp
+            &#125;
+        &#125;
+    &#125;
+&#125;
+
+# improve
+#  因为冒泡中无论是否有序都会进行交换操作，所以可以做一个判断提前退出
+
+func sort(arr: inout [Int]) &#123;
+    let size &#x3D; arr.count
+    for j in 0..&lt;size &#123;
+       var isSorted &#x3D; true
+        for i in 1..&lt;size-j &#123;
+            if arr[i] &lt; arr[i-1] &#123;
+                let tmp &#x3D; arr[i]
+                arr[i] &#x3D; arr[i-1]
+                arr[i-1] &#x3D; tmp
+                isSorted &#x3D; false
+            &#125;
+        &#125;
+        if isSorted &#123;
+           break
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;
+    for i in 0..&lt;arr.count &#123;
+        var tmp &#x3D; i
+        for j in i..&lt;arr.count &#123;
+            if arr[tmp] &gt; arr[j] &#123;
+                tmp &#x3D; j
+            &#125;
+        &#125;
+        arr.swapAt(i, tmp)
+    &#125;
+&#125;</code></pre>
+
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;
+    for i in 1..&lt;arr.count &#123;
+        var tmp &#x3D; i
+        let tmpValue &#x3D; arr[i]
+        while tmp &gt; 0 &amp;&amp; arr[tmp-1] &gt; tmpValue &#123;
+            arr[tmp] &#x3D; arr[tmp-1]
+            tmp -&#x3D; 1
+        &#125;
+        arr[tmp] &#x3D; tmpValue
+    &#125;
+&#125;
+
+# 相对简洁的写法，但是不标准，因为是交换，每次比较多了一次赋值操作
+func sort(arr: inout [Int]) &#123;
+    for i in 1..&lt;arr.count &#123;
+        var tmp &#x3D; i
+        while tmp &gt; 0 &amp;&amp; arr[tmp-1] &gt; arr[tmp]  &#123;
+            arr.swapAt(tmp, tmp-1)
+            tmp -&#x3D; 1
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>希尔排序是简单插入排序的进阶版本，gap 一般取数组大小的 1/2 到 1/3</p>
+<pre><code class="hljs s">func sort(arr: inout [Int]) &#123;
+    var gap &#x3D; arr.count&#x2F;2
+    while gap &gt; 0 &#123;
+        for i in gap..&lt;arr.count &#123;
+            var j &#x3D; i
+            let tmp &#x3D; arr[i]
+            while j-gap &gt;&#x3D; 0 &amp;&amp; arr[j-gap] &gt; tmp &#123;
+                arr[j] &#x3D; arr[j-gap]
+                j -&#x3D; gap
+            &#125;
+            arr[j] &#x3D; tmp
+        &#125;
+        gap &#x2F;&#x3D; 2
+    &#125;
+&#125;</code></pre>
+
+<h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><pre><code class="hljs s"># 1. 如果方法中传入的参数不可修改，则需要再多开辟出一个数组
+# 2. 另一种方法是在 merge 方法中每次创建新的数组代替 arr ，然后返回。
+#     sort 方法和 split 方法就合并为一个方法
+func sort(arr: inout [Int]) &#123;
+    var tmp &#x3D; arr
+    split(&amp;arr, &amp;tmp, 0, arr.count-1)
+&#125;
+
+func split(_ arr: inout [Int], _ tmp: inout [Int], _ left: Int, _ right: Int) &#123;
+    if left &gt;&#x3D; right &#123;
+        return
+    &#125;
+
+    let middle &#x3D; left+(right-left)&#x2F;2
+    split(&amp;arr, &amp;tmp, left, middle)
+    split(&amp;arr, &amp;tmp, middle+1, right)
+    merge(&amp;arr, &amp;tmp, left, middle, right)
+&#125;
+
+func merge(_ arr: inout [Int], _ tmp: inout [Int], _ left: Int, _ middle: Int, _ right: Int) &#123;
+  
+    for i in left...right &#123;
+        tmp[i] &#x3D; arr[i]
+    &#125;
+    var fir &#x3D; left
+    var sec &#x3D; middle+1
+    for j in left...right &#123;
+        if fir &gt; middle &#123;
+            arr[j] &#x3D; tmp[sec]
+            sec +&#x3D; 1
+        &#125;else if sec &gt; right &#123;
+            arr[j] &#x3D; tmp[fir]
+            fir +&#x3D; 1
+        &#125;else if tmp[fir] &lt; tmp[sec] &#123;
+            arr[j] &#x3D; tmp[fir]
+            fir +&#x3D; 1
+        &#125;else &#123;
+            arr[j] &#x3D; tmp[sec]
+            sec +&#x3D; 1
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><pre><code class="hljs s"># 单向遍历
+class Solution &#123;
+    func sortArray(_ nums: [Int]) -&gt; [Int] &#123;
+        var tmp &#x3D; nums
+        split(&amp;tmp, 0, nums.count-1)
+        return tmp
+    &#125;
+
+    func split(_ tmp: inout [Int], _ left: Int, _ right: Int) &#123;
+        if left &gt;&#x3D; right &#123;
+            return
+        &#125;
+        let pa &#x3D; merge(&amp;tmp, left, right)
+        split(&amp;tmp, left, pa-1)
+        split(&amp;tmp, pa+1, right)
+    &#125;
+
+    func merge(_ tmp: inout [Int], _ left: Int,_ right: Int) -&gt; Int &#123;
+        var mark &#x3D; left
+        let prov &#x3D; tmp[left]
+        for i in (left+1)...right &#123;
+            if tmp[i] &lt; prov &#123;
+                mark +&#x3D; 1
+                tmp.swapAt(i, mark)
+            &#125;
+        &#125;
+        tmp.swapAt(left, mark)
+        return mark
+    &#125;
+&#125;
+
+# 双向遍历？</code></pre>
+
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>其实就是堆实现中的 shiftDown 方法（初始化方法）</p>
+<pre><code class="hljs s">
+func sorted(arr: [Int]) &#123;
+   var nums &#x3D; arr
+   heapSort(arr: &amp;nums)
+   var count &#x3D; arr.count
+   for i in 0..&lt;count &#123;
+      nums.swapAt(0, i)
+      count -&#x3D; 1
+      shiftDown(from: 0, until: count, arr: &amp;arr)
+   &#125;
+&#125;
+
+func heapSort(arr: innout [Int]) &#123;
+   for i in stride(from: (arr.count&#x2F;2-1), through: 0, by: -1) &#123;
+      shiftDown(from: 0, until: i, arr: &amp;arr)
+   &#125;
+&#125;
+
+func shiftDown(from index: Int, until endIndex: Int, arr: inout [Int]) &#123;
+  let leftChildIndex &#x3D; index*2+1
+  let rightChildIndex &#x3D; leftChildIndex + 1
+  var first &#x3D; index
+  if leftChildIndex &lt; endIndex &amp;&amp; arr[leftChildIndex] &lt; arr[first] &#123;
+      first &#x3D; leftChildIndex
+  &#125;
+  if rightChildIndex &lt; endIndex &amp;&amp; arr[rightChildIndex] &lt; arr[first] &#123;
+    first &#x3D; rightChildIndex
+  &#125;
+  if first &#x3D;&#x3D; index &#123; return &#125;
+  arr.swapAt(index, first)
+  shiftDown(from: first, until: endIndex, arr: &amp;arr)
+&#125;</code></pre>
+
+<h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><p>计数排序的局限在于只能处理整数类型，而且如果需要排序的范围过大会有很大的浪费<br>当范围不是很大，序列比较集中的序列，计数排序是很有效的算法</p>
+<pre><code class="hljs s">func sort(arr: [Int]) -&gt; [Int]&#123;
+    var count &#x3D; 0
+    for num in arr &#123;
+        count &#x3D; max(count, num)
+    &#125;
+    var tmp &#x3D; [Int](repeating: 0, count: count+1)
+    var ans &#x3D; [Int]()
+    for num in arr &#123;
+        tmp[num] +&#x3D; 1
+    &#125;
+    for res in 0..&lt;tmp.count &#123;
+        var cc &#x3D; tmp[res]
+        while cc &gt; 0 &#123;
+            ans.append(res)
+            cc -&#x3D; 1
+        &#125;
+    &#125;
+    return ans
+&#125;</code></pre>
+
+<h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><p>计数排序的进阶版。需要注意的点是这么确定桶的个数，以及桶内的数据如何排序</p>
+<pre><code class="hljs s">func sort(arr: [Int]) -&gt; [Int]&#123;
+    var maxbucket &#x3D; 0
+    var minbucket &#x3D; 0
+    for tmp in arr &#123;
+        if tmp &gt; maxbucket &#123;
+            maxbucket &#x3D; tmp
+        &#125;else if tmp &lt; minbucket &#123;
+            minbucket &#x3D; tmp
+        &#125;
+    &#125;
+    let diff &#x3D; maxbucket - minbucket
+    &#x2F;&#x2F; bucketCount 可通过外部参数获取
+    let bucketCount &#x3D; 5
+    let count &#x3D; diff&#x2F;bucketCount+1
+    var ans &#x3D; [[Int]](repeating: [], count: count)
+    for tmp in arr &#123;
+        ans[(tmp-minbucket)&#x2F;count].append(tmp)
+    &#125;
+    var res &#x3D; [Int]()
+    for array in ans &#123;
+        &#x2F;&#x2F; 对桶内元素排序
+        for num in array &#123;
+            res.append(num)
+        &#125;
+    &#125;
+    return res
+&#125;</code></pre>
+
+<h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><p>基数排序可以看成桶排序的扩展，也是用桶来辅助排序。因为是根据每一位上的数字排序，所以只需要十个桶，代表从 0-9.<br>引申出来，元素可以根据优先级排序。</p>
+<pre><code class="hljs s">func sort(arr: [Int]) -&gt; [Int]&#123;
+    var mod &#x3D; 10
+    var dev &#x3D; 1
+    var digit &#x3D; true
+    var buckets &#x3D; [[Int]](repeating:[] , count: 10)
+    var nums &#x3D; arr
+    while digit &#123;
+        digit &#x3D; false
+        while nums.count &gt; 0 &#123;
+            let num  &#x3D; nums.removeFirst()
+            buckets[num%mod&#x2F;dev].append(num)
+            if num &gt; mod &#123;
+                digit &#x3D; true
+            &#125;
+        &#125;
+        for i in 0..&lt;buckets.count &#123;
+            while buckets[i].count &gt; 0 &#123;
+                nums.append(buckets[i].removeFirst())
+            &#125;
+        &#125;
+        mod *&#x3D; 10
+        dev *&#x3D; 10
+    &#125;
+    return nums
+&#125;</code></pre>
+
+<h2 id="实战题目"><a href="#实战题目" class="headerlink" title="实战题目"></a>实战题目</h2><ul>
+<li>52.N 皇后</li>
+<li>191.位 1 的个数</li>
+<li>231.2 的幂</li>
+<li>338.比特位计数</li>
+<li>190.颠倒二进制位</li>
+</ul>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%8E%92%E5%BA%8F/">排序</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" target="_blank" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">3. 无重复字符的最长子串位运算</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/">
+                        <span class="hidden-mobile">位运算</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/main.js" ></script>
+
+
+  <script  src="/js/lazyload.js" ></script>
+
+
+
+  
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: '.post-content',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+<!-- Plugins -->
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "十大经典排序算法（Swift）&nbsp;",
+      ],
+      cursorChar: "￥",
+      typeSpeed: 200,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
