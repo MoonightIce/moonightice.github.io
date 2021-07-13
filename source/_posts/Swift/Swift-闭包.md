@@ -5,7 +5,7 @@ tags:
 - 闭包
 categories:
 - Swift
-index_img:
+index_img: /images/CoverImage/wallhaven-k716d6.jpg
 ---
 
 ## 尾随闭包
