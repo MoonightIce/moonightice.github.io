@@ -1,0 +1,830 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>小数点的截取</title>
+    <link href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/"/>
+    <url>/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/</url>
+    
+    <content type="html"><![CDATA[<p>最简单的截取小数位的方法：</p><pre><code class="hljs swift"><span class="hljs-comment">/// 保留_位小数</span><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">afterDecimalNum</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">count</span>: <span class="hljs-type">Int</span>)</span> -&gt; <span class="hljs-type">String</span> &#123;    <span class="hljs-keyword">guard</span> count <span class="hljs-operator">&gt;=</span> <span class="hljs-number">0</span> <span class="hljs-keyword">else</span> &#123; <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&quot;</span> &#125;    <span class="hljs-keyword">let</span> format <span class="hljs-operator">=</span> <span class="hljs-string">&quot;%.<span class="hljs-subst">\(count)</span>f&quot;</span>    <span class="hljs-keyword">return</span> <span class="hljs-type">String</span>(format: format, <span class="hljs-keyword">self</span>)&#125;</code></pre><p>这里的方法会出现的问题是，当浮点数的小数位在保留对应小数位的时候，会默认的四舍五入，eg</p><pre><code class="hljs swift"><span class="hljs-comment">// 11.999003  -&gt; 12.0</span><span class="hljs-keyword">var</span> pp <span class="hljs-operator">=</span> <span class="hljs-number">11.999003</span><span class="hljs-type">String</span>(format: <span class="hljs-string">&quot;%.1f&quot;</span>, pp)</code></pre><p>包括网上常见的方法</p><pre><code class="hljs swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">roundToPlaces</span>(<span class="hljs-params">value</span>:<span class="hljs-type">Double</span>, <span class="hljs-params">places</span>:<span class="hljs-type">Int</span>)</span> -&gt; <span class="hljs-type">Double</span> &#123;    <span class="hljs-keyword">let</span> divisor <span class="hljs-operator">=</span> pow(<span class="hljs-number">10.0</span>, <span class="hljs-type">Double</span>(places))    <span class="hljs-keyword">return</span> round(value <span class="hljs-operator">*</span> divisor) <span class="hljs-operator">/</span> divisor&#125;roundToPlaces(value: pp, places: <span class="hljs-number">1</span>) <span class="hljs-comment">// 12 这里没有了小数位</span></code></pre><p>使用 NumberFormatter 找到了一个的解决方案，实现的效果是：</p><ol><li>截取对应小数位，不会进位（可控）</li><li>小数位为零时，不展示<br><code>NumberFormatter</code> 详细属性这里不做解释</li></ol><pre><code class="hljs swift"><span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">Float</span> </span>&#123;    <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">interceptionDecimal</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">base</span>: <span class="hljs-type">Int</span>)</span> -&gt; <span class="hljs-type">String</span> &#123;        <span class="hljs-keyword">let</span> format <span class="hljs-operator">=</span> <span class="hljs-type">NumberFormatter</span>.<span class="hljs-keyword">init</span>()        format.numberStyle <span class="hljs-operator">=</span> .decimal        format.minimumFractionDigits <span class="hljs-operator">=</span> <span class="hljs-number">0</span> <span class="hljs-comment">// 最少小数位</span>        format.maximumFractionDigits <span class="hljs-operator">=</span> base <span class="hljs-comment">// 最多小数位</span>        format.formatterBehavior <span class="hljs-operator">=</span> .default        format.roundingMode <span class="hljs-operator">=</span> .down <span class="hljs-comment">// 小数位以截取方式。不同枚举的截取方式不同</span>        <span class="hljs-keyword">return</span> format.string(from: <span class="hljs-type">NSNumber</span>(value: <span class="hljs-keyword">self</span>)) <span class="hljs-operator">??</span> <span class="hljs-string">&quot;&quot;</span>    &#125;&#125;</code></pre><p>测试用例</p><pre><code class="hljs swift"><span class="hljs-keyword">let</span> num: [<span class="hljs-type">Float</span>] <span class="hljs-operator">=</span> [<span class="hljs-number">12.1</span>, <span class="hljs-number">12.00</span>, <span class="hljs-number">100.123</span>, <span class="hljs-number">123.0001</span>, <span class="hljs-number">123.999</span>, <span class="hljs-number">0.000001</span>, <span class="hljs-number">0.00</span>]<span class="hljs-keyword">let</span> res <span class="hljs-operator">=</span> num.map(&#123;<span class="hljs-variable">$0</span>.tempIIIIIII()&#125;)<span class="hljs-comment">// res = [&quot;12.1&quot;, &quot;12&quot;, &quot;100.123&quot;, &quot;123&quot;, &quot;123.999&quot;, &quot;0&quot;, &quot;0&quot;]</span></code></pre><p>2021.7.13 更：<br>上述的测试用例并不全面，当 <code>num = 12.9</code> 的时候输出的结果会变成 12.8，出现的失真的情况。</p><p>为了达成准确的截取小数点的效果，使用了如下方案：</p><pre><code class="hljs swift"><span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">Float</span> </span>&#123;    <span class="hljs-comment">/// 准确的小数尾截取 - 没有进位</span>    <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">decimalString</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">base</span>: <span class="hljs-keyword">Self</span> <span class="hljs-operator">=</span> <span class="hljs-number">1</span>)</span> -&gt; <span class="hljs-type">String</span> &#123;        <span class="hljs-keyword">let</span> tempCount: <span class="hljs-keyword">Self</span> <span class="hljs-operator">=</span> pow(<span class="hljs-number">10</span>, base)        <span class="hljs-keyword">let</span> temp <span class="hljs-operator">=</span> <span class="hljs-keyword">self</span><span class="hljs-operator">*</span>tempCount                <span class="hljs-keyword">let</span> target <span class="hljs-operator">=</span> <span class="hljs-keyword">Self</span>(<span class="hljs-type">Int</span>(temp))        <span class="hljs-keyword">let</span> stepone <span class="hljs-operator">=</span> target<span class="hljs-operator">/</span>tempCount        <span class="hljs-keyword">if</span> stepone.truncatingRemainder(dividingBy: <span class="hljs-number">1</span>) <span class="hljs-operator">==</span> <span class="hljs-number">0</span> &#123;            <span class="hljs-keyword">return</span> <span class="hljs-type">String</span>(format: <span class="hljs-string">&quot;%.0f&quot;</span>, stepone)        &#125;<span class="hljs-keyword">else</span>&#123;            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;<span class="hljs-subst">\(stepone)</span>&quot;</span>        &#125;    &#125;&#125;</code></pre><p>参考链接</p><p><a href="https://blog.csdn.net/u013896628/article/details/77227762?utm_source=blogxgwz4">iOS 保留两位小数，避免四舍五入</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Swift</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>小数点</tag>
+      
+      <tag>NumberFormatter</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Swift-闭包</title>
+    <link href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/"/>
+    <url>/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/</url>
+    
+    <content type="html"><![CDATA[<h2 id="尾随闭包"><a href="#尾随闭包" class="headerlink" title="尾随闭包"></a>尾随闭包</h2><blockquote><p>官方定义：如果需要将闭包表达式作为函数的最终参数传递给函数，并且闭包表达式很长，则可以将其写为尾随闭包。写法：尾随闭包写在函数调用的圆括号之后，即使它是函数的最终参数。如果尾随闭包作为函数的最终参数，并且定义了相应的参数标签，在使用尾随闭包语法时，不能将闭包的参数标签写为函数调用的一部分。</p></blockquote><p>实际需求中需要的将尾随闭包变成可选，也就是根据参数来判断是否需要执行。<br>虽然没有用 @escaping 关键词，但是因为是可选值所以就成了逃逸闭包</p><pre><code class="hljs swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">esc</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">pk</span>: <span class="hljs-type">Int</span>, <span class="hljs-params">block</span>: ((<span class="hljs-type">String</span>) -&gt; <span class="hljs-type">Void</span>)<span class="hljs-operator">?</span>)</span> &#123;    <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> bbb <span class="hljs-operator">=</span> block &#123;        bbb(<span class="hljs-string">&quot;block&quot;</span>)    &#125;&#125;<span class="hljs-comment">// 执行闭包，尾随闭包写法</span>esc(<span class="hljs-number">100</span>) &#123; (str) <span class="hljs-keyword">in</span>    <span class="hljs-built_in">print</span>(<span class="hljs-number">1</span>)    <span class="hljs-built_in">print</span>(str)&#125;<span class="hljs-comment">// 不执行闭包</span>esc(<span class="hljs-number">100</span>, block: <span class="hljs-literal">nil</span>)</code></pre><p>因为使用的可选值闭包，所以无法同时满足 <strong>可选值和非逃逸</strong></p><ol><li>可以通过提供一个默认值避免可选值</li><li>或者通过重载函数，同时提供一个包含可选值逃逸的函数，和一个不是可选值非逃逸的函数</li></ol><pre><code class="hljs swift"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">esc</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">pk</span>: <span class="hljs-type">Int</span>, <span class="hljs-params">block</span>: ((<span class="hljs-type">String</span>) -&gt; <span class="hljs-type">Void</span>))</span> &#123;    <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> bbb <span class="hljs-operator">=</span> block &#123;        bbb(<span class="hljs-string">&quot;block&quot;</span>)    &#125;&#125;</code></pre><p>当使用 nil（或一个可选值）参数时，会调用逃逸闭包的函数<br>使用闭包字面量会调用非可选值的函数</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Swift</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>闭包</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>WKWebView默认缓存策略与HTTP缓存协议</title>
+    <link href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/"/>
+    <url>/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/</url>
+    
+    <content type="html"><![CDATA[<p><a href="https://juejin.im/post/5df75e3a6fb9a016266459da">原文地址：WKWebView默认缓存策略与HTTP缓存协议</a><br><a href="https://zhuanlan.zhihu.com/p/60357719">可能是最被误用的 HTTP 响应头之一 Cache-Control: must-revalidate</a></p><p><a href="https://juejin.im/post/5df75e3a6fb9a016266459da">https://juejin.im/post/5df75e3a6fb9a016266459da</a></p><p>今天同事反应H5更新了资源，但iOS App里面仍然使用的是旧的缓存资源。为什么会这样呢？要弄清楚这个问题，首先得弄清楚WKWebView的缓存原理。</p><h2 id="一、WKWebView默认缓存策略"><a href="#一、WKWebView默认缓存策略" class="headerlink" title="一、WKWebView默认缓存策略"></a>一、WKWebView默认缓存策略</h2><p>下图是<a href="https://developer.apple.com/documentation/foundation/nsurlrequestcachepolicy/nsurlrequestuseprotocolcachepolicy?language=occ">苹果官方文档</a>提供的默认缓存策略(NSURLRequestUseProtocolCachePolicy)的流程图。</p><p><a href="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/edbc39f4-b706-45cb-949b-b473385c83ee/172020dc96d8ec8f">https://s3-us-west-2.amazonaws.com/secure.notion-static.com/edbc39f4-b706-45cb-949b-b473385c83ee/172020dc96d8ec8f</a></p><p>官方文档上是这样描述的：</p><blockquote><p>For the HTTP and HTTPS protocols, NSURLRequestUseProtocolCachePolicy performs the following behavior: 1. If a cached response does not exist for the request, the URL loading system fetches the data from the originating source. 2. Otherwise, if the cached response does not indicate that it must be revalidated every time, and if the cached response is not stale (past its expiration date), the URL loading system returns the cached response. 3. If the cached response is stale or requires revalidation, the URL loading system makes a HEAD request to the originating source to see if the resource has changed. If so, the URL loading system fetches the data from the originating source. Otherwise, it returns the cached response.</p></blockquote><p>官方文档说，</p><ol><li>缓存不存在，则直接请求。</li><li>缓存存在，且缓存response头没有指明每次必须校验资源更新(revalidated这个词可能会产生误导，后文说)，且缓存没有过期，则系统会直接返回缓存，<strong>不会发起请求</strong>。</li><li>如果缓存过期了或者要求每次必须校验资源更新，则会发起一个校验资源更新的请求，如果(服务器告诉客户端)资源有更新则使用服务器返回来的新数据，如果资源没有更新则使用本地缓存。</li></ol><p>上面官方文档只是说了个大概的原理，具体指标和细节并没有说清楚。</p><ol><li>什么情况下会缓存数据？</li><li>什么情况下每次都需要校验资源更新？</li><li>缓存过期时间是多久？</li><li>校验资源更新的过程是怎么样的？revalidated的指标是什么？</li></ol><p><strong>实际上，WKWebView默认缓存策略完全遵循HTTP缓存协议，苹果并没有做额外的事情</strong>，上面的流程图和文档描述只是简略描述了HTTP缓存协议的一个流程。<strong>也就是说，你想弄清楚WKWebView默认缓存策略，你得弄清楚HTTP缓存协议</strong>。</p><h2 id="二、HTTP缓存协议"><a href="#二、HTTP缓存协议" class="headerlink" title="二、HTTP缓存协议"></a>二、HTTP缓存协议</h2><p>http缓存协议这个词是我自己造的哈，本节要讲的实际上就是HTTP协议中和缓存有关的请求头、响应头的作用和用法。</p><p><strong>客户端默认缓存行为实际上是由服务器控制的，客户端和服务器通过HTTP请求头和响应头中的缓存字段来交流，进而影响客户端的行为。</strong> 下面就来介绍一下相关字段。</p><h3 id="1-Pragma、Expires"><a href="#1-Pragma、Expires" class="headerlink" title="1. Pragma、Expires"></a>1. Pragma、Expires</h3><p>在 http1.0 时代，给客户端设定缓存方式可通过这两个字段。</p><p>Pragma是一个通用头，它只有no-cache这一个值。</p><blockquote><p>通用头：该字段可以用于请求头，也可用于响应头。（注意：同一个属性在请求头和响应头中意义可能不一样，例如下文中的Cache-Control）</p></blockquote><p>作为请求头，表示不使用缓存，直接从源服务器获取资源，这是HTTP1.0的用法，HTTP1.1的用法是Cache-Control:no-cache。不过为了兼容HTTP1.0，一般Pragma:no-cache和Cache-Control:no-cache联用，如下。</p><pre><code class="hljs p">Cache-Control:no-cachePragme:no-cache</code></pre><p>作为响应头，<a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.32">RFC2616文档</a>说，Pragma : no-cache的行为并没有被定义，不能保证它的意义和Cache-Control:no-cache一致。</p><p>Expires，响应头，表示缓存过期的时刻，这个是服务器时间。例如<code>Expires: Fri, 11 Jun 2021 11:33:01 GMT</code></p><p>Pragma、Expires的局限：响应报文中Expires所定义的缓存时间是相对服务器上的时间而言的，如果客户端上的时间跟服务器上的时间不一致（特别是用户修改了自己电脑的系统时间），那缓存时间可能就没啥意义了。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9cddc3bd-d774-4b18-9fba-9a95815d0f1b/172020dc8b27cf0c.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9cddc3bd-d774-4b18-9fba-9a95815d0f1b/172020dc8b27cf0c.png"></p><h3 id="2-Cache-Control"><a href="#2-Cache-Control" class="headerlink" title="2. Cache-Control"></a>2. Cache-Control</h3><p>http1.1新增了 Cache-Control 来配置缓存信息，主要包括：能否缓存、缓存过期时间、是否每次校验等。</p><p>Cache-Control是通用头。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/195e46bd-c293-4086-8e58-5e89ee21e6dd/172020dc8b321bc5.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/195e46bd-c293-4086-8e58-5e89ee21e6dd/172020dc8b321bc5.png"></p><p>下图是Cache-Control可选值表。你也可以查阅<a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP官方文档</a>14.9Cache-Control部分。</p><p>Cache-Control 允许自由组合可选值，用逗号分隔。<code>Cache-Control: max-age=3600, no-cache</code> 上面这句意思是，缓存过期时间是1小时，每次都必须向服务器进行资源更新校验。</p><p>下面介绍几个常用的可选值。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/516d29de-fb51-4770-8fba-469ffc931894/172020dc8b490fb9.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/516d29de-fb51-4770-8fba-469ffc931894/172020dc8b490fb9.png"></p><h3 id="must-revalidate"><a href="#must-revalidate" class="headerlink" title="must-revalidate"></a>must-revalidate</h3><p>文章开头我们提到了苹果的流程图可能会让人产生歧义，这里来解释一下坑在哪里。 苹果文档和流程图中有个判断，缓存存在，则需要判断是否需要每次都校验，用的是“revalidated”这个词。然后你看到Cache-Control可选值里面有个must-revalidate值，你是不是毫不犹豫地就向下面这样写了。<code>Cache-Control: max-age=3600, must-revalidate</code> 我就尝试设置一个过期时间，但是又希望每次都去校验更新，于是我像上面这样写，结果客户端仍然是用的缓存，根本没有网络请求发出去。 我很幸运地看到了这篇文章，<a href="https://zhuanlan.zhihu.com/p/60357719">可能是最被误用的 HTTP 响应头之一 Cache-Control: must-revalidate</a>，强烈推荐阅读！</p><p>HTTP 规范是不允许客户端使用过期缓存的，除了一些特殊情况，比如校验请求发送失败的时候。而must-revalidate指令是用来排除这些特殊情况的。带有 must-revalidate 的缓存过期后，在任何情况下，都必须成功 revalidate 后才能使用，没有例外，即使校验请求发送失败也不可以使用过期的缓存。<strong>也就是说，有个大前提是缓存过期了，如果缓存没过期客户端会直接使用缓存，并不会发起校验，显然不是字面上每次都校验更新的意思。must-revalidate 命名为 never-return-stale更合理。而真正每次都校验更新，应该用no-cache这个字段。</strong> 把上面错误的写法改成下面这样就OK了：缓存有效期1小时，每次请求都校验更新。<code>Cache-Control: max-age=3600, no-cache</code></p><h3 id="no-cache"><a href="#no-cache" class="headerlink" title="no-cache"></a>no-cache</h3><p>作为请求头，告知中间服务器不使用缓存，向源服务器发起请求。 作为响应头，no-cache并不是字面上的不缓存，而是每次使用前都得先校验一下资源更新。</p><h3 id="no-store"><a href="#no-store" class="headerlink" title="no-store"></a>no-store</h3><p>作为响应头，带有no-store的响应不会被缓存到任意的磁盘或者内存里，no-store它才是真正的“no-cache”。</p><h3 id="max-age"><a href="#max-age" class="headerlink" title="max-age"></a>max-age</h3><p>作为请求头，max-age=0表示不管response怎么设置，在重新获取资源之前，先进行资源更新校验。 作为响应头，max-age=x表示，缓存有效期是x秒。</p><h3 id="Cache-Control的局限"><a href="#Cache-Control的局限" class="headerlink" title="Cache-Control的局限"></a>Cache-Control的局限</h3><p>很多时候，缓存过期了但是资源并没有修改，会发送多余的请求和数据；或者资源修改了缓存还没过期，客户端仍然在用缓存。Cache-Control无法及时和客户端同步。</p><h3 id="3-Last-Modified、If-Modified-Since"><a href="#3-Last-Modified、If-Modified-Since" class="headerlink" title="3. Last-Modified、If-Modified-Since"></a>3. Last-Modified、If-Modified-Since</h3><p>为了弥补Cache-Control无法及时判断资源是否有更新的不足，有了Last-Modified、if-Modified-Since字段。</p><h3 id="Last-Modified"><a href="#Last-Modified" class="headerlink" title="Last-Modified"></a>Last-Modified</h3><p>响应头，这次命名没有问题了，这个字段的值就是资源在服务器上最后修改时刻。例如<code>If-Modified-Since: Thu, 31 Mar 2016 07:07:52 GMT</code></p><h3 id="If-Modified-Since"><a href="#If-Modified-Since" class="headerlink" title="If-Modified-Since"></a>If-Modified-Since</h3><p>请求头，客户端通过该字段把Last-Modified的值回传给服务端；客户端带上这个字段表示这次请求是向服务端做校验资源更新校验。如果资源没有修改，则服务端返回304不返回数据，客户端用缓存；资源有修改则返回200和数据。 例如<code>If-Modified-Since: Thu, 31 Mar 2016 07:07:52 GMT</code></p><h3 id="Last-Modified的启发式-heuristic-缓存"><a href="#Last-Modified的启发式-heuristic-缓存" class="headerlink" title="Last-Modified的启发式(heuristic)缓存"></a>Last-Modified的启发式(heuristic)缓存</h3><pre><code class="hljs p">HTTP/2 200Date: Wed, 27 Mar 2019 22:00:00 GMTLast-Modified: Wed, 27 Mar 2019 12:00:00 GMT</code></pre><p>上面这个响应，没有显示地指明需要缓存，没有Cache-Control，也没有 Expires，只有Last-Modified修改时间，这种情况会产生启发式缓存。缓存时长=(date_value - last_modified_value) * 0.10 ，这是由 HTTP 规范推荐的算法，但规范中仅仅是推荐而已，并没有做强制要求。比如 Firefox 中就在这个算法的基础上还和 7 天时长取了一次最小值。 何如禁用由 Last-Modified响应头造成的启发式缓存：正确的做法是在响应头中加上 Cache-Control: no-cache。</p><h3 id="Last-Modified、If-Modified-Since的缺陷"><a href="#Last-Modified、If-Modified-Since的缺陷" class="headerlink" title="Last-Modified、If-Modified-Since的缺陷"></a>Last-Modified、If-Modified-Since的缺陷</h3><p>无法识别内容是否发生实质性的变化，可能只是修改了文件但是内容没有变化；无法识别一秒内进行多次修改的情况。</p><h3 id="4-ETag、If-None-Match"><a href="#4-ETag、If-None-Match" class="headerlink" title="4. ETag、If-None-Match"></a>4. ETag、If-None-Match</h3><p>为了弥补Last-Modified的无法判断内容实质性变化的缺陷，于是有了ETag和If-None-Match字段，这对字段的用法和Last-Modified、If-Modified-Since相似，服务器在响应头中返回ETag字段，客户端在下次请求时在If-None-Match中回传ETag对应的值。</p><p>响应头，给资源计算得出一个唯一标志符（比如md5标志），加在响应头里一起返给客户端，例如<code>Etag: &quot;5d8c72a5edda8d6a&quot;</code></p><h3 id="If-None-Match"><a href="#If-None-Match" class="headerlink" title="If-None-Match"></a>If-None-Match</h3><p>请求头，客户端在下次请求时回传ETag值给服务器。<code>If-None-Match: &quot;5d8c72a5edda8d6a&quot;&quot;</code></p><h3 id="5-优先级"><a href="#5-优先级" class="headerlink" title="5. 优先级"></a>5. 优先级</h3><p>上面这些缓存控制字段如果同时出现，他们的优先级如何呢？<strong>优先级：Pragma &gt; Cache-Control &gt; Expires &gt; Last-Modified &gt; ETag</strong> 这是我在iOS下测试的出来的结论，仅供参考。下面是测试的过程。</p><blockquote><p>响应头没有任何缓存字段，每次启动都会发起请求，返回200。 第一次启动，响应头添加Pragma:no-cache和Cache-Control:max-age；第二次启动，会发起请求，返回304，说明Pragma生效了，Pragma &gt; Cache-Control。 第一次启动，响应头没有过期时间，只有Last-Modified；第二次启动，使用缓存，没有发起请求，说明启发式缓存(上文中有提到)生效。 第一次启动，响应头没有过期时间，只有ETag；第二次启动，会发起请求，返回304，说明做了资源更新校验。 第一次启动，响应头没有过期时间，同时有ETag和Last-Modified；第二次启动，使用缓存，没有发起请求，启发式缓存生效，说明Last-Modified&gt;ETag。</p></blockquote><p>更多关于HTTP头部字段，可以查看<a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.9.1">HTTP协议官方文档</a>。 全英文的，看着头大？我还无意中发现了中文版的。<strong>火狐浏览器F12调出控制台，请求头和响应头左边的问号（下图）是可以点的</strong>！点击直接跳转到对用头字段的网页，真可谓“哪里不会点哪里，妈妈再也不用担心我的学习了！”哈哈哈哈——</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/336fffb2-2983-43bf-8d8a-3c48ccd1911e/17203de4f4890319.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/336fffb2-2983-43bf-8d8a-3c48ccd1911e/17203de4f4890319.png"></p><h2 id="三、实战：浏览器的行为"><a href="#三、实战：浏览器的行为" class="headerlink" title="三、实战：浏览器的行为"></a>三、实战：浏览器的行为</h2><p>介绍完上面的HTTP缓存协议，下面我们来实战一下，梳理下浏览器的整个交互过程，加深对上面各个字段的理解。 这里再次抛出苹果给的流程图看一眼，实际上浏览器（无论是PC还是移动端）的执行过程就是这个流程图。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/49f55ad9-6919-4289-8e45-5ed5f060757e/172020dc96d8ec8f.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/49f55ad9-6919-4289-8e45-5ed5f060757e/172020dc96d8ec8f.png"></p><p>下面我们结合上面的流程图，以火狐浏览器、百度首页的css文件例，一步步进行说明。不同浏览器的行为可能不一致(刷新、强刷等操作浏览器会强行添加一些请求头，不同浏览器可能添加的不一样)，但是他们遵循的HTTP协议规则是一致的。</p><h3 id="1-第一次请求（相当于iOS第一次启动）"><a href="#1-第一次请求（相当于iOS第一次启动）" class="headerlink" title="1.第一次请求（相当于iOS第一次启动）"></a>1.第一次请求（相当于iOS第一次启动）</h3><p>第一次请求没有缓存，浏览器发出请求。 我们可以看到，返回的响应头中包含了Cache-Control、ETag、Expires、Last-Modified等多个缓存控制字段。浏览器进行缓存。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e8260e19-c1b5-4a61-b310-acbfb25a4243/17203df28e1c8f80.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e8260e19-c1b5-4a61-b310-acbfb25a4243/17203df28e1c8f80.png"></p><h3 id="2-在浏览器地址栏直接回车（相当于iOS第二次启动）"><a href="#2-在浏览器地址栏直接回车（相当于iOS第二次启动）" class="headerlink" title="2.在浏览器地址栏直接回车（相当于iOS第二次启动）"></a>2.在浏览器地址栏直接回车（相当于iOS第二次启动）</h3><p>如下图可以看到，浏览器没有发送请求，而是直接使用了缓存数据。 浏览器的判断过程：首先判断是否有缓存，有缓存，是否需要校验资源更新，不需要（响应头没有Cache-Control:no-cache字段），然后判断缓存过期了吗，没过期（响应头Cache-Control:max-age=315360000），于是浏览器直接使用缓存，不进行请求。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/00ca80fe-ae8b-4084-9a10-5df445f5c6f0/17203dfbc636c52c.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/00ca80fe-ae8b-4084-9a10-5df445f5c6f0/17203dfbc636c52c.png"></p><h3 id="3-刷新页面（F5-点击工具栏中的刷新按钮-右键菜单重新加载）"><a href="#3-刷新页面（F5-点击工具栏中的刷新按钮-右键菜单重新加载）" class="headerlink" title="3.刷新页面（F5/点击工具栏中的刷新按钮/右键菜单重新加载）"></a>3.刷新页面（F5/点击工具栏中的刷新按钮/右键菜单重新加载）</h3><p>从结果来看，浏览器仍然使用的是缓存。但是这次有发送资源更新校验的请求，服务端返回304，表示资源没有变动，浏览器使用缓存。 我们可以注意到，刷新页面，火狐浏览器(其它浏览器行为可能不一样)向请求头里强行添加了几个字段。</p><pre><code class="hljs p">Cache-Control:max-age=0If-Modified-Since:Mon, 07 Nov 2016 07:51:11 GMTIf-None-Match: &quot;352b-540b1498e39c0&quot;</code></pre><p>Cache-Control:max-age=0，表示不管上次的响应头设置的是什么，这次请求都会进行资源更新校验。 If-Modified-Since，回传资源最后修改时间给服务器校验 If-None-Match，回传ETag给服务器校验 浏览器的判断过程：缓存是否存在，存在，是否需要校验资源更新，需要（Cache-Control:max-age=0），发起资源校验请求，由于资源没有修改，服务器返回304，浏览器使用缓存数据。</p><h3 id="4-谷歌浏览器强制刷新cmd-shift-R（因为火狐没这功能，所以这里换成谷歌浏览器测试）"><a href="#4-谷歌浏览器强制刷新cmd-shift-R（因为火狐没这功能，所以这里换成谷歌浏览器测试）" class="headerlink" title="4.谷歌浏览器强制刷新cmd+shift+R（因为火狐没这功能，所以这里换成谷歌浏览器测试）"></a>4.谷歌浏览器强制刷新cmd+shift+R（因为火狐没这功能，所以这里换成谷歌浏览器测试）</h3><p>结果：浏览器进行了请求，服务器返回200和数据。 我们注意到，谷歌浏览器在请求头中强行添加了两个字段。</p><pre><code class="hljs p">pragma: no-cachecache-control: no-cache</code></pre><p>cache-control: no-cache，在请求头中表示，（包括中间服务器）不要使用缓存，去源服务器请求资源。<strong>注意：cache-control: no-cache作为请求头和响应头意义是不一样的。作为请求头表示不缓存，作为响应头表示每次都得去校验资源更新。</strong> pragma: no-cache，和cache-control: no-cache是一个意思，只是为了兼容HTTP1.0。 浏览器的判断过程：有不使用缓存的标记（cache-control: no-cache），直接发起请求。</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9155dab2-5e1c-44eb-8ea2-afe9f1f88e78/172020dcf4a2ccc0.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9155dab2-5e1c-44eb-8ea2-afe9f1f88e78/172020dcf4a2ccc0.png"></p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2392299e-a899-4061-87d5-545eea25141c/17203e114a20327e.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/2392299e-a899-4061-87d5-545eea25141c/17203e114a20327e.png"></p><h2 id="四、WKWebView默认缓存策略总结"><a href="#四、WKWebView默认缓存策略总结" class="headerlink" title="四、WKWebView默认缓存策略总结"></a>四、WKWebView默认缓存策略总结</h2><h3 id="（一）回答文章开头的几个问题"><a href="#（一）回答文章开头的几个问题" class="headerlink" title="（一）回答文章开头的几个问题"></a>（一）回答文章开头的几个问题</h3><h3 id="1-什么情况下会缓存数据"><a href="#1-什么情况下会缓存数据" class="headerlink" title="1. 什么情况下会缓存数据"></a>1. 什么情况下会缓存数据</h3><p>第一次启动的时候，如果响应头中不包含任何缓存控制字段（Expires、Cache-Control:max-age、Last-Modified等），那么不会缓存（仍然可能会有物理缓存，只是不使用），下次直接发起请求。如果响应头包含了缓存控制字段，大多数情况下这次数据会被缓存，下次启动的时候执行缓存逻辑判断。</p><h3 id="2-什么情况下每次都需要校验资源更新"><a href="#2-什么情况下每次都需要校验资源更新" class="headerlink" title="2. 什么情况下每次都需要校验资源更新"></a>2. 什么情况下<strong>每次</strong>都需要校验资源更新</h3><p>a. 如果响应头中包含Cache-Control:no-cache 或 Pragma:no-cache。 b. 如果请求头中包含了Cache-Control:max-age=0，这个结论是对的，但是WKWebView的默认策略不会出现这种情况。 c. 响应头中缓存控制字段只有ETag字段，没有过期时间和修改时间。</p><h3 id="3-缓存过期时间是多久"><a href="#3-缓存过期时间是多久" class="headerlink" title="3. 缓存过期时间是多久"></a>3. 缓存过期时间是多久</h3><p>a. 响应头中Cache-Control:max-age=3600，表示缓存1小时(3600/60/60)，单位秒。 b. 响应头中Expires的值表示过期时刻（服务器时间）。 c. 响应头中，如果没有上述两个字段，但有Last-Modified字段，则触发启发式缓存，缓存时间=(date_value - last_modified_value) * 0.1。 优先级 Cache-Control:max-age &gt; Expires &gt; Last-Modified。</p><h3 id="4-校验资源更新的过程是怎么样的？revalidated的指标是什么"><a href="#4-校验资源更新的过程是怎么样的？revalidated的指标是什么" class="headerlink" title="4. 校验资源更新的过程是怎么样的？revalidated的指标是什么"></a>4. 校验资源更新的过程是怎么样的？revalidated的指标是什么</h3><p>revalidated的指标有两个：Last-Modified最后修改时刻、ETag资源唯一标识。 服务器返回数据时会在响应头中返回上面两个指标（有可能只有1个，也可以2个都有），客户端再次发起请求时会把这两个指标回传给服务器。 If-Modified-Since: Last-Modified的值 If-None-Match: ETag的值 服务器进行比对，如果客户端的资源是最新的，则返回304，客户端使用缓存数据；如果服务器资源更新了，则返回200和新数据。</p><h3 id="（二）WKWebView默认缓存策略流程总结"><a href="#（二）WKWebView默认缓存策略流程总结" class="headerlink" title="（二）WKWebView默认缓存策略流程总结"></a>（二）WKWebView默认缓存策略流程总结</h3><p>对照文章开头的流程图，WKWebView默认缓存策略流程总结如下：</p><ol><li>是否有缓存，没有则直接发起请求。有则进行下一步。</li><li>是否每次都得进行资源更新校验（响应头是否有Cache-Control:no-cache或Pragma:no-cache字段），不需要则进入3，需要则进入4。</li><li>缓存是否过期（响应头，Cache-Control:max-age、Expires、Last-Modified启发式缓存），没过期则使用缓存，不发起请求。过期了则进入4。</li><li>客户端发起资源更新校验请求（请求头，If-Modified-Since: Last-Modified值、If-None-Match: ETag值），如果资源没有更新，服务器返回304，客户端使用缓存；如果资源有更新，服务器返回200和资源。</li></ol><h2 id="五、解决方案：数据更新后仍然有缓存的问题"><a href="#五、解决方案：数据更新后仍然有缓存的问题" class="headerlink" title="五、解决方案：数据更新后仍然有缓存的问题"></a>五、解决方案：数据更新后仍然有缓存的问题</h2><p>弄清楚了原理，回到文章开头的问题，H5资源更新了，但是iOS有缓存没有同步还是显示的原来的数据。那么怎么解决呢？ App端是做不了什么的，这个问题需要后台处理。</p><h3 id="方案一：响应头，添加Cache-Control-no-cache"><a href="#方案一：响应头，添加Cache-Control-no-cache" class="headerlink" title="方案一：响应头，添加Cache-Control:no-cache"></a>方案一：响应头，添加Cache-Control:no-cache</h3><p>经过我的调试发现，服务器返回资源的响应头是<code>Cache-Contol: max-age=36000000</code> 问题的原因在于服务器响应头的缓存字段配置不合理，没有配置资源更新校验字段，而缓存过期时间又过长，因此，即使服务器资源更新了客户端也不会请求新的资源，而是直接使用“没有过期”的资源。</p><p>我们做出如下修改，在资源的响应头中添加no-cache字段，这样每次浏览器都会先去校验资源更新，就解决了这个问题。<code>Cache-Control:no-cache</code></p><h3 id="方案二：资源链接加后缀（md5、版本号等）"><a href="#方案二：资源链接加后缀（md5、版本号等）" class="headerlink" title="方案二：资源链接加后缀（md5、版本号等）"></a>方案二：资源链接加后缀（md5、版本号等）</h3><pre><code class="hljs js">&lt;script src=<span class="hljs-string">&quot;test.js?ver=113&quot;</span>&gt;&lt;/script&gt;https:<span class="hljs-comment">//hm.baidu.com/hm.js?e23800c454aa573c0ccb16b52665ac26</span>http:<span class="hljs-comment">//tb1.bdstatic.com/tb/_/tbean_safe_ajax_94e7ca2.js</span>http:<span class="hljs-comment">//img1.gtimg.com/ninja/2/2016/04/ninja145972803357449.jpg</span></code></pre><p>可以在资源文件后面加上版本号，每次更新资源的时候变更版本号；还可以在URL后面加上了md5参数，甚至还可以将md5值作为文件名的一部分。 采用上述方法，你可以把缓存时间设置的特别长，那么在文件没有变动的时候，浏览器直接使用缓存文件；而在文件有变化的时候，由于文件版本号的变更，或md5变化导致文件名变化，请求的url变了，浏览器会当做新的资源去处理，一定会发起请求，所以不存在更新后仍然有缓存的情况。通过这样的处理，增长了静态资源，特别是图片资源的缓存时间，避免该资源很快过期，客户端频繁向服务端发起资源请求，服务器再返回304响应的情况（有Last-Modified/Etag）。</p><h2 id="六、补充：iOS原生请求默认策略的一些问题"><a href="#六、补充：iOS原生请求默认策略的一些问题" class="headerlink" title="六、补充：iOS原生请求默认策略的一些问题"></a>六、补充：iOS原生请求默认策略的一些问题</h2><h3 id="1-iOS原生请求默认策略也遵循上面的规则吗"><a href="#1-iOS原生请求默认策略也遵循上面的规则吗" class="headerlink" title="1. iOS原生请求默认策略也遵循上面的规则吗"></a>1. iOS原生请求默认策略也遵循上面的规则吗</h3><p>——是的。 NSURLRequest的默认缓存策略是NSURLRequestUseProtocolCachePolicy，完全遵循上文讲得HTTP缓存协议。看下面的例子。</p><pre><code class="hljs oc">- (void)requestData&#123;    NSLog(@&quot;开始请求&quot;);    NSString *url = @&quot;http://www.4399.com/jss/lx6.js&quot;;    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) &#123;        if (!error) &#123;            NSLog(@&quot;%@&quot;,response);        &#125;    &#125;];    [task resume];&#125;</code></pre><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/91dedb76-77a6-4ff4-9402-7516d9b01afb/172020dd266adb5d.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/91dedb76-77a6-4ff4-9402-7516d9b01afb/172020dd266adb5d.png"></p><p>第一次请求时通过抓包工具看到，响应头设置了比较长的缓存时间。按照上文的讲述的，在缓存没有过期的情况下，下次请求会直接返回缓存数据，不在请求。 经过测试，再次请求时抓包工具显示确实没有请求发出。同时completionHandler回调，code返回200，data返回数据。甚至，你可以把网断了，仍然会有上述回调，code200，data返回数据。印着了上述结论。</p><h3 id="2-iOS客户端需要自己处理-“304-Not-Modified”-响应吗"><a href="#2-iOS客户端需要自己处理-“304-Not-Modified”-响应吗" class="headerlink" title="2. iOS客户端需要自己处理 “304 Not Modified” 响应吗"></a>2. iOS客户端需要自己处理 “304 Not Modified” 响应吗</h3><p>不需要。 还是上面的例子，我们先把模拟器上的App删了（清除缓存），重新run。这次我通过抓包工具对这个请求打断点，在第一次请求返回时在响应头添加no-cache字段，来测试下收到304响应时客户端completionHandler回调的情况。加入no-cache字段后，第二次请求效果如下：</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bbb09792-adff-4e1c-a227-b07467e05077/172020dd33e69a86.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bbb09792-adff-4e1c-a227-b07467e05077/172020dd33e69a86.png"></p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9ff62674-27bb-4971-8aa7-e25f023c02c5/172020dd3e8615fd.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9ff62674-27bb-4971-8aa7-e25f023c02c5/172020dd3e8615fd.png"></p><p>大家可以看到， 请求头，<strong>自动（注意，这是系统自己实现的，并不需要客户端手动添加，这也进一步证明iOS原生请求也是遵循Http缓存协议的</strong>）带上了if-None-Match和if-Modified-Since这两个字段。那是因为第一次响应头中我们添加了no-cache字段，表示下次请求需要校验资源更新。 响应头，服务器返回了304 Not Modified。 下面来看看completionHandler回调情况：</p><p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6601655e-8988-467c-bf53-c014fb2ac29b/172020dd413100ac.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/6601655e-8988-467c-bf53-c014fb2ac29b/172020dd413100ac.png"></p><p>从日志中我们可以看出completionHandler回调返回的code仍然是200。</p><h3 id="苹果系统内部对304-Not-Modified响应做了特殊处理"><a href="#苹果系统内部对304-Not-Modified响应做了特殊处理" class="headerlink" title="苹果系统内部对304 Not Modified响应做了特殊处理"></a>苹果系统内部对304 Not Modified响应做了特殊处理</h3><ul><li><p>code字段，固定返回200</p></li><li><p>data字段，因为服务端返回的304报文是不带data数据字段的，但是苹果又得把data通过completionHandler回调给客户端，苹果会去缓存中取data数据，返回的data字段和第一次响应的data是同一个。</p></li><li><p>response字段，返回的是第二次请求304的响应头，而不是第一次请求缓存的响应头。可以通过下图佐证，第一次和第二次回调的响应头不一致。</p><p>  <img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/762b47ac-b5ac-4a91-9f47-3e1f5b7066aa/17203e1bde9af09f.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/762b47ac-b5ac-4a91-9f47-3e1f5b7066aa/17203e1bde9af09f.png"></p></li></ul><p><strong>综上，苹果内部帮我们处理了”304 Not Modified”响应。对客户端来说，你只需要知道返回200就是没有异常，拿着data用就行了。至于，数据来自缓存还是来自服务器，缓存有没有过期，需不需要校验资源更新等，都交给苹果吧。</strong></p><h3 id="3-code都返回200，那我怎么知道返回的是缓存数据还是服务器数据呢"><a href="#3-code都返回200，那我怎么知道返回的是缓存数据还是服务器数据呢" class="headerlink" title="3. code都返回200，那我怎么知道返回的是缓存数据还是服务器数据呢**"></a>3. code都返回200，那我怎么知道返回的是缓存数据还是服务器数据呢**</h3><p>苹果并没有提供相关的API，不过我们可以间接的去判断。 请求前先去取缓存NSCachedURLResponse，NSCachedURLResponse对象有个response属性，在completionHandler回调时去比对缓存的response和返回的response是否相同。系统也没有提供比对NSURLResponse的方法，这里我们比对NSHTTPURLResponse的allHeaderFields属性。</p><pre><code class="hljs oc">- (void)requestData&#123;    NSLog(@&quot;开始请求&quot;);    NSString *url = @&quot;http://www.4399.com/jss/lx6.js&quot;;    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];    NSCachedURLResponse *cachedURLResponse = [[NSURLCache sharedURLCache] cachedResponseForRequest:request];    NSURLResponse *cacheResponse = cachedURLResponse.response;    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) &#123;        if ([[cacheResponse valueForKey:@&quot;allHeaderFields&quot;] isEqual:[response valueForKey:@&quot;allHeaderFields&quot;]]) &#123;            //响应头相同,是缓存数据            NSLog(@&quot;allHeaderFields 相同&quot;);        &#125;    &#125;];    [task resume];&#125;</code></pre><p>实际上，后台把缓存字段配置好后，客户端不需要关心返回的数据是否来自缓存，好像没有这样的应用场景。</p><p><strong>如果觉得这篇文章对你有帮助，请点个赞吧。如果有疑问可以关注我的公众號给我留言。转载请注明出处，谢谢！</strong></p><p>参考链接：<a href="https://xiaozhuanlan.com/topic/8524137069">WKWebView的缓存问题</a> <a href="http://www.cnblogs.com/lolDragon/p/6774509.html"></a></p><p><a href="http://www.cnblogs.com/lolDragon/p/6774509.html">iOS webview加载时序和缓存问题总结</a></p><p><a href="https://www.jianshu.com/p/a3911d4808ba">WKWebView缓存问题 - 图片资源</a></p><p><a href="https://www.jianshu.com/p/de5254cb1e40">对NSURLRequestUseProtocolCachePolicy的理解</a></p><p><a href="https://developer.apple.com/documentation/foundation/nsurlrequestcachepolicy/nsurlrequestuseprotocolcachepolicy?language=occ">苹果官网文档:NSURLRequestUseProtocolCachePolicy</a></p><p><a href="https://imweb.io/topic/5795dcb6fb312541492eda8c">HTTP缓存控制小结</a></p><p><a href="https://www.w3.org/Protocols/rfc2616/rfc2616.html">HTTP/1.1官方协议RFC2616</a></p><p><a href="https://zhuanlan.zhihu.com/p/60357719">可能是最被误用的 HTTP 响应头之一 Cache-Control: must-revalidate</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>网络</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>WKWebView</tag>
+      
+      <tag>HTTP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>‘反向对’问题解决思路的一般原则</title>
+    <link href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/"/>
+    <url>/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/</url>
+    
+    <content type="html"><![CDATA[<p>此文是对 LeetCode-493. 翻转对 国际站上高票回答中，一遍总结回答的翻译<br><a href="https://leetcode.com/problems/reverse-pairs/discuss/97268/General-principles-behind-problems-similar-to-%22Reverse-Pairs%22">原地址在此</a></p><h2 id="‘反向对’问题解决思路的一般原则"><a href="#‘反向对’问题解决思路的一般原则" class="headerlink" title="‘反向对’问题解决思路的一般原则"></a>‘反向对’问题解决思路的一般原则</h2><p>看起来有一系列的解题思路（ (BST-based, BIT-based, Merge-sort-based)）。在这里，我想集中讨论这些解决方案背后的一般原则，以及这些解决方案可能应用于一些类似的问题。</p><p>基本思想很简单：分解数组并解决子问题。</p><p>数组的分解自然使我们想起子数组。为了统一下面的讨论，让我们假设输入数组是 nums，包含共 n 个元素。让 <code>nums[i,j]</code> 表示从索引 i 到索引 j（均包含）的子数组, <code>T（i,j）</code> 需要解决相同问题下的子数组（例如，对于反向对，<code>T（i,j）</code>将表示子数组 <code>num[i,j]</code> 的重要反向对的总数。</p><p>在上面的定义中，将我们原来的问题确定为 <code>T（0，n - 1）</code>。非常简单。现在的关键是如何从其子问题构建解决原始问题的解决方案。这实质上相当于为<code>T（i，j）</code>建立重复关系。因为如果我们能从它的子问题中找到<code>T（i，j）</code>的解决方案，我们肯定可以构建到更大的子数组的解决方案，直到包含最终整个数组。</p><p>虽然可能有许多方法可以建立<code>T（i，j）</code>的复发关系，但在这里，我将只介绍以下两个常见方法：</p><ol><li><p>T（i， j） = T（i， j - 1） + C，即元素将按顺序处理，C 表示处理子数组 nums[i， j] 的最后一个元素的子问题。我们将调用此顺序重复关系。</p></li><li><p>T（i，j） = T（i，m） + T（m = 1，j） + C，其中 m = （i+j）/2，即子数组数 nums[i， j] 将进一步划分为两个部分，C 表示合并两个部分的子问题。我们将它称作此分区定期关系（直译，更像是子问题合并）。</p></li></ol><p>无论哪种情况，子问题 C 的性质将取决于所考虑的问题，并且将决定原始问题的总体时间复杂性。因此，通常找到解决这个子问题的高效算法，以获得更好的时间性能是至关重要的。还要注意重叠子问题的可能性，在这种情况下，最好采用动态编程 （DP） 方法。</p><p>接下来，我将对这两个重复关系应用到此问题”反向对”，并列出一些解决方案供您参考。</p><h3 id="I-–-Sequential-recurrence-relation（顺序重复关系）"><a href="#I-–-Sequential-recurrence-relation（顺序重复关系）" class="headerlink" title="I – Sequential recurrence relation（顺序重复关系）"></a>I – Sequential recurrence relation（顺序重复关系）</h3><p>我们还是假设输入数组是带 n 个元素的 nums，T（i，j） 表示数组 num[i， j] 的重要反向对的总数。对于顺序重复关系，我们可以设置 i = 0，即子数组始终从开头开始。因此，我们最终可以得到的：</p><p>T(0, j) = T(0, j - 1) + C</p><p>子问题 C 现在变为”对第一个元素来自子数组 nums[0，j - 1],第二个元素是 nums<code>[j]</code>,查找重要反向对的数量”。</p><p>请注意，要将对（p、q）作为重要的反向对，必须满足以下两个条件</p><ol><li>p &lt; q, 第一个元素下标在第二个元素之前</li><li>nums[p] = 2 = nums[q]：第一个元素必须大于第二个元素的两倍。</li></ol><p>对于子问题 C，自动满足第一个条件;因此，我们只需要考虑第二个条件，这相当于搜索子数组 num[0,j - 1] 中大于两倍的 num[j] 的所有元素。</p><p>直接的搜索方法是对子数组进行线性扫描，该子数组按 O（j） 的顺序运行。从顺序重复关系，这导致完整的的O（n^2）时间复杂度解法。</p><p>为了提高搜索效率，一个关键的观察是，子数组中元素的顺序并不重要，因为我们只对重要反向对的总数感兴趣。这表明我们可以对这些元素进行排序，并进行二进制搜索，而不是普通的线性扫描。</p><p>如果搜索空间（由将执行搜索的元素组成）是”静态的”（从运行前到运行后没有变化），将元素放入数组将非常适合我们执行二进制搜索。然而，情况并非如此。处理 j-th 元素后，我们需要将其添加到搜索空间，以便它可供搜索到以后的元素，从而随着处理越来越多的元素而扩展搜索空间。</p><p>因此，我们希望在搜索和插入操作之间取得平衡。数据结构（如二进制搜索树 （BST） 或二进制索引树 （BIT））为这两个操作提供了相对快速的性能，所以这是这类数据结构占上风的地方。</p><h3 id="BST-based-solution"><a href="#BST-based-solution" class="headerlink" title="BST - based solution"></a>BST - based solution</h3><p>我们会定义例子所示的树节点，val 是节点的值，cnt 是在当前节点的子树中所有比大于或等于 val 的个数</p><pre><code class="hljs swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Node</span> </span>&#123;    int val, cnt;    <span class="hljs-type">Node</span> left, right;    <span class="hljs-type">Node</span>(int val) &#123;        this.val <span class="hljs-operator">=</span> val;        this.cnt <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;    &#125;&#125;</code></pre><p>下面是搜索和插入操作</p><pre><code class="hljs s">private int search(Node root, long val) &#123;    if (root == null) &#123;        return 0;    &#125; else if (val == root.val) &#123;        return root.cnt;    &#125; else if (val &lt; root.val) &#123;        return root.cnt + search(root.left, val);    &#125; else &#123;        return search(root.right, val);    &#125;&#125;private Node insert(Node root, int val) &#123;    if (root == null) &#123;        root = new Node(val);    &#125; else if (val == root.val) &#123;        root.cnt++;    &#125; else if (val &lt; root.val) &#123;        root.left = insert(root.left, val);    &#125; else &#123;        root.cnt++;        root.right = insert(root.right, val);    &#125;    return root;&#125;</code></pre><p>最后是主方法，将元素本身插入BST的同时，将搜索所有元素，对不小于当前元素的两倍加1（转换为long类型以避免溢出）</p><p>注意：此自制的BST并非自平衡的，时间复杂度可能高达O（n ^ 2）（实际上，如果在此处复制并粘贴解决方案，则将获得TLE）。为了保证O（nlogn）性能，请使用自平衡BST之一（例如红黑树，AVL树等）。</p><pre><code class="hljs s">public int reversePairs(int[] nums) &#123;    int res = 0;    Node root = null;    for (int ele : nums) &#123;        res += search(root, 2L * ele + 1);        root = insert(root, ele);    &#125;    return res;&#125;</code></pre><h3 id="BIT-based-solution"><a href="#BIT-based-solution" class="headerlink" title="BIT - based solution"></a>BIT - based solution</h3><p>对于 BIT，搜索和插入操作会是：</p><pre><code class="hljs s">private int search(int[] bit, int i) &#123;    int sum = 0;    while (i &lt; bit.length) &#123;        sum += bit[i];        i += i &amp; -i;    &#125;    return sum;&#125;private void insert(int[] bit, int i) &#123;    while (i &gt; 0) &#123;        bit[i] += 1;        i -= i &amp; -i;    &#125;&#125;</code></pre><p>在主程序中，我们将再次搜索大于当前元素两倍的所有元素，同时将元素本身插入BIT。对于每个元素，“索引”函数将在BIT中返回其索引。与基于BST的解决方案不同，它保证可以在O（nlogn）上运行。</p><pre><code class="hljs s">public int reversePairs(int[] nums) &#123;    int res = 0;    int[] copy = Arrays.copyOf(nums, nums.length);    int[] bit = new int[copy.length + 1];    Arrays.sort(copy);    for (int ele : nums) &#123;        res += search(bit, index(copy, 2L * ele + 1));        insert(bit, index(copy, ele));    &#125;    return res;&#125;private int index(int[] arr, long val) &#123;    int l = 0, r = arr.length - 1, m = 0;    while (l &lt;= r) &#123;        m = l + ((r - l) &gt;&gt; 1);        if (arr[m] &gt;= val) &#123;            r = m - 1;        &#125; else &#123;            l = m + 1;        &#125;    &#125;    return l + 1;&#125;</code></pre><p>有关基于BIT的解决方案的更多说明：</p><ul><li><p>我们希望对元素进行排序，因此输入数组的排序版本为copy。</p></li><li><p>该 bit 基于此排序数组。它的长度比复制阵列的长度大一倍，以解决根问题。</p></li><li><p>最初，bit 为空，然后开始对输入数组进行顺序遍历。对于每个元素，我们首先搜索整个 bit 以找到大于该元素两倍的所有元素，然后将结果添加到res中。然后我们将元素本身插入到位中以供将来搜索。</p></li><li><p>请注意，按惯例，对 bit 搜索涉及从位的某个索引向根进行遍历，这将产生复制数组的预定义运行总计，直到对应的索引为止。对于插入，行进方向将相反，并从某个索引向位数组的末端移动。</p></li><li><p>对于输入数组的每个扫描元素，其搜索索引将由 copy 中第一个元素的索引大于其两倍的索引给出（上移1以说明根），而其插入索引将是副本数组中第一个元素的索引，该索引不少于其自身（再次上移1）。这就是索引函数的作用。</p></li><li><p>对于我们的情况，运行总计只是遍历过程中遇到的元素数。如果我们遵循上述约定，则运行总数将是小于给定索引处的元素数，因为复制数组是按升序排序的。但是，实际上，我们希望找到大于某个值（即所扫描元素的两倍）的元素数量，因此我们需要翻转约定。这是您在搜索和插入函数中看到的内容：前者遍历到 bit 的末尾，而后者遍历到根。</p></li></ul><h2 id="II-–-Partition-recurrence-relation（分区递归）"><a href="#II-–-Partition-recurrence-relation（分区递归）" class="headerlink" title="II – Partition recurrence relation（分区递归）"></a>II – Partition recurrence relation（分区递归）</h2><p>对于分区递归关系，设置i = 0，j = n-1，m =（n-1）/ 2，我们有：</p><p>T（0，n-1）= T（0，m）+ T（m + 1，n-1）+ C</p><p>现在，子问题 C 可以理解为“找到重要反向对的数量，其中反向对的第一个元素来自左子数组nums [0，m]，而对第二个元素来自右子数组nums [m + 1， n-1]”。</p><p>再次对于该子问题，自动满足上述两个条件中的第一个条件。至于第二个条件，我们像往常一样将这种简单的线性扫描算法应用于左（或右）子数组中的每个元素。毫不奇怪，这导致了O（n ^ 2）天真解。</p><p>幸运的是，此处的观察成立，左或右子数组中元素的顺序无关紧要，这提示了两个子数组中元素的排序。对两个子数组都进行排序后，可以通过使用所谓的两指针技术在线性时间内找到重要的反向对的数量：一个指向左子数组中的元素，另一个指向右子数组中的元素，由于元素的顺序，两个指针都只会向同一个方向移动。</p><p>最后一个问题是，哪种算法最适合对子数组进行排序。由于无论如何我们都需要将数组划分为两半，因此将其调整为Merge-sort是最自然的。支持合并排序的另一点是，上面的搜索过程可以无缝地嵌入到合并阶段。</p><p>因此，这是基于合并排序的解决方案，其中函数“ reversePairsSub”将返回子数组nums [l，r]中重要的反向对的总数。两点搜索过程由涉及变量p的嵌套while循环表示，其余则是标准合并算法。</p><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">int</span> <span class="hljs-title">reversePairs</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] nums)</span> </span>&#123;    <span class="hljs-keyword">return</span> reversePairsSub(nums, <span class="hljs-number">0</span>, nums.length - <span class="hljs-number">1</span>);&#125;<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> <span class="hljs-title">reversePairsSub</span><span class="hljs-params">(<span class="hljs-keyword">int</span>[] nums, <span class="hljs-keyword">int</span> l, <span class="hljs-keyword">int</span> r)</span> </span>&#123;    <span class="hljs-keyword">if</span> (l &gt;= r) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;    <span class="hljs-keyword">int</span> m = l + ((r - l) &gt;&gt; <span class="hljs-number">1</span>);    <span class="hljs-keyword">int</span> res = reversePairsSub(nums, l, m) + reversePairsSub(nums, m + <span class="hljs-number">1</span>, r);    <span class="hljs-keyword">int</span> i = l, j = m + <span class="hljs-number">1</span>, k = <span class="hljs-number">0</span>, p = m + <span class="hljs-number">1</span>;    <span class="hljs-keyword">int</span>[] merge = <span class="hljs-keyword">new</span> <span class="hljs-keyword">int</span>[r - l + <span class="hljs-number">1</span>];    <span class="hljs-keyword">while</span> (i &lt;= m) &#123;        <span class="hljs-keyword">while</span> (p &lt;= r &amp;&amp; nums[i] &gt; <span class="hljs-number">2</span> L * nums[p]) p++;        res += p - (m + <span class="hljs-number">1</span>);        <span class="hljs-keyword">while</span> (j &lt;= r &amp;&amp; nums[i] &gt;= nums[j]) merge[k++] = nums[j++];        merge[k++] = nums[i++];    &#125;    <span class="hljs-keyword">while</span> (j &lt;= r) merge[k++] = nums[j++];    System.arraycopy(merge, <span class="hljs-number">0</span>, nums, l, merge.length);    <span class="hljs-keyword">return</span> res;&#125;</code></pre><h2 id="III-–-Summary"><a href="#III-–-Summary" class="headerlink" title="III – Summary"></a>III – Summary</h2><p>通过将问题分解为应用于子数组的子问题，然后将解决方案与原始问题和子问题相联系，可以解决许多涉及数组的问题，子问题具有顺序递归关系和分区递归关系。无论哪种情况，识别子问题C并找到有效的算法都至关重要。</p><p>如果子问题C涉及在“动态搜索空间”上进行搜索，请尝试考虑在搜索和更新上都支持相对快速操作的数据结构（例如自平衡BST，BIT，段树等）。</p><p>如果分区递归关系的子问题C涉及排序，那么Merge-sort将是一个很好的排序算法。同样，如果可以将子问题的解决方案嵌入到合并过程中，则代码可以变得更加优雅。</p><p>如果子问题T（i，j）之间有重叠，则最好将中间结果缓存起来，以备将来查找。</p><p>最后，让我列举一些属于上述模式的leetcode问题，从而可以用相似的思想来解决。</p><p><a href="11">315. Count of Smaller Numbers After Self</a></p><p><a href="11">317. Count of Range Sum</a></p><p>对于leetcode 315，应用顺序递归关系（固定为j），子问题C理解为：在访问的元素中找到小于当前元素的元素数量，这涉及在“动态搜索空间”中搜索；应用分区递归关系，我们有一个子问题C：对于左半部分中的每个元素，找到右半部分中小于它的元素数目，注意这些元素正是在合并过程中向左交换的元素，因此可以嵌入到合并过程中。</p><p>对于leetcode 327，在先和数组上应用顺序递归关系（固定j），子问题C读取：找到给定范围内被访问元素之外的元素数，这又涉及到搜索“动态搜索空间”;应用分区递归关系，我们有一个子问题C：对于左半部分中的每个元素，找到右半部分中给定范围内的元素数量，可以使用两指针技术将其嵌入到合并过程中。</p><p>无论如何，希望这些想法能提高您解决数组相关问题的技巧。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>LeetCode</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>DP</tag>
+      
+      <tag>排序</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>3. 无重复字符的最长子串位运算</title>
+    <link href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/"/>
+    <url>/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    
+    <content type="html"><![CDATA[<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><pre><code class="hljs s"># 时间复杂度是 O(N*N)，每次拿到新的字符都要和之前的做比较class Solution &#123;    func lengthOfLongestSubstring(_ s: String) -&gt; Int &#123;        var tmp = &quot;&quot;        var count = 0        for ch in s &#123;            if let index = tmp.firstIndex(of: ch) &#123;                tmp.removeSubrange(tmp.startIndex...index)            &#125;            tmp.append(ch)            count = max(count, tmp.count)        &#125;        return count    &#125;&#125;</code></pre><h2 id="利用哈希表，存储对应重复下标，减少比较次数"><a href="#利用哈希表，存储对应重复下标，减少比较次数" class="headerlink" title="利用哈希表，存储对应重复下标，减少比较次数"></a>利用哈希表，存储对应重复下标，减少比较次数</h2><pre><code class="hljs s"></code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>LeetCode</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>队列</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>位运算</title>
+    <link href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/"/>
+    <url>/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
+    
+    <content type="html"><![CDATA[<h2 id="位运算符"><a href="#位运算符" class="headerlink" title="位运算符"></a>位运算符</h2><pre><code class="hljs s">&lt;&lt; //左移&gt;&gt; //右移|  //或&amp;  //与~  //取反^  //异或</code></pre><p>实战使用</p><pre><code class="hljs s">// 判断奇偶x%2 == 1 -&gt;  x&amp;1 == 1x%2 == 0 -&gt;  x&amp;1 == 0x &gt;&gt; 1 -&gt; x/2// 清零最低位的 1x = x&amp;(x-1)  // 负数的存储方式为补码，补码：除了符号位取反然后 + 1// 4 的二进制 100 ，在 Int8 中，完整表示是 0000 0100// 对应-4 得到顺序 1000 0100 -&gt; 1111 1011 -&gt; 1111 1100// 得到最低位的 1 x&amp;-x  // x 与上 x 取反等于 0x&amp;~x = 0</code></pre><h2 id="实战题目"><a href="#实战题目" class="headerlink" title="实战题目"></a>实战题目</h2><ul><li>52.N 皇后</li><li>191.位 1 的个数</li><li>231.2 的幂</li><li>338.比特位计数</li><li>190.颠倒二进制位</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>二进制</tag>
+      
+      <tag>位运算</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>十大经典排序算法（Swift）</title>
+    <link href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/"/>
+    <url>/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/</url>
+    
+    <content type="html"><![CDATA[<h2 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h2><ol><li><p>比较类排序<br>通过比较来决定元素间的相对次序，由于其时间复杂度不能突破 O(logn)，（在数学上证明了），因此也称为非线性时间比较类排序</p></li><li><p>非比较类排序<br>不通过比较来决定元素间的相对次序，他可以突破基于比较排序的时间下界，以线性时间运行，一次也称为线性时间非比较类排序</p></li></ol><h2 id="初级排序-O-n-n"><a href="#初级排序-O-n-n" class="headerlink" title="初级排序 O(n*n)"></a>初级排序 O(n*n)</h2><ol><li><p>选择排序<br>每次找最小值，然后放到待排序的起始位置</p></li><li><p>插入排序<br>从前到后逐步构建有序序列，对于未排序的数据，在已排序序列中从后向前扫描，找到相应的位置插入</p></li><li><p>冒泡排序<br>嵌套循环，每次查看相邻的元素，如果逆序则交换</p></li></ol><h2 id="高级排序-O-nLogn"><a href="#高级排序-O-nLogn" class="headerlink" title="高级排序 O(nLogn)"></a>高级排序 O(nLogn)</h2><ol><li><p>快速排序<br>数组取标杆 pivot，将小元素放 pivot 左边，大元素放 pivot 右边，然后依次对左边和右边的子数组继续快排，已达到整个序列有序的目的</p></li><li><p>归并排序 - 分治<br>把长度为 n 的输入序列分成两个长度为 n/2 的子序列<br>对这两个子序列分别采用归并排序<br>将两个排好序的子序列合并成一个最终的排序序列</p></li><li><p>堆排序 - 堆插入 O(logn)<br> 数组元素依次建立小顶堆<br> 依次取堆顶元素，并删除</p></li></ol><h2 id="特殊排序"><a href="#特殊排序" class="headerlink" title="特殊排序"></a>特殊排序</h2><ol><li><p>计数排序（Counting Sort）<br>计数排序要求在输入的数据时有确定范围的整数。将输入的数据值转化为键存储在额外开辟的数组空间中。然后依次把计数大于 1 的填充会原数组</p></li><li><p>桶排序（Bucket Sort）<br>桶排序的工作原理：假设输入数据服从均匀分布，将数据分到有限数量的桶里，每个桶再分别排序（有可能再使用别的排序算法或是以递归方式继续使用桶排序进行排序）</p></li><li><p>基数排序（Radix Sort）<br>基数排序是按照低位先排序然后收集，再按照高位排序，然后再收集。依次类推，直到最高位。有时候有些属性是有优先级顺序的，先按低优先级排序，再按高优先级排序</p></li></ol><p><img src="/images/Sort/Sorts-Compare.jpg" alt="sorts"></p><p>面试重点在于在于三个时间复杂度为 O(NlogN) 的算法： 归并，快排，堆</p><p>参考资料<br><a href="https://xiaozhuanlan.com/topic/4297536018">小专栏 - 五分钟学算法</a><br><a href="https://www.cnblogs.com/onepixel/p/7674659.html">一像素博客</a></p><h2 id="代码模板"><a href="#代码模板" class="headerlink" title="代码模板"></a>代码模板</h2><h3 id="冒泡"><a href="#冒泡" class="headerlink" title="冒泡"></a>冒泡</h3><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;    let size = arr.count    for j in 0..&lt;size &#123;        for i in 1..&lt;size-j &#123;            if arr[i] &lt; arr[i-1] &#123;                let tmp = arr[i]                arr[i] = arr[i-1]                arr[i-1] = tmp            &#125;        &#125;    &#125;&#125;# improve#  因为冒泡中无论是否有序都会进行交换操作，所以可以做一个判断提前退出func sort(arr: inout [Int]) &#123;    let size = arr.count    for j in 0..&lt;size &#123;       var isSorted = true        for i in 1..&lt;size-j &#123;            if arr[i] &lt; arr[i-1] &#123;                let tmp = arr[i]                arr[i] = arr[i-1]                arr[i-1] = tmp                isSorted = false            &#125;        &#125;        if isSorted &#123;           break        &#125;    &#125;&#125;</code></pre><h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;    for i in 0..&lt;arr.count &#123;        var tmp = i        for j in i..&lt;arr.count &#123;            if arr[tmp] &gt; arr[j] &#123;                tmp = j            &#125;        &#125;        arr.swapAt(i, tmp)    &#125;&#125;</code></pre><h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;    for i in 1..&lt;arr.count &#123;        var tmp = i        let tmpValue = arr[i]        while tmp &gt; 0 &amp;&amp; arr[tmp-1] &gt; tmpValue &#123;            arr[tmp] = arr[tmp-1]            tmp -= 1        &#125;        arr[tmp] = tmpValue    &#125;&#125;# 相对简洁的写法，但是不标准，因为是交换，每次比较多了一次赋值操作func sort(arr: inout [Int]) &#123;    for i in 1..&lt;arr.count &#123;        var tmp = i        while tmp &gt; 0 &amp;&amp; arr[tmp-1] &gt; arr[tmp]  &#123;            arr.swapAt(tmp, tmp-1)            tmp -= 1        &#125;    &#125;&#125;</code></pre><h3 id="希尔排序"><a href="#希尔排序" class="headerlink" title="希尔排序"></a>希尔排序</h3><p>希尔排序是简单插入排序的进阶版本，gap 一般取数组大小的 1/2 到 1/3</p><pre><code class="hljs s">func sort(arr: inout [Int]) &#123;    var gap = arr.count/2    while gap &gt; 0 &#123;        for i in gap..&lt;arr.count &#123;            var j = i            let tmp = arr[i]            while j-gap &gt;= 0 &amp;&amp; arr[j-gap] &gt; tmp &#123;                arr[j] = arr[j-gap]                j -= gap            &#125;            arr[j] = tmp        &#125;        gap /= 2    &#125;&#125;</code></pre><h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><pre><code class="hljs s"># 1. 如果方法中传入的参数不可修改，则需要再多开辟出一个数组# 2. 另一种方法是在 merge 方法中每次创建新的数组代替 arr ，然后返回。#     sort 方法和 split 方法就合并为一个方法func sort(arr: inout [Int]) &#123;    var tmp = arr    split(&amp;arr, &amp;tmp, 0, arr.count-1)&#125;func split(_ arr: inout [Int], _ tmp: inout [Int], _ left: Int, _ right: Int) &#123;    if left &gt;= right &#123;        return    &#125;    let middle = left+(right-left)/2    split(&amp;arr, &amp;tmp, left, middle)    split(&amp;arr, &amp;tmp, middle+1, right)    merge(&amp;arr, &amp;tmp, left, middle, right)&#125;func merge(_ arr: inout [Int], _ tmp: inout [Int], _ left: Int, _ middle: Int, _ right: Int) &#123;      for i in left...right &#123;        tmp[i] = arr[i]    &#125;    var fir = left    var sec = middle+1    for j in left...right &#123;        if fir &gt; middle &#123;            arr[j] = tmp[sec]            sec += 1        &#125;else if sec &gt; right &#123;            arr[j] = tmp[fir]            fir += 1        &#125;else if tmp[fir] &lt; tmp[sec] &#123;            arr[j] = tmp[fir]            fir += 1        &#125;else &#123;            arr[j] = tmp[sec]            sec += 1        &#125;    &#125;&#125;</code></pre><h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><pre><code class="hljs s"># 单向遍历class Solution &#123;    func sortArray(_ nums: [Int]) -&gt; [Int] &#123;        var tmp = nums        split(&amp;tmp, 0, nums.count-1)        return tmp    &#125;    func split(_ tmp: inout [Int], _ left: Int, _ right: Int) &#123;        if left &gt;= right &#123;            return        &#125;        let pa = merge(&amp;tmp, left, right)        split(&amp;tmp, left, pa-1)        split(&amp;tmp, pa+1, right)    &#125;    func merge(_ tmp: inout [Int], _ left: Int,_ right: Int) -&gt; Int &#123;        var mark = left        let prov = tmp[left]        for i in (left+1)...right &#123;            if tmp[i] &lt; prov &#123;                mark += 1                tmp.swapAt(i, mark)            &#125;        &#125;        tmp.swapAt(left, mark)        return mark    &#125;&#125;# 双向遍历？</code></pre><h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><p>其实就是堆实现中的 shiftDown 方法（初始化方法）</p><pre><code class="hljs s">func sorted(arr: [Int]) &#123;   var nums = arr   heapSort(arr: &amp;nums)   var count = arr.count   for i in 0..&lt;count &#123;      nums.swapAt(0, i)      count -= 1      shiftDown(from: 0, until: count, arr: &amp;arr)   &#125;&#125;func heapSort(arr: innout [Int]) &#123;   for i in stride(from: (arr.count/2-1), through: 0, by: -1) &#123;      shiftDown(from: 0, until: i, arr: &amp;arr)   &#125;&#125;func shiftDown(from index: Int, until endIndex: Int, arr: inout [Int]) &#123;  let leftChildIndex = index*2+1  let rightChildIndex = leftChildIndex + 1  var first = index  if leftChildIndex &lt; endIndex &amp;&amp; arr[leftChildIndex] &lt; arr[first] &#123;      first = leftChildIndex  &#125;  if rightChildIndex &lt; endIndex &amp;&amp; arr[rightChildIndex] &lt; arr[first] &#123;    first = rightChildIndex  &#125;  if first == index &#123; return &#125;  arr.swapAt(index, first)  shiftDown(from: first, until: endIndex, arr: &amp;arr)&#125;</code></pre><h3 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h3><p>计数排序的局限在于只能处理整数类型，而且如果需要排序的范围过大会有很大的浪费<br>当范围不是很大，序列比较集中的序列，计数排序是很有效的算法</p><pre><code class="hljs s">func sort(arr: [Int]) -&gt; [Int]&#123;    var count = 0    for num in arr &#123;        count = max(count, num)    &#125;    var tmp = [Int](repeating: 0, count: count+1)    var ans = [Int]()    for num in arr &#123;        tmp[num] += 1    &#125;    for res in 0..&lt;tmp.count &#123;        var cc = tmp[res]        while cc &gt; 0 &#123;            ans.append(res)            cc -= 1        &#125;    &#125;    return ans&#125;</code></pre><h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><p>计数排序的进阶版。需要注意的点是这么确定桶的个数，以及桶内的数据如何排序</p><pre><code class="hljs s">func sort(arr: [Int]) -&gt; [Int]&#123;    var maxbucket = 0    var minbucket = 0    for tmp in arr &#123;        if tmp &gt; maxbucket &#123;            maxbucket = tmp        &#125;else if tmp &lt; minbucket &#123;            minbucket = tmp        &#125;    &#125;    let diff = maxbucket - minbucket    // bucketCount 可通过外部参数获取    let bucketCount = 5    let count = diff/bucketCount+1    var ans = [[Int]](repeating: [], count: count)    for tmp in arr &#123;        ans[(tmp-minbucket)/count].append(tmp)    &#125;    var res = [Int]()    for array in ans &#123;        // 对桶内元素排序        for num in array &#123;            res.append(num)        &#125;    &#125;    return res&#125;</code></pre><h3 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h3><p>基数排序可以看成桶排序的扩展，也是用桶来辅助排序。因为是根据每一位上的数字排序，所以只需要十个桶，代表从 0-9.<br>引申出来，元素可以根据优先级排序。</p><pre><code class="hljs s">func sort(arr: [Int]) -&gt; [Int]&#123;    var mod = 10    var dev = 1    var digit = true    var buckets = [[Int]](repeating:[] , count: 10)    var nums = arr    while digit &#123;        digit = false        while nums.count &gt; 0 &#123;            let num  = nums.removeFirst()            buckets[num%mod/dev].append(num)            if num &gt; mod &#123;                digit = true            &#125;        &#125;        for i in 0..&lt;buckets.count &#123;            while buckets[i].count &gt; 0 &#123;                nums.append(buckets[i].removeFirst())            &#125;        &#125;        mod *= 10        dev *= 10    &#125;    return nums&#125;</code></pre><h2 id="实战题目"><a href="#实战题目" class="headerlink" title="实战题目"></a>实战题目</h2><ul><li>52.N 皇后</li><li>191.位 1 的个数</li><li>231.2 的幂</li><li>338.比特位计数</li><li>190.颠倒二进制位</li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>排序</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>N 皇后</title>
+    <link href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/"/>
+    <url>/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/</url>
+    
+    <content type="html"><![CDATA[<h2 id="位运算解答"><a href="#位运算解答" class="headerlink" title="位运算解答"></a>位运算解答</h2><pre><code class="hljs s">class Solution &#123;    var size = 0    var count = 0    func totalNQueens(_ n: Int) -&gt; Int &#123;        size = (1 &lt;&lt; n) - 1        dfs(0,0,0)        return count    &#125;    func dfs(_ row: Int, _ ld: Int, _ rd: Int) &#123;        if row == size &#123;            count += 1            return        &#125;        var pos = size &amp; (~(row|ld|rd))        while pos != 0 &#123;            var p = pos&amp;(-pos)            pos = pos&amp;(pos-1)            dfs(row|p, (ld|p)&lt;&lt;1, (rd|p)&gt;&gt;1)        &#125;    &#125;&#125;</code></pre><h2 id="回溯"><a href="#回溯" class="headerlink" title="回溯"></a>回溯</h2><pre><code class="hljs s">class Solution &#123;    func solveNQueens(_ n: Int) -&gt; [[String]] &#123;        guard n &gt; 0 else &#123;            return []        &#125;        var results = [[String]]()        // 存储每个皇后的 x 坐标        var cols = [Int]()        dfsHelper(n, &amp;cols, &amp;results)        return results    &#125;    fileprivate func dfsHelper(_ n: Int, _ cols: inout [Int], _ results: inout [[String]]) &#123;        if cols.count == n &#123;            results.append(draw(cols))            return        &#125;        for i in 0..&lt;n &#123;            guard isValid(cols, i) else &#123;                continue            &#125;            cols.append(i)            dfsHelper(n, &amp;cols, &amp;results)            cols.removeLast()        &#125;    &#125;    fileprivate func isValid(_ cols: [Int], _ colIndex: Int) -&gt; Bool &#123;        for rowIndex in 0..&lt;cols.count &#123;            // 竖向            if colIndex == cols[rowIndex] &#123;                return false            &#125;            // 左对角线            if cols[rowIndex] - rowIndex == colIndex - cols.count &#123;                return false            &#125;            // 右对角线            if cols[rowIndex] + rowIndex == colIndex + cols.count &#123;                return false            &#125;        &#125;        return true    &#125;    fileprivate func draw(_ cols: [Int]) -&gt; [String] &#123;        var result = [String]()        for rowIndex in 0..&lt;cols.count &#123;            var row = &quot;&quot;            for j in 0..&lt;cols.count &#123;                row += cols[rowIndex] == j ? &quot;Q&quot; : &quot;.&quot;            &#125;            result.append(row)        &#125;        return result    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>LeetCode</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>回溯</tag>
+      
+      <tag>二进制</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>LRU Cache</title>
+    <link href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/"/>
+    <url>/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/</url>
+    
+    <content type="html"><![CDATA[<h2 id="Cache"><a href="#Cache" class="headerlink" title="Cache"></a>Cache</h2><ol><li>记忆</li><li>钱包 - 钱柜</li></ol><h2 id="LRU-Cache"><a href="#LRU-Cache" class="headerlink" title="LRU Cache"></a>LRU Cache</h2><ul><li>两个要素： 大小，替换策略</li><li>Hash Table + Double LinkedList</li><li>O(1) 查询 O(1)修改更新</li></ul><pre><code class="hljs s"></code></pre><h2 id="实战题目"><a href="#实战题目" class="headerlink" title="实战题目"></a>实战题目</h2><ul><li><a href="https://leetcode-cn.com/problems/lru-cache/#/">146. LRU缓存机制</a></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Swift 字符串</title>
+    <link href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    <url>/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    
+    <content type="html"><![CDATA[]]></content>
+    
+    
+    <categories>
+      
+      <category>Swift</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>字符串</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Swift 数组遍历</title>
+    <link href="/2020/04/10/Swift/Swift-%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86/"/>
+    <url>/2020/04/10/Swift/Swift-%E6%95%B0%E7%BB%84%E9%81%8D%E5%8E%86/</url>
+    
+    <content type="html"><![CDATA[<h2 id="sort-sorted"><a href="#sort-sorted" class="headerlink" title="sort - sorted"></a>sort - sorted</h2><p>sorted 方法是返回一个结果数组，而 sort 是对原数据进行修改（in place）<br>两个方法除去名字和返回的对象不同，其余的基本一致</p><pre><code class="hljs swift"><span class="hljs-keyword">@inlinable</span> <span class="hljs-keyword">public</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">sorted</span>(<span class="hljs-params">by</span> <span class="hljs-params">areInIncreasingOrder</span>: (<span class="hljs-type">Element</span>, <span class="hljs-type">Element</span>) <span class="hljs-keyword">throws</span> -&gt; <span class="hljs-type">Bool</span>)</span> <span class="hljs-keyword">rethrows</span> -&gt; [<span class="hljs-type">Element</span>]<span class="hljs-keyword">@inlinable</span> <span class="hljs-keyword">public</span> <span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">sort</span>(<span class="hljs-params">by</span> <span class="hljs-params">areInIncreasingOrder</span>: (<span class="hljs-type">Element</span>, <span class="hljs-type">Element</span>) <span class="hljs-keyword">throws</span> -&gt; <span class="hljs-type">Bool</span>)</span> <span class="hljs-keyword">rethrows</span></code></pre><p>传入的参数一般写法。sort 或 sorted 后面的闭包中主要返回的是排序的循序，true 为正确，false 则是错误。<br>简单的写法就是 <code>sort(by: &gt;)</code> 或者是 <code>sort(by: &lt;)</code> 。如果不传入参数默认就是从小到大排序也就是 <code>sort(by: &lt;)</code></p><pre><code class="hljs s">///     enum HTTPResponse &#123;///         case ok///         case error(Int)///     &#125;//////     let responses: [HTTPResponse] = [.error(500), .ok, .ok, .error(404), .error(403)]///     let sortedResponses = responses.sorted &#123;///         switch ($0, $1) &#123;///         // Order errors by code///         case let (.error(aCode), .error(bCode)):///             return aCode &lt; bCode//////         // All successes are equivalent, so none is before any other///         case (.ok, .ok): return false//////         // Order errors before successes///         case (.error, .ok): return true///         case (.ok, .error): return false///         &#125;///     &#125;///     print(sortedResponses)///     // Prints &quot;[.error(403), .error(404), .error(500), .ok, .ok]&quot;</code></pre><h2 id="enumerated"><a href="#enumerated" class="headerlink" title="enumerated"></a>enumerated</h2><p><a href="https://swift.gg/2017/05/05/you-probably-don't-want-enumerated/">SwiftGG 你需要的大概不是 enumerated</a></p><p><strong>这个函数会返回一个新的序列，包含了初始序列里的所有元素，以及与元素相对应的编号。</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Swift</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>数组</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Map Filter Reduce</title>
+    <link href="/2019/11/05/Map-Filter-Reduce/"/>
+    <url>/2019/11/05/Map-Filter-Reduce/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Map-Filter-Reduce"><a href="#Map-Filter-Reduce" class="headerlink" title="Map Filter Reduce"></a>Map Filter Reduce</h1><ul><li><p>map 函数返回一个包含了对原集合中每一个元素经过映射后的 Array。</p></li><li><p>filter 函数返回一个包含原集合中满足筛选条件的元素的 Array。</p></li><li><p>reduce 函数返回一个初始参数与原集合元素经过组合后的非集合类型的值。</p></li></ul><h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><blockquote><p>遍历集合中每一个元素进行相同的操作</p></blockquote><ul><li>使用 for-in 循环来计算每一个元素的平方</li></ul><pre><code class="hljs 示例">let values = [2.0,4.0,5.0,7.0]var squares: [Double] = []    for value in values &#123;  squares.append(value*value)&#125;</code></pre><ul><li>使用 map 函数</li><li>map 函数有一个唯一的闭包类型参数，遍历整个集合。这个闭包会取得其中的每一个元素作为参数并返回一个经过处理的值</li><li>map 将经过处理的值以 Array 形式返回</li></ul><pre><code class="hljs 示例">let values = [2.0,4.0,5.0,7.0]let squares = values.map &#123;$0 * $0&#125;</code></pre><ul><li>这种方式编写 map 函数可以让我们更容易的看出发生了什么</li></ul><pre><code class="hljs 示例">let values = [2.0,4.0,5.0,7.0]let squares2 = values.map(&#123;    (value: Double) -&gt; Double in    return value * value&#125;)</code></pre><ul><li>这个闭包有一个参数：(value: Double)，Swift 可以推断出闭包的返回值为 Double 类型。</li><li>因为 map 函数只有一个闭包参数，因此我们可以省略掉 ( 和 ) ，同时省略掉 return：</li></ul><pre><code class="hljs 示例">let squares2 = values.map &#123;value in value * value&#125;</code></pre><ul><li>in 关键字的作用是将闭包的参数与函数体分开。你可以使用参数编号将代码简化得更彻底</li></ul><pre><code class="hljs 示例">let squares = values.map &#123; $0 * $0 &#125;</code></pre><ul><li>返回值的类型不会受限于原数组中元素的类型。<em>下面是一个从整型数组映射到字符串数组的例子</em></li></ul><pre><code class="hljs 示例">let scores = [0,28,124]let words = scores.map &#123; NSNumberFormatter.localizedStringFromNumber($0,    numberStyle: .SpellOutStyle) &#125;    // [&quot;zero&quot;, &quot;twenty-eight&quot;, &quot;one hundred twenty-four&quot;]</code></pre><ul><li>map 操作不局限于数组，只要是集合类型你都可以使用 map。</li><li>举个例子，对 Dictionary 或 Set 类型使用，返回值一般会是 Array 类型。</li><li>下面是一个应用在 Dictionary 上的例子</li><li>在遍历这个集合的时候，我们的闭包有 String 类型 和 Double 类型的两个参数，它们的类型是由组成这个字典的元素中的 key 与 value 的类型决定</li></ul><pre><code class="hljs 示例">let milesToPoint = [&quot;point1&quot;:120.0,&quot;point2&quot;:50.0,&quot;point3&quot;:70.0]let kmToPoint = milesToPoint.map &#123; name,miles in miles * 1.6093 &#125;</code></pre><ul><li>最后一个例子，关于 Set 集合</li></ul><pre><code class="hljs 示例">let lengthInMeters: Set = [4.0,6.2,8.9]let lengthInFeet = lengthInMeters.map &#123;meters in meters * 3.2808&#125;</code></pre><h2 id="Filter"><a href="#Filter" class="headerlink" title="Filter"></a>Filter</h2><blockquote><p>filter 函数会遍历一个集合，并返回一个 Array,其中包含了集合中满足过滤条件的元素<br>filter 函数中有一个参数指定了过滤条件，它是一个闭包，<br>它会从集合中取得一个元素作为闭包的参数，经过闭包处理后返回一个 Bool 类型的值，<br>这个值指示了这个元素是否满足过滤条件</p></blockquote><pre><code class="hljs 示例">let digits = [1,4,10,15]let even = digits.filter &#123; $0 % 2 == 0 &#125;// [4, 10]</code></pre><h2 id="Reduce"><a href="#Reduce" class="headerlink" title="Reduce"></a>Reduce</h2><blockquote><p>使用 reduce 来组合集合中的所有元素并返回一个非集合类型的值<br>reduce 函数有两个参数，一个为初始值，另一个为组合闭包</p></blockquote><pre><code class="hljs s">@inlinable public func reduce&lt;Result&gt;(_ initialResult: Result, _ nextPartialResult: (Result, (offset: Int, element: Base.Element)) throws -&gt; Result) rethrows -&gt; Result</code></pre><pre><code class="hljs 示例">let items = [2.0,4.0,5.0,7.0]let total = items.reduce(10.0,+)// 28.0</code></pre><pre><code class="hljs 示例">let codes = [&quot;abc&quot;,&quot;def&quot;,&quot;ghi&quot;]let text = codes.reduce(&quot;&quot;,+)// &quot;abcdefghi&quot;</code></pre><ul><li>因为组合参数是一个闭包，所以你可以使用尾随闭包语法来编写 reduce</li></ul><pre><code class="hljs 示例">let names = [&quot;alan&quot;,&quot;brian&quot;,&quot;charlie&quot;]let csv = names.reduce(&quot;===&quot;) &#123;text, name in &quot;\(text),\(name)&quot;&#125;// &quot;===,alan,brian,charlie&quot;</code></pre><h3 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h3><pre><code class="hljs s">Apple 文档中的完整方法@inlinable public func reduce&lt;Result&gt;(into initialResult: Result, _ updateAccumulatingResult: (inout Result, (offset: Int, element: Base.Element)) throws -&gt; ()) rethrows -&gt; Result示例 1  ///     let letters = &quot;abracadabra&quot;  ///     let letterCount = letters.reduce(into: [:]) &#123; counts, letter in  ///         // letter(Character)  ///         counts[letter, default: 0] += 1  ///     &#125;  ///     // letterCount == [&quot;a&quot;: 5, &quot;b&quot;: 2, &quot;r&quot;: 2, &quot;c&quot;: 1, &quot;d&quot;: 1]示例 2  ///     let order: [Int: Int] = arr2.enumerated().reduce(into: [:]) &#123; result, next in  ///        // next(offset: Int, element: Int)  ///        // 下列也可写成一行 result[next.element] = next.offset  ///          let (i, n) = next  ///          result[n] = i  ///     &#125;</code></pre><h2 id="FlatMap"><a href="#FlatMap" class="headerlink" title="FlatMap"></a>FlatMap</h2><blockquote><p>最简单的用法是如同它的名字所描述的那样将一个二维数组拆开展平</p></blockquote><pre><code class="hljs 示例">let collections = [[5,2,7],[4,8],[9,1,3]]let flat = collections.flatMap &#123; $0 &#125;// [5, 2, 7, 4, 8, 9, 1, 3]</code></pre><blockquote><p>它可以判断集合中的不可选值，并将不可选值移出集合</p></blockquote><pre><code class="hljs 示例">let people: [String?] = [&quot;Tom&quot;,nil,&quot;Peter&quot;,nil,&quot;Harry&quot;]let valid = people.flatMap &#123;$0&#125;// [&quot;Tom&quot;, &quot;Peter&quot;, &quot;Harry&quot;]</code></pre><blockquote><p>flatMap 的魔力在于你可以拆开展平一个多维数组，并且这个多维数组的子数组可以经过处理，最终返回一个包含所有结果的一维数组</p></blockquote><ul><li>遍历一个二维数组并返回一个元素都为偶数的一维数组</li></ul><pre><code class="hljs 示例">let collections = [[5,2,7],[4,8],[9,1,3]]let onlyEven = collections.flatMap &#123;    intArray in intArray.filter &#123; $0 % 2 == 0 &#125;&#125;// [2, 4, 8]</code></pre><ul><li>因为 flatMap 遍历的是子数组为整型数组的二维数组，所以它的闭包参数的参数 intArray 是 [Int]类型。</li><li>这也是为什么你可以将上面的代码利用简洁的闭包语法变成以下更简洁的方式，但我认为这样做会降低代码的可读性</li></ul><pre><code class="hljs 示例">let onlyEven = collections.flatMap &#123; $0.filter &#123; $0 % 2 == 0 &#125; &#125;</code></pre><ul><li>利用 flatMap 与 map 函数求二维数组的每一个 Int 元素的平方，返回一个 Array</li></ul><pre><code class="hljs 示例">let allSquared = collections.flatMap &#123; $0.map &#123; $0 * $0 &#125; &#125;//非简写方式let allSquared = collections.flatMap &#123;  intArray in intArray.map &#123; $0 * $0 &#125;&#125;</code></pre><ul><li>利用 flatMap 与 reduce 函数求出二维数组中每个子数组的元素之和，返回一个包含结果的 Array</li></ul><pre><code class="hljs 示例">let sums = collections.flatMap &#123; $0.reduce(0, combine: +) &#125;//Xcode 8.0中Swift语法更为简洁let sums = collections.flatMap &#123; $0.reduce(0,+) &#125;//最后一个例子用map函数就可以办到，因为reduce的返回值是Int而不是Arraylet sums = collections.map &#123; $0.reduce(0, combine: +) &#125;//Xcode 8.0中Swift语法更为简洁let sums = collections.flatMap &#123; $0.reduce(0,+) &#125;</code></pre><h2 id="Chaining"><a href="#Chaining" class="headerlink" title="Chaining"></a>Chaining</h2><blockquote><p>这些函数链接起来使用<br>例如求数组中大于等于 7 的元素之和，我们可以先用 filter 筛选，其次再用 reduce 求和</p></blockquote><pre><code class="hljs 示例">let marks = [4,5,8,2,9,7]let totalPass = marks.filter&#123;$0 &gt;= 7&#125;.reduce(0,combine: +)// 24//Xcode 8.0中Swift语法更为简洁let marks = [4,5,8,2,9,7]let totalPass = marks.filter&#123;$0 &gt;= 7&#125;.reduce(0,combine: +)// 24</code></pre><blockquote><p>先求数组中的元素的平方，再筛选出偶数</p></blockquote><pre><code class="hljs 示例">let numbers = [20,17,35,4,12]let evenSquares = numbers.map&#123;$0 * $0&#125;.filter&#123;$0 % 2 == 0&#125;// [400, 16, 144]</code></pre>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Stack</title>
+    <link href="/2019/09/18/Stack/"/>
+    <url>/2019/09/18/Stack/</url>
+    
+    <content type="html"><![CDATA[<p><a href="https://www.raywenderlich.com/800-swift-algorithm-club-swift-stack-data-structure">Swift - 栈</a></p><p>文章时间 Dec 16 2016</p><p>翻译编写时间 Sep 18 2019</p><p>leetcode 相关 ： 20,155,232,844,224,682,496.</p><p>栈，和数组有相似的地方，但是有着有限的功能。你只能 push 在栈顶来增加一个新的元素， pop 来移出栈顶元素，peek 查看栈顶元素而不做其余的操作。</p><p>在许多的算法中，你需要在某些时刻将对象添加到临时列表，一段时间后再把他们从列表中删除。很多时候，添加和删除的顺序很重要。</p><p>栈使用的是 LIFO （last-in first-out order）后进先出的顺序。</p><p>利用 array 来实现栈</p><pre><code class="hljs swift"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Stack</span> </span>&#123;  <span class="hljs-keyword">fileprivate</span> <span class="hljs-keyword">var</span> array: [<span class="hljs-type">String</span>] <span class="hljs-operator">=</span> []&#125;</code></pre><h3 id="Push"><a href="#Push" class="headerlink" title="Push"></a>Push</h3><p>在数组里往后添加元素，而非将新的元素插入到第一个的位置。这样的目的是减少时间复杂度，前者只需要 O(1)，后者需要 O(n)</p><pre><code class="hljs swift"><span class="hljs-comment">// 1</span><span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">push</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">element</span>: <span class="hljs-type">String</span>)</span> &#123;  <span class="hljs-comment">// 2</span>  array.append(element)&#125;</code></pre><h3 id="CustomStringConvertible"><a href="#CustomStringConvertible" class="headerlink" title="CustomStringConvertible"></a>CustomStringConvertible</h3><p><code>joined(separator:)</code> 将所有的对象凭借到一起，每个对象之间插入方法的参数</p><p><code>[&quot;3D Games by Tutorials&quot;, &quot;tvOS Apprentice&quot;]</code> -&gt; <code>&quot;3D Games by Tutorials\ntvOS Apprentice&quot;</code></p><pre><code class="hljs swift"><span class="hljs-comment">// 1</span><span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">Stack</span>: <span class="hljs-title">CustomStringConvertible</span> </span>&#123;  <span class="hljs-comment">// 2</span>  <span class="hljs-keyword">var</span> description: <span class="hljs-type">String</span> &#123;    <span class="hljs-comment">// 3</span>    <span class="hljs-keyword">let</span> topDivider <span class="hljs-operator">=</span> <span class="hljs-string">&quot;---Stack---<span class="hljs-subst">\n</span>&quot;</span>    <span class="hljs-keyword">let</span> bottomDivider <span class="hljs-operator">=</span> <span class="hljs-string">&quot;<span class="hljs-subst">\n</span>-----------<span class="hljs-subst">\n</span>&quot;</span>    <span class="hljs-comment">// 4</span>    <span class="hljs-keyword">let</span> stackElements <span class="hljs-operator">=</span> array.reversed().joined(separator: <span class="hljs-string">&quot;<span class="hljs-subst">\n</span>&quot;</span>)    <span class="hljs-comment">// 5</span>    <span class="hljs-keyword">return</span> topDivider <span class="hljs-operator">+</span> stackElements <span class="hljs-operator">+</span> bottomDivider  &#125;&#125;</code></pre><h3 id="Pop"><a href="#Pop" class="headerlink" title="Pop"></a>Pop</h3><pre><code class="hljs swift"><span class="hljs-comment">// 1</span><span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">pop</span>()</span> -&gt; <span class="hljs-type">String</span>? &#123;  <span class="hljs-comment">// 2</span>  <span class="hljs-keyword">return</span> array.popLast()&#125;</code></pre><h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><pre><code class="hljs swift"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Stack</span>&lt;<span class="hljs-title">Element</span>&gt; </span>&#123;  <span class="hljs-comment">// ...</span>&#125;</code></pre><pre><code class="hljs swift"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Stack</span>&lt;<span class="hljs-title">Element</span>&gt; </span>&#123;  <span class="hljs-keyword">fileprivate</span> <span class="hljs-keyword">var</span> array: [<span class="hljs-type">Element</span>] <span class="hljs-operator">=</span> []  <span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">push</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">element</span>: <span class="hljs-type">Element</span>)</span> &#123;    array.append(element)  &#125;  <span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">pop</span>()</span> -&gt; <span class="hljs-type">Element</span>? &#123;    <span class="hljs-keyword">return</span> array.popLast()  &#125;  <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">peek</span>()</span> -&gt; <span class="hljs-type">Element</span>? &#123;    <span class="hljs-keyword">return</span> array.last  &#125;&#125;</code></pre><pre><code class="hljs swift"><span class="hljs-comment">// previous</span><span class="hljs-keyword">let</span> stackElements <span class="hljs-operator">=</span> array.reversed().joined(separator: <span class="hljs-string">&quot;<span class="hljs-subst">\n</span>&quot;</span>)<span class="hljs-comment">// now</span><span class="hljs-keyword">let</span> stackElements <span class="hljs-operator">=</span> array.map &#123; <span class="hljs-string">&quot;<span class="hljs-subst">\(<span class="hljs-variable">$0</span>)</span>&quot;</span> &#125;.reversed().joined(separator: <span class="hljs-string">&quot;<span class="hljs-subst">\n</span>&quot;</span>)</code></pre><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><pre><code class="hljs swift"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Stack</span>&lt;<span class="hljs-title">T</span>&gt; </span>&#123;  <span class="hljs-keyword">fileprivate</span> <span class="hljs-keyword">var</span> array <span class="hljs-operator">=</span> [<span class="hljs-type">T</span>]()  <span class="hljs-keyword">public</span> <span class="hljs-keyword">var</span> isEmpty: <span class="hljs-type">Bool</span> &#123;    <span class="hljs-keyword">return</span> array.isEmpty  &#125;  <span class="hljs-keyword">public</span> <span class="hljs-keyword">var</span> count: <span class="hljs-type">Int</span> &#123;    <span class="hljs-keyword">return</span> array.count  &#125;  <span class="hljs-keyword">public</span> <span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">push</span>(<span class="hljs-keyword">_</span> <span class="hljs-params">element</span>: <span class="hljs-type">T</span>)</span> &#123;    array.append(element)  &#125;  <span class="hljs-keyword">public</span> <span class="hljs-keyword">mutating</span> <span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-title">pop</span>()</span> -&gt; <span class="hljs-type">T</span>? &#123;    <span class="hljs-keyword">return</span> array.popLast()  &#125;  <span class="hljs-keyword">public</span> <span class="hljs-keyword">var</span> top: <span class="hljs-type">T</span>? &#123;    <span class="hljs-keyword">return</span> array.last  &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>stack</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>如何恢复学习状态</title>
+    <link href="/2019/09/10/%E5%A6%82%E4%BD%95%E9%87%8D%E6%96%B0%E6%81%A2%E5%A4%8D%E5%AD%A6%E4%B9%A0%E7%8A%B6%E6%80%81/"/>
+    <url>/2019/09/10/%E5%A6%82%E4%BD%95%E9%87%8D%E6%96%B0%E6%81%A2%E5%A4%8D%E5%AD%A6%E4%B9%A0%E7%8A%B6%E6%80%81/</url>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>半个月，没有学习，完全放弃了之前的习惯。每次想要花时间学习，却产生了疲惫厌恶的感觉。只能说游戏，电影啥的真香。</p><p>之前说，养成一个习惯最好的方式是和已有的习惯配合。现在就是我的学习已经和我的锻炼连在一起了。锻炼没有拉下，感觉到自己对于学习也有动劲。这是好事也是坏事吧。所以这半个月，锻炼也拉下了，学习也拉下了。</p><span id="more"></span><p>半个月过来了，假期也结束了。我在想，如果才能恢复像之前的学习状态，或者说在接下来会比较忙的几个月里如何保证自己学习不拉下。有了一次前车之鉴，极客时间的一个课程学到十四课就没再学习，现在都完结有了 74 课。我想我得调整一下自己的学习思路。</p><h1 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h1><p>就像星球里说的，之前的知识付费是花一百块钱，就要学到一百块钱。这样不对，或者说会对自己的学习造成巨大的困扰，比如之前的自己。</p><p>现在调整自己的学习态度</p><ul><li>先理清自己的本职工作是，自己的专业是什么，自己需要什么<br>现在本职 iOS 开发，专业是移动端 APP 实现。<br>现在我需要的是在 iOS 开发这个开发分支掌握足够强的专业知识和能力。所以现在我能学习的渠道有极客时间 iOS 开发高手课，掘进和开发者头条。<br>需要的另一个方面是计算机基础，为自己将来的进阶铺路。现在学习的渠道有极客时间算法与数据结构之美，有道云课堂计算机科学。</li><li>付费的知识已经经过了一轮筛选，但是还是得通过自己筛选<br>以上的付费知识中，可以说质量都非常不错了。但是这其中并不是所有的都适合自己，一个是工作内容的局限，小公司技术需求比较浅薄，跟别说还有硬件限制。<br>另一个是确实现在不明白，没有相应的计算机基础，看起来真的是无比的吃力。也没有静下心来仔细搞懂或是上手码一遍。</li><li>行业<br>今早我在想，我是非常偶然的机会“又”回到了计算机，互联网这一行业。就现在来看我预计自己是无法在技术这条路上走多远，毕竟是一个底层的码农，又不具备足够高的进和路线和资源。所以我在想我进这个行业能留下什么。<br>就像是计算机科学这门课说的，学习计算机科学，学的是计算机思维模式。李健也曾学习物理行业，给了他一种缜密的思维模式。所以以后万一不在这个领域了，我想最起码我得带走的是计算机思维模式。</li></ul><h1 id="执行"><a href="#执行" class="headerlink" title="执行"></a>执行</h1><p>我想执行力真是这辈子除了人品最重要的东西了。行业内的一句名言 “talk is easy ,show me code”。执行力让我受益的有学习，锻炼，还有最近学习的理财。<br>但是坚持是个最重要的事，如何保证自己再一次坚持下去，是这次重点表达的。</p><h2 id="Deadline"><a href="#Deadline" class="headerlink" title="Deadline"></a>Deadline</h2><p>可能这是相当有说服力的指标了。可能就是需要上升到接近原则性。执行从左耳朵耗子的 ARTS 开始。<br>一个技术技巧，一个外文文章，一篇有思考的文章，一个 LeetCode。<br>技术技巧和思考文章都会发布到个人博客上。<br>技术技巧和外文文章的 deadline 在周四。思考文章和 LeetCode 在周日。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>复盘</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>成长</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Swift 图片去色 图片灰色显示</title>
+    <link href="/2019/09/09/Swift-%E5%9B%BE%E7%89%87%E5%8E%BB%E8%89%B2-%E5%9B%BE%E7%89%87%E7%81%B0%E8%89%B2%E6%98%BE%E7%A4%BA/"/>
+    <url>/2019/09/09/Swift-%E5%9B%BE%E7%89%87%E5%8E%BB%E8%89%B2-%E5%9B%BE%E7%89%87%E7%81%B0%E8%89%B2%E6%98%BE%E7%A4%BA/</url>
+    
+    <content type="html"><![CDATA[<p>参考地址：<br>实现方法一：<a href="https://onevcat.com/2013/04/using-blending-in-ios/">Swift 实现更改图片的颜色 </a><br>实现方法二：<a href="https://www.jianshu.com/p/f0340cfc0833">iOS 中使用 blend 改变图片颜色</a></p><p>当前网上搜到的方法几乎都是这两种。但是不知道在我的代码中不能完美完美实现。</p><ul><li>第一种方法实现，发现是在原来的颜色上盖上一种半透明的灰色遮罩。原来的颜色还是能展示。</li></ul><p>后者参数参照喵神的使用 overlay 保留图片的灰度</p><pre><code class="hljs reasonml"><span class="hljs-keyword">let</span> grayImage = image?.image<span class="hljs-constructor">WithTintColor(<span class="hljs-params">tintColor</span>: .<span class="hljs-params">black</span>, <span class="hljs-params">blendMode</span>: .<span class="hljs-params">overlay</span>)</span></code></pre><p>方法实现</p><pre><code class="hljs reasonml">func image<span class="hljs-constructor">WithTintColor(<span class="hljs-params">tintColor</span>:UIColor, <span class="hljs-params">blendMode</span>:CGBlendMode)</span> -&gt; UIImage? &#123;    <span class="hljs-constructor">UIGraphicsBeginImageContextWithOptions(<span class="hljs-params">self</span>.<span class="hljs-params">size</span>, <span class="hljs-params">false</span>, 0.0)</span>    tintColor.set<span class="hljs-constructor">Fill()</span>    <span class="hljs-keyword">let</span> bounds = <span class="hljs-constructor">CGRect(<span class="hljs-params">x</span>: 0, <span class="hljs-params">y</span>: 0, <span class="hljs-params">width</span>: <span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">width</span>, <span class="hljs-params">height</span>: <span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">height</span>)</span>    <span class="hljs-constructor">UIRectFill(<span class="hljs-params">bounds</span>)</span>    self.draw(<span class="hljs-keyword">in</span>: bounds, blendMode: blendMode, alpha: <span class="hljs-number">1.0</span>)    <span class="hljs-keyword">if</span> blendMode != .destinationIn &#123;        self.draw(<span class="hljs-keyword">in</span>: bounds, blendMode: .destinationIn, alpha: <span class="hljs-number">1.0</span>)    &#125;    <span class="hljs-keyword">let</span> tintedImage = <span class="hljs-constructor">UIGraphicsGetImageFromCurrentImageContext()</span>    <span class="hljs-constructor">UIGraphicsEndImageContext()</span>    return tintedImage&#125;</code></pre><p>当使用的参数为 <code>.gray</code><br><img src="https://img-blog.csdnimg.cn/20190826161623849.jpg" alt="灰色不明显"><br>当使用的参数是<code>.black</code><br><img src="https://img-blog.csdnimg.cn/20190826161711140.jpg" alt="全黑"><br>和需求不一致，变成了全黑没有保留原来图片的灰度。（毕竟时间过去太久，如果有朋友知道问题在哪，麻烦告知一下，谢谢）</p><ul><li>第二种方法实现，发现原来透明的背景变成了黑色，需要再做一步扣除黑色背景的操作。</li></ul><pre><code class="hljs reasonml"><span class="hljs-keyword">let</span> grayImage = image?.gray<span class="hljs-constructor">Image()</span>?.transparent<span class="hljs-constructor">Color(<span class="hljs-params">colorMasking</span>: [0, 32, 0, 32, 0, 32])</span></code></pre><p>图片去色</p><pre><code class="hljs reasonml">func gray<span class="hljs-constructor">Image()</span> -&gt; UIImage?   &#123;       <span class="hljs-constructor">UIGraphicsBeginImageContext(<span class="hljs-params">self</span>.<span class="hljs-params">size</span>)</span>       <span class="hljs-keyword">let</span> colorSpace = <span class="hljs-constructor">CGColorSpaceCreateDeviceGray()</span>       <span class="hljs-keyword">let</span> context = <span class="hljs-constructor">CGContext(<span class="hljs-params">data</span>: <span class="hljs-params">nil</span> , <span class="hljs-params">width</span>: Int(<span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">width</span>)</span>, height: <span class="hljs-constructor">Int(<span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">height</span>)</span>,bitsPerComponent: <span class="hljs-number">8</span>, bytesPerRow: <span class="hljs-number">0</span>, space: colorSpace, bitmapInfo: <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">CGImageAlphaInfo</span>.</span></span>none.rawValue)       context?.draw(self.cgImage!, <span class="hljs-keyword">in</span>: <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">CGRect</span>.</span></span>init(x: <span class="hljs-number">0</span>, y: <span class="hljs-number">0</span>, width: self.size.width, height: self.size.height))       <span class="hljs-keyword">let</span> cgImage = context!.make<span class="hljs-constructor">Image()</span>       <span class="hljs-keyword">let</span> grayImage = <span class="hljs-constructor">UIImage(<span class="hljs-params">cgImage</span>: <span class="hljs-params">cgImage</span>!, <span class="hljs-params">scale</span>: <span class="hljs-params">self</span>.<span class="hljs-params">scale</span>, <span class="hljs-params">orientation</span>: <span class="hljs-params">self</span>.<span class="hljs-params">imageOrientation</span>)</span>       return grayImage   &#125;</code></pre><p>当前图片展示是这种形式，多出来了一个黑色背景<br><img src="https://img-blog.csdnimg.cn/20190826162725493.jpg" alt="在这里插入图片描述"></p><p>扣除黑色背景（<a href="https://www.hangge.com/blog/cache/detail_1496.html">Swift - 去处图片的白色、黑色背景（使 UIImage 背景透明）</a>）</p><pre><code class="hljs reasonml">func transparent<span class="hljs-constructor">Color(<span class="hljs-params">colorMasking</span>:[CGFloat])</span> -&gt; UIImage? &#123;    <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> rawImageRef = self.cgImage &#123;        <span class="hljs-constructor">UIGraphicsBeginImageContext(<span class="hljs-params">self</span>.<span class="hljs-params">size</span>)</span>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> maskedImageRef = rawImageRef.copy(maskingColorComponents: colorMasking) &#123;            <span class="hljs-keyword">let</span> context: CGContext = <span class="hljs-constructor">UIGraphicsGetCurrentContext()</span>!            context.translate<span class="hljs-constructor">By(<span class="hljs-params">x</span>: 0.0, <span class="hljs-params">y</span>: <span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">height</span>)</span>            context.scale<span class="hljs-constructor">By(<span class="hljs-params">x</span>: 1.0, <span class="hljs-params">y</span>: -1.0)</span>            context.draw(maskedImageRef, <span class="hljs-keyword">in</span>: <span class="hljs-constructor">CGRect(<span class="hljs-params">x</span>:0, <span class="hljs-params">y</span>:0, <span class="hljs-params">width</span>:<span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">width</span>, <span class="hljs-params">height</span>:<span class="hljs-params">self</span>.<span class="hljs-params">size</span>.<span class="hljs-params">height</span>)</span>)            <span class="hljs-keyword">let</span> result = <span class="hljs-constructor">UIGraphicsGetImageFromCurrentImageContext()</span>            <span class="hljs-constructor">UIGraphicsEndImageContext()</span>            return result        &#125;    &#125;    return nil&#125;</code></pre><p>这样拿到的就是我想要的，图片去色且保留了图片的灰度展示<br><img src="https://img-blog.csdnimg.cn/20190826162659266.jpg" alt="在这里插入图片描述"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>图片去色</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>利用 Sourcetree 来管理 SVN 代码仓库</title>
+    <link href="/2019/09/09/%E5%88%A9%E7%94%A8-Sourcetree-%E6%9D%A5%E7%AE%A1%E7%90%86-SVN-%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93/"/>
+    <url>/2019/09/09/%E5%88%A9%E7%94%A8-Sourcetree-%E6%9D%A5%E7%AE%A1%E7%90%86-SVN-%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93/</url>
+    
+    <content type="html"><![CDATA[<p>git 控制本地代码版本</p><!-- more_text --><h2 id="踩坑"><a href="#踩坑" class="headerlink" title="踩坑"></a>踩坑</h2><pre><code class="hljs 错误">Can&#x27;t locate Git/SVN.pm in @INC (you may need to install the Git::SVN module) (@INC contains: /usr/local/git/share/perl5/Applications/Sourcetree.app/Contents/Resources/git_local/lib/perl5/site_perl /Library/Perl/5.18/darwin-thread-multi-2level /Library/Perl/5.18/Network/Library/Perl/5.18/darwin-thread-multi-2level /Network/Library/Perl/5.18/Library/Perl/Updates/5.18.4 /System/Library/Perl/5.18/darwin-thread-multi-2level/System/Library/Perl/5.18 /System/Library/Perl/Extras/5.18/darwin-thread-multi-2level /System/Library/Perl/Extras/5.18 .) at/Applications/Sourcetree.app/Contents/Resources/git_local/libexec/git-core/git-svn line 22. BEGIN failed--compilation aborted at/Applications/Sourcetree.app/Contents/Resources/git_local/libexec/git-core/git-svn line 22.</code></pre><p>大多数解决方案是其中的两步或者三步，但是都未解决我的问题<br>找到一个完整的解决方案 <a href="https://github.wangkaimin.com/2018/09/05/git-svn-mac-error.html">git-svn 在 mac 下遇到的问题</a></p><pre><code class="hljs 命令">sudo cpan Git::SVNsudo ln -s /Applications/Xcode.app/Contents/Developer/Library/Perl/5.18/darwin-thread-multi-2level/SVN/ /Library/Perl/5.18/SVNsudo mkdir /Library/Perl/5.18/autosudo ln -s /Applications/Xcode.app/Contents/Developer/Library/Perl/5.18/darwin-thread-multi-2level/auto/SVN/ /Library/Perl/5.18/auto/SVN</code></pre><p>初始化 git-svn</p><pre><code class="hljs awk">git svn init svn:<span class="hljs-regexp">//u</span>sername@host/filepath</code></pre><p>init 后面跟的是 svn 的地址。我用的就是 https 开头</p><p>拉取代码</p><pre><code class="hljs ebnf"><span class="hljs-attribute">git svn fetch</span></code></pre><p>后面可以跟参数拉取特定版本的代码，不添加则是最新。例如</p><pre><code class="hljs apache"><span class="hljs-attribute">git</span> svn fetch -r <span class="hljs-number">8333</span>:HEAD</code></pre><p>回车之后输入电脑密码。第二次回车输入 svn 密码</p><p>此时对应的代码已经下载到本地。有源代码，也有版本控制信息</p><p>在 Sourcetree 中选择添加已经存在的本地仓库</p><p>这样基本就完成了利用 Sourcetree 管理 svn 代码仓库</p><pre><code class="hljs awk">git status <span class="hljs-regexp">//</span> 查看当前代码修改状态，是否有修改代码为提交暂存区git svn dcommit <span class="hljs-regexp">//</span> 提交到远程 svn 仓库</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>基础</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>代码管理</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>LLDB</title>
+    <link href="/2019/08/22/LLDB/"/>
+    <url>/2019/08/22/LLDB/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>Discover advanced techniques, and tips and tricks for enhancing your Xcode debugging workflows. Learn how to take advantage of LLDB and custom breakpoints for more powerful debugging. Get the most out of Xcode’s view debugging tools to solve UI issues in your app more efficiently.</p><p>发现先进的技术，技巧和诀窍来提高自己 Xcode 的 debug 工作流程。学习如何利用 LLDB 和定制的断点来获得更有效的调试。充分利用 Xcode 的视图调试工具，更有效地解决应用中的 UI 问题</p></blockquote><h1 id="LLDB"><a href="#LLDB" class="headerlink" title="LLDB"></a>LLDB</h1><h2 id="输出方式"><a href="#输出方式" class="headerlink" title="输出方式"></a>输出方式</h2><h4 id="po-输出对象"><a href="#po-输出对象" class="headerlink" title="po - 输出对象"></a>po - 输出对象</h4><table><thead><tr><th>Command</th><th>Alias For</th><th>Steps TO Evaluate</th></tr></thead><tbody><tr><td>po <expression></td><td>expression –object-description – <expression></td><td>1. Expression: evaluate <br/>2. Expression: debug description</td></tr></tbody></table><p>​ po 过程</p><p>​ LLDB 先把语句生成一小段代码</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/12b150c95af8aeeac8c8fd4e46c334a5.png" alt="12b150c95af8aeeac8c8fd4e46c334a5"></p><p>​ 编译执行，在生成获取结果的代码</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/87b66f7b2a9b72bb56a81729f472e659.png" alt="87b66f7b2a9b72bb56a81729f472e659"></p><p>​ 然后再编译执行，拿到对应的结果，显示出来</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/18f667b879ceb9568b3eeed341b5af75.png" alt="18f667b879ceb9568b3eeed341b5af75"></p><h4 id="p-输出-LLDB-格式数据"><a href="#p-输出-LLDB-格式数据" class="headerlink" title="p - 输出 LLDB 格式数据"></a>p - 输出 LLDB 格式数据</h4><table><thead><tr><th>Command</th><th><strong>Alias For</strong></th><th>Steps TO Evaluate</th></tr></thead><tbody><tr><td>p</td><td>expression –</td><td>1. Expression: evaluate <br/>2. Outputs LLDB-formatted description</td></tr></tbody></table><p>p 过程</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/242ff4fcf39db08ab2380c4f58de7f44.png" alt="242ff4fcf39db08ab2380c4f58de7f44"></p><p>一直到取到结果，p 和 po 的行为一模一样。区别在于 p 使用了 dynamic type resolution （动态类型推断）</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/7e98e6bc799197d68f8b8ed62a21f7f4.png" alt="7e98e6bc799197d68f8b8ed62a21f7f4"></p><p>在动态类型推断之后，还有一步格式化</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/4c88d4ff0d61d22e1ea1143ed47acd68.png" alt="4c88d4ff0d61d22e1ea1143ed47acd68"></p><p>####</p><h4 id="V"><a href="#V" class="headerlink" title="V"></a>V</h4><p>（Xcode 10.2 引入的 alias，之前版本需要使用 frame variable）</p><p>frame variable 不同之处的是从当前 frame 调用栈的内存中拿到的值。只接受变量作为参数，不接受表达式。通过<code>frame variable</code>命令，可以打印出当前 frame 调用栈的的所有变量。</p><table><thead><tr><th>Command</th><th><strong>Alias For</strong></th><th><strong>Steps TO Evaluate</strong></th></tr></thead><tbody><tr><td>v</td><td>frame variable</td><td>. Reads value of from memory<br/>2. Outputs LLDB-formatted description</td></tr></tbody></table><p>v 并不像<code>p</code>和<code>po</code>一样，<code>v</code>并没有编译执行的能力，但因此速度也更快。它能访问的是当前栈帧能访问到的数据。如果需要一些更复杂的执行代码或是计算一些值，建议还是使用<code>p</code>和<code>po</code></p><p>当执行<code>v variable</code>的时候，会检测当前程序状态，从内存中读出数据，进行（之前说过的）类型推断</p><p><img src="https://images.xiaozhuanlan.com/photo/2019/9cf14650b78d34d147fcb987f734bb44.png" alt="9cf14650b78d34d147fcb987f734bb44"></p><p>如果有访问变量的子属性，例如<code>v variable.field1.field2</code>，则会不断的重复读内存和类型推断的行为，最后再走到（之前在<code>p</code>说过的）格式化。<br><img src="https://images.xiaozhuanlan.com/photo/2019/89e62a823a1d3c1efc8fca104c6d0df8.png" alt="img"></p><p>如果有访问变量的子属性，例如<code>v variable.field1.field2</code>，则会不断的重复读内存和类型推断的行为，最后再走到（之前在<code>p</code>说过的）格式化。<br><img src="https://images.xiaozhuanlan.com/photo/2019/89e62a823a1d3c1efc8fca104c6d0df8.png" alt="img"></p><p><img src="https://images.xiaozhuanlan.com/photo/2019/0737e5483eb3fd9a8b379d6828605cd2.png" alt="0737e5483eb3fd9a8b379d6828605cd2"></p><ul><li>只有<code>po</code>有描述的过程</li><li><code>p</code>和<code>v</code>都有格式化参与</li><li>因为<code>po</code>和<code>p</code>有编译执行的能力，所以可以更随意的执行一些逻辑</li><li>因为<code>v</code>访问的是内存中实际的值，类型推断可以不断执行，最终再到格式化逻辑</li></ul><p>所以，实际使用还是需要根据情况，需求，选择适合的指令帮助调试</p><h2 id="定制格式化输出"><a href="#定制格式化输出" class="headerlink" title="定制格式化输出"></a>定制格式化输出</h2><h4 id="CustomDebugStringConvertible"><a href="#CustomDebugStringConvertible" class="headerlink" title="CustomDebugStringConvertible"></a>CustomDebugStringConvertible</h4><h4 id="CustomReflectable"><a href="#CustomReflectable" class="headerlink" title="CustomReflectable"></a>CustomReflectable</h4><p><img src="/images/LLDB/CustomReflectable.png" alt="image-20190822104654921"></p><h2 id="断点"><a href="#断点" class="headerlink" title="断点"></a>断点</h2><p>​ <code>expression</code>命令可以改变程序当前的各种状态，<code>e</code>、<code>expr</code> 作为简写也可以实现同样的功能</p><p>​ 在 console 和 breakpoint 中都可以使用该命令</p><p>​ 在断点中使用，相当于实时插入代码，勾选 option 则执行代码且不在此断点停留</p><p><img src="/images/LLDB/BreakPointExpression.png" alt="image-20190822105843514"></p><h3 id="伪寄存器"><a href="#伪寄存器" class="headerlink" title="伪寄存器"></a>伪寄存器</h3><p>在断点列表界面，选择新增 Symbolic Breakpoint 断点</p><p><img src="/images/LLDB/SymbolicBreakpoint.png" alt="B9973C7A-57D6-4E0F-84D5-8677A331CEE7"></p><p>在 symbol 栏目中可以输入任何函数或者方法名称<br>图示中用的是 OC 表达式，因为 UIKit 是一个 OC 的框架</p><p>在确定输入后，在断点下面有一个子行，这是来自调试器的反馈，他告诉我们能够在 UIKit Core 中的一个位置解析这个断点。有可能会解析到多个位置。如果没有看到子条目，表明调试器无法解析你的断点，因此它永远不会命中</p><p><img src="/images/LLDB/SymbolicBreakpointUikit.png" alt="6C0795E4-AA93-437D-94BD-5E805F2AC941"></p><p>运行程序后，第一个获取到的断点如图</p><p><img src="/images/LLDB/ResultBreakpoint.png" alt="32D6D1FA-4AC4-4425-B45F-0814D1090733"></p><p>arg 为伪寄存器，可用 1，2，3 类似的方法来查看代表着第 1，2，3 个参数的寄存器。<br>熟悉 objc_msgSend（不熟悉） ,第二个参数应该是选择器。<br>直接使用 po arg2 时，我们发现并没有看到相对的参数，因为 LLDB 不会自动知道这些参数的类型，所以我们需要做相应的类型转换，（SEL），然后我们就看到了这个消息的选择器 arg3 是传入方法的第一个参数</p><h3 id="一次性断点"><a href="#一次性断点" class="headerlink" title="一次性断点"></a>一次性断点</h3><p>breakpoint set –one-shot true</p><h3 id="跳过代码"><a href="#跳过代码" class="headerlink" title="跳过代码"></a>跳过代码</h3><p>thread jump –by 2 （跳过两行代码）</p><h3 id="watch-断点"><a href="#watch-断点" class="headerlink" title="watch 断点"></a>watch 断点</h3><p>在变量视图中，查看所有属性。在属性列表中找到目标属性，右键 “watch “属性””，自动添加断点。在下一次变量的值发生改变的时候暂停调试器</p><h2 id="修改-UI"><a href="#修改-UI" class="headerlink" title="修改 UI"></a>修改 UI</h2><h3 id="查找内存地址，仅通过内存地址来操作视图"><a href="#查找内存地址，仅通过内存地址来操作视图" class="headerlink" title="查找内存地址，仅通过内存地址来操作视图"></a>查找内存地址，仅通过内存地址来操作视图</h3><p>有属性或输出口的时候，可以通过 po 命令获取到对应的调试描述，但是这个试图控制器下的所有视图成为了问题</p><p>利用 Xcode 的可视化视图调试器</p><p>使用 UIView 上的调试函数，self.view.recursiveDescription() 。此方法仅用于调试目的，他不是公共 API 的一部分，所以也不会被 Swift 扫描。swift 比较严格，而 OC 代码的运行时特性，可以让调试器使用 OC 语法实现</p><p>expression -l objc -o – [self.view recursiveDescription] 。-l objc 是说给 expression 命令一段 objc 的代码，-o 表示我们调试描述，– 表示没有更多的选项</p><p>但是这段代仍不能实现。这段代码将为 OC 编译创建一个临时表达式上下文，并且不会继承 Swift 框架中的所有变量</p><p>expression -l objc -o – [‘self.view’ recursiveDescription]。将 self.view 放入反引号中，反引号就像预处理器一样，他表示先评估其在当前帧中的内容，并插入结果，然后我们可以评估其余的部分，然后我们就可以得到递归描述了</p><p>po 内存地址，并不能得到，应为 swift 不会讲数字视为指针并为你解引用<br>command alias poc expression -l objc -0 – 这个可以将<code>expression -l objc -0 --</code> 简化为 <code>poc</code>命令<br>poc 内存地址 ，可以查看该对象的调试描述</p><p>swift 方法查看调试描述，<code>po unsafeBitCast(内存地址 ,to: ScoreboardView.self)</code>，不安全的原因是需要你来提供正确的类型。这个方法的好处是返回了一个经过类型转化的结果，我们可以调用它的函数，例如.frame</p><p>修改该对象的中心店位置<code>po unsafeBitCast(内存地址 ,to: ScoreboardView.self).center.y = 300</code></p><p>屏幕中并不会立即显示，我们在调试器中暂停了，所以 Core Animation 目前不会有任何视图模块的更改，应用到屏幕的帧缓冲区</p><p>但是使用表达式 CAtransaction.flush()，这告诉 Core Animation 更新屏幕的帧缓冲区</p><h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul><li><p>expression -l objc -O – [<code>self.view</code> recursiveDescription] 得到的是视图结构，在此拿到内存地址</p><p><img src="/images/LLDB/image-20190822112240319.png" alt="image-20190822112240319"></p></li><li><p>根据方法 po unsafeBitCast(内存地址 ,to: ScoreboardView.self) ，可以打印或设置相关属性</p><pre><code class="hljs Swift"><span class="hljs-comment">// 打印对象</span>(lldb) po <span class="hljs-built_in">unsafeBitCast</span>(<span class="hljs-number">0x7fe439d13160</span>, <span class="hljs-type">UILabel</span>.<span class="hljs-keyword">self</span>)<span class="hljs-operator">&lt;</span><span class="hljs-type">UILabel</span>: <span class="hljs-number">0x7fe439d13160</span>; frame <span class="hljs-operator">=</span> (<span class="hljs-number">57</span> <span class="hljs-number">141</span>; <span class="hljs-number">42</span> <span class="hljs-number">21</span>); text <span class="hljs-operator">=</span> &#x27;<span class="hljs-type">Label</span>&#x27;; opaque <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; autoresize <span class="hljs-operator">=</span> <span class="hljs-type">RM</span><span class="hljs-operator">+</span><span class="hljs-type">BM</span>; userInteractionEnabled <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; layer <span class="hljs-operator">=</span> <span class="hljs-operator">&lt;</span>_UILabelLayer: <span class="hljs-number">0x600003942a30</span><span class="hljs-operator">&gt;&gt;</span><span class="hljs-comment">// 打印中心点坐标</span>(lldb) po <span class="hljs-built_in">unsafeBitCast</span>(<span class="hljs-number">0x7fe439d13160</span>, <span class="hljs-type">UILabel</span>.<span class="hljs-keyword">self</span>).center<span class="hljs-operator">▿</span> (<span class="hljs-number">78.0</span>, <span class="hljs-number">151.5</span>)  <span class="hljs-operator">-</span> x : <span class="hljs-number">78.0</span>  <span class="hljs-operator">-</span> y : <span class="hljs-number">151.5</span><span class="hljs-comment">// 设置中心点坐标</span>(lldb) po <span class="hljs-built_in">unsafeBitCast</span>(<span class="hljs-number">0x7fe439d13160</span>, <span class="hljs-type">UILabel</span>.<span class="hljs-keyword">self</span>).center.y <span class="hljs-operator">=</span> <span class="hljs-number">300</span></code></pre></li><li><p>expression CATransaction.flush() 刷新页面</p></li></ul><h2 id="自定义-LLDB-命令"><a href="#自定义-LLDB-命令" class="headerlink" title="自定义 LLDB 命令"></a>自定义 LLDB 命令</h2><p>例如上面用到的 poc 命令</p><pre><code class="hljs applescript">command <span class="hljs-built_in">alias</span> poc expression -l objc -O <span class="hljs-comment">--</span></code></pre><p>用 poc 命令代替 expression -l objc -O –</p><h2 id="自定义-Python-脚本"><a href="#自定义-Python-脚本" class="headerlink" title="自定义 Python 脚本"></a>自定义 Python 脚本</h2><p>nudge 是 python 脚本文件，有苹果官方提供</p><pre><code class="hljs swift">command alias poc expression <span class="hljs-operator">-</span>l objc <span class="hljs-operator">-</span><span class="hljs-type">O</span> <span class="hljs-operator">--</span>command alias 🚽 expression <span class="hljs-operator">-</span>l objc <span class="hljs-operator">--</span> (void)[<span class="hljs-type">CATransaction</span> flush]<span class="hljs-comment">// 引用 nudge</span>(lldb) command script <span class="hljs-keyword">import</span> ~/nudge.py<span class="hljs-type">The</span> <span class="hljs-string">&quot;nudge&quot;</span> command has been installed, type <span class="hljs-string">&quot;help nudge&quot;</span> <span class="hljs-keyword">for</span> detailed help.<span class="hljs-comment">// 拿到对象指针</span>(lldb) po myLabel<span class="hljs-operator">▿</span> <span class="hljs-type">Optional</span>&lt;<span class="hljs-type">UILabel</span>&gt;  <span class="hljs-operator">-</span> <span class="hljs-keyword">some</span> : <span class="hljs-operator">&lt;</span><span class="hljs-type">UILabel</span>: <span class="hljs-number">0x7fc04a60fff0</span>; frame <span class="hljs-operator">=</span> (<span class="hljs-number">57</span> <span class="hljs-number">141</span>; <span class="hljs-number">42</span> <span class="hljs-number">21</span>); text <span class="hljs-operator">=</span> &#x27;<span class="hljs-type">Label</span>&#x27;; opaque <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; autoresize <span class="hljs-operator">=</span> <span class="hljs-type">RM</span><span class="hljs-operator">+</span><span class="hljs-type">BM</span>; userInteractionEnabled <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; layer <span class="hljs-operator">=</span> <span class="hljs-operator">&lt;</span>_UILabelLayer: <span class="hljs-number">0x600001d36c10</span><span class="hljs-operator">&gt;&gt;</span><span class="hljs-comment">// Y轴向上偏移5</span>(lldb) nudge <span class="hljs-number">0</span> <span class="hljs-operator">-</span><span class="hljs-number">5</span> <span class="hljs-number">0x7fc04a60fff0</span></code></pre><p>参考资料 【1】 Advanced Debugging with Xcode and LLDB – WWDC 2018 - Session 412 - iOS, macOS, tvOS, watchOS</p><p>【2】 WWDC2019 - Session 429 <a href="https://xiaozhuanlan.com/topic/2683509174">小专栏</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>DEBUG</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>三观为什么要正</title>
+    <link href="/2019/08/19/%E4%B8%89%E8%A7%82%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%AD%A3/"/>
+    <url>/2019/08/19/%E4%B8%89%E8%A7%82%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%AD%A3/</url>
+    
+    <content type="html"><![CDATA[<h2 id="三观"><a href="#三观" class="headerlink" title="三观"></a>三观</h2><p>三观，在 wiki 里是世界观，人生观，价值观的合称</p><p>正确的价值观和不正确的价值观会有什么不一样呢？某个时刻会突然觉得不正确的三观，在某种程度上来说，其实是为了内心中的一些负面情绪</p><!-- TODO -->]]></content>
+    
+    
+    <categories>
+      
+      <category>复盘</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>成长</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>SwiftLint 规则-中文</title>
+    <link href="/2019/05/21/SwiftLint-%E8%A7%84%E5%88%99-%E4%B8%AD%E6%96%87/"/>
+    <url>/2019/05/21/SwiftLint-%E8%A7%84%E5%88%99-%E4%B8%AD%E6%96%87/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>对于规则的简单描述，需要使用对应标识符以及更具体功能参考官网<br><a href="https://github.com/realm/SwiftLint/blob/master/Rules.md#force-cast">Rules</a></p></blockquote><h2 id="AnyObject-Protocol"><a href="#AnyObject-Protocol" class="headerlink" title="AnyObject Protocol"></a>AnyObject Protocol</h2><blockquote><p>Prefer using AnyObject over class for class-only protocols.</p></blockquote><p>对于类的代理，使用 AnyObject 比使用 class 作为继承类更好</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>静态编译</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>多线程使用</title>
+    <link href="/2019/04/03/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/"/>
+    <url>/2019/04/03/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%BD%BF%E7%94%A8/</url>
+    
+    <content type="html"><![CDATA[<p>根据使用场景来使用多线程，更好的理解相应的方法</p><h3 id="场景一：-需要执行一个网络请求方法，和弹出提示框方法，在进行下一步操作"><a href="#场景一：-需要执行一个网络请求方法，和弹出提示框方法，在进行下一步操作" class="headerlink" title="场景一： 需要执行一个网络请求方法，和弹出提示框方法，在进行下一步操作"></a>场景一： 需要执行一个网络请求方法，和弹出提示框方法，在进行下一步操作</h3><p>需要执行的方法 – 分析</p><blockquote><p>网络请求方法，方法中请求了一个并行同步线程<br>弹出提示框，获取到主线程 UI</p></blockquote><span id="more"></span><h5 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h5><pre><code>信号量</code></pre><pre><code class="hljs">创建信号量（0）【网络请求    请求成功或失败 信号量计数改变】信号量不为0，程序继续执行</code></pre><p>示例</p><h5 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h5><pre><code>group</code></pre><pre><code class="hljs crmsh">enter <span class="hljs-keyword">group</span><span class="hljs-title">【网络请求</span><span class="hljs-title">    请求成功或失败 leave</span> <span class="hljs-keyword">group</span><span class="hljs-title">】</span><span class="hljs-title">nofity</span></code></pre><pre><code class="hljs xml">let group = DispatchGroup()group.enter()request.post(url: ,para: ,success: &#123;    group.leave()&#125;) ,&#123;<span class="hljs-comment">&lt;!-- false --&gt;</span>    group.leave()&#125;group.notify(queue: )&#123;<span class="hljs-comment">&lt;!-- 未指定线程，参数 queue 使用 .mian --&gt;</span>&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>多线程</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>网络接口数据处理结构</title>
+    <link href="/2019/03/14/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/"/>
+    <url>/2019/03/14/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>原项目中，封装了一层网络请求和一个简单的 JSon 数据格式转换，代码多且复用成都低<br>界面中的数据数组类型是 NSMutableArray，没用制定数组中的数据类型<br>在获取到网络数据后，先转成数组，然后字典数组再转换成模型数组</p></blockquote><h1 id="新版本请求模式"><a href="#新版本请求模式" class="headerlink" title="新版本请求模式"></a>新版本请求模式</h1><ol><li>初始化数据数组的通知，指定数组的数据类型 <code>var array = [Model]()</code></li><li>现在请求方法返回的还是 json 格式的数据，没有实现根据数据结构返回</li></ol><h2 id="网络请求层"><a href="#网络请求层" class="headerlink" title="网络请求层"></a>网络请求层</h2><ul><li>请求方法中可配参数。项目中用的少，基本用的 POST，所以可以省去配置请求</li></ul><pre><code class="hljs 示例">struct Optional &#123;  var GETMethod: HTTPMethod = .GET&#125;enum HTTPMethod: String &#123;  case GET,OPTIONS,HEAD,POST,PUT,PATCH,DELETE,TRACE,CONNECT&#125;</code></pre><ul><li>请求方法的请求参数</li><li>请求方法 block 回调，成功，完成。失败或错误给出信息提示</li></ul><h2 id="数据处理层"><a href="#数据处理层" class="headerlink" title="数据处理层"></a>数据处理层</h2><ol><li>先实现通用协议，实现通用的方法</li></ol><h2 id="数据分拆层展示"><a href="#数据分拆层展示" class="headerlink" title="数据分拆层展示"></a>数据分拆层展示</h2><p>星光社<br>swift cafe alamofire<br>简书 swift 网络数据处理流<br>github moya</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>基础</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>结构设计</tag>
+      
+      <tag>网络</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>学习安排复盘</title>
+    <link href="/2018/11/19/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/"/>
+    <url>/2018/11/19/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/</url>
+    
+    <content type="html"><![CDATA[<p>复盘一下又一天的自主学习进步。<br>最近一周没有具体的任务项，没有明确的需求更改，没有啥学习目标。</p><p>今天上午看完了周末两天积攒下来的公众号文章，现在觉得花上一整个半天去看碎片性质的文章不是很好，很浪费这整块时间的学习。公众号文章本就是碎片时间最佳的消耗，不应该本末倒置的使用整块的时间去接受碎片化的信息。所以以后公众号文章就是在个种碎片化时间中消化。</p><span id="more"></span><p>下午的话，用来阅读了知乎收藏的书籍，做了一些简短的笔记。现在复盘起来这其实也不是很好，作为程序员大部分的时间应该是花在代码上，用来提升自己的功力。这类学习更合适的时间是在下班之后。上班时间学习各种语言，有问题还是有的人问，虽然不是用的自己的本本。</p><p>所以经过一整天的学习反思的话，其实上班时间或者是白天时间更合适的是用来研究自己的代码功力，方向多到是根本学不过来的。另一个还有那么多关注的技术专栏，大佬博客，第三方框架。所以接下来的安排已经明确了，一个方面接一个方面的研究明白，并可能的话讲它在代码中实现。</p><h1 id="题外话"><a href="#题外话" class="headerlink" title="题外话"></a>题外话</h1><p>去年过年前的黄毛，到现在也基本没了。<br>自己也强行的将之寓意着自己对某人某事的排斥感消失殆尽。事实也是如此，也说不明白是什么劝说了我，只是突然觉得很多，特别的让自己不开心的事情，一直以来其实都是自己抓着不放。我想到的是这么一点，发小同我一样是射手座，有天发给我一条射手座的特性吧，说是这星座的人这辈子要谈 18 个对象才会成熟。我的第一感觉呢，就是为什么我这辈子就不能就谈一个对象呢？所以呢，就这么成了个痴儿。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>复盘</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>成长</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Postman</title>
+    <link href="/2018/10/29/Postman/"/>
+    <url>/2018/10/29/Postman/</url>
+    
+    <content type="html"><![CDATA[<h1 id="PostMan-使用笔记"><a href="#PostMan-使用笔记" class="headerlink" title="PostMan 使用笔记"></a>PostMan 使用笔记</h1><p><img src="/images/PostMan/Postman.png" alt="Postman"></p><blockquote><p>一次使用 API 调试工具，之间都是之间采用的网页端输入各项信息，耗费时间过多且内容重复，学习使用 Postman</p></blockquote><span id="more"></span><ol><li>所使用的是 Chrome 插件版本。在之后应该会换成 Mac 版</li><li>简单的写下现在所知道的一些功能<ul><li>可根据网页返回的内容设置全局变量和环境变量</li><li>可分组保存，而且可以统一 Run 测试接口</li><li>可导出生成 Markdown 格式接口文档</li></ul></li></ol><p><img src="/images/PostMan/Postman-Environment.png" alt="Postman"></p><ul><li>环境变量，主要用于切换服务器地址，测试或者正式服务器</li><li>全局变量，主要是每个环境都需要用到且不容易改动</li></ul><p><img src="/images/PostMan/ManagerEnvironment.png" alt="Postman"></p><p><img src="/images/PostMan/ManagerEnvironmentList.png" alt="Postman"></p><ul><li>Globlas 里设置的是全局变量</li><li>使用变量的时，需要使用双花括号</li><li>在 URl 地址，Header，Pre-request Script，Tests 中都可以使用变量</li><li>在 request 之后 <em>{}</em> 中的变量会被替换成实际的值</li></ul><p><img src="/images/PostMan/Postman-URL.png" alt="Postman"><br><img src="/images/PostMan/ManagerEnvironmentKeyValues.png" alt="Postman"></p><ul><li>body 部分是用来传参数，以登录是需要的用户名和密码为例</li></ul><p><img src="/images/PostMan/Postman-Bodys.png" alt="Postman"></p><ul><li>header 头部文件，用到的是为 ck</li><li>自带的选项还没有进行研究了解</li></ul><p><img src="/images/PostMan/Postman-Header.png" alt="Postman"><br><img src="/images/PostMan/Postman-Headers.png" alt="Postman"></p><h1 id="Pre-request-Script-amp-amp-Tests"><a href="#Pre-request-Script-amp-amp-Tests" class="headerlink" title="Pre-request Script &amp;&amp; Tests"></a>Pre-request Script &amp;&amp; Tests</h1><ul><li>Pre-request Script 脚本是在执行 request 请求之前运行，可以在里面预先些所需的变量</li><li>Tests 脚本是在 request 请求之后运行，可以对返回信息进行提取过滤，比如例子中，在脚本中动态设置了全局变量 ck 值</li><li>脚本运行成功后，或在下方的提示框中可查看，会出现绿色的 PASS 提示框</li></ul><p><img src="/images/PostMan/Postman-Tests.png" alt="Postman"></p><p><a href="https://blog.csdn.net/zxz_tsgx/article/details/51681080">参考地址-Postman-变量/环境/过滤</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>工具</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>API</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>数据持久化</title>
+    <link href="/2018/09/18/DatacdPersistence/"/>
+    <url>/2018/09/18/DatacdPersistence/</url>
+    
+    <content type="html"><![CDATA[<h2 id="UserDefaults"><a href="#UserDefaults" class="headerlink" title="UserDefaults"></a>UserDefaults</h2><pre><code>Let uf = UserDefaults.standard</code></pre><blockquote><p>一般用来存储用户信息和基础配置信息 （参考 ： <a href="https://www.jianshu.com/p/3796886b4953">简书数据持久化思路</a>）</p></blockquote><pre><code class="hljs 简单示例">uf.setValue(value,forKey : &quot;Key&quot;)   //存uf.integer(forKey : &quot;Key&quot;)    // 取(返回 Int 类型)</code></pre><ul><li>OC 中需要调用 synchronize 方法同步</li><li>Swift 则已废弃了此方法，不需要手动调用</li><li>以上是最基本的用法，但是也是最危险的用法<ol><li>在应用内随意覆盖删除数据，直接使用字符串作为 key 值，在存数据和取数据时所使用的 key 时不一致</li><li>作为一个全局的单例, 如果需要存储账户信息, 配置信息, 此时按照最基本的使用方式, 简单的使用 key 来存取数据, 那么 key 值会随着存储的数据越来越多, 到时候不管是新接手的小伙伴还是我们自己都很难明白每个 key 值对应的意义. 也就是说我们不能根据方法调用的上下文明确知道我存取数据的具体含义, 代码的可读性和可维护性就不高</li></ol></li></ul><span id="more"></span><h2 id="进阶的两个方面-—–-一致性和上下文"><a href="#进阶的两个方面-—–-一致性和上下文" class="headerlink" title="进阶的两个方面 —– 一致性和上下文"></a>进阶的两个方面 —– 一致性和上下文</h2><h3 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h3><ul><li>常量保存</li></ul><pre><code class="hljs 示例">    let defaultStand = UserDefaults.standard    let defaultKey = &quot;defaultKey&quot;    defaultStand.set(123, forKey: defaultKey)    defaultStand.integer(forKey: defaultKey)//分组存储    struct AccountInfo    &#123; let userName = &quot;userName&quot;    let avatar = &quot;avatar&quot;    let password = &quot;password&quot;    let gender = &quot;gender&quot;    let age = &quot;age&quot; &#125;// 登录信息    struct LoginInfo    &#123; let token = &quot;token&quot;    let userId = &quot;userId&quot; &#125;// 配置信息    struct SettingInfo    &#123; let font = &quot;font&quot;    let backgroundImage = &quot;backgroundImage&quot; &#125;    let defaultStand = UserDefaults.standard// 账户信息    defaultStand.set(&quot;Chilli Cheng&quot;, forKey: AccountInfo().avatar)    defaultStand.set(18, forKey: AccountInfo().age)// 登录信息    defaultStand.set(&quot;achj167&quot;, forKey: LoginInfo().token)// 配置信息    defaultStand.set(24, forKey: SettingInfo().font)    let userName = defaultStand.string(forKey: AccountInfo().avatar)    let age = defaultStand.integer(forKey: AccountInfo().age)    let token = defaultStand.string(forKey: LoginInfo().token)    let font = defaultStand.integer(forKey: SettingInfo().font)</code></pre><blockquote><p>以上述为例，将配置信息，用户信息，登录信息三个类归到一个大类中，解决上下文问题</p></blockquote><ul><li>上下文</li></ul><pre><code class="hljs 示例">    struct UserDefaultKeys        &#123; // 账户信息            struct AccountInfo                &#123;                    let userName = &quot;userName&quot;                    let avatar = &quot;avatar&quot;                    let password = &quot;password&quot;                    let gender = &quot;gender&quot; let age = &quot;age&quot;                &#125;        // 登录信息            struct LoginInfo                &#123;                    let token = &quot;token&quot;                    let userId = &quot;userId&quot;                &#125;        // 配置信息            struct SettingInfo                &#123;                    let font = &quot;font&quot;                    let backgroundImage = &quot;backgroundImage&quot;                &#125;        &#125;    let defaultStand = UserDefaults.standard// 账户信息    defaultStand.set(&quot;Chilli Cheng&quot;, forKey:UserDefaultKeys.AccountInfo().userName)    defaultStand.string(forKey: UserDefaultKeys.AccountInfo().userName)</code></pre><blockquote><p>上述方法有一个可改进的地方，就是避免初始化。使用静态变量，直接通过类型名字访问属性的值。</p></blockquote><pre><code class="hljs 上下文">struct AccountInfo &#123;    static let userName = &quot;userName&quot;    static let avatar = &quot;avatar&quot;    static let password = &quot;password&quot;    static let gender = &quot;gender&quot;    static let age = &quot;age&quot; &#125;    defaultStand.set(&quot;Chilli Cheng&quot;, forKey: UserDefaultKeys.AccountInfo.userName)    defaultStand.string(forKey: UserDefaultKeys.AccountInfo.userName)</code></pre><h4 id="枚举分组存储"><a href="#枚举分组存储" class="headerlink" title="枚举分组存储"></a>枚举分组存储</h4><blockquote><p>可以让我们不用每次都手动设置初始值，前提是遵守 String 协议<br>不设置 rawValue 的时候，系统会默认给枚举 case 设置跟成员名字相同的原始值 （rawValue）</p></blockquote><pre><code class="hljs 枚举">struct UserDefaultKeys &#123;// 账户信息    enum AccountInfo: String &#123;        case userName        case age    &#125;&#125;// 存账户信息  defaultStand.set(&quot;Chilli Cheng&quot;, forKey: UserDefaultKeys.AccountInfo.userName.rawValue)  defaultStand.set(18, forKey: UserDefaultKeys.AccountInfo.age.rawValue)// 取存账户信息  defaultStand.string(forKey: UserDefaultKeys.AccountInfo.userName.rawValue)  defaultStand.integer(forKey: UserDefaultKeys.AccountInfo.age.rawValue)</code></pre><h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><blockquote><p>代码过于冗余<br>优化 —— 先抓鱼，砍熊掌<br>Key 值路径过长 — 原因： 分组存储 key，让 key 有上下文，可读性高<br>rawValue 没有必要写 — 原因： 使用枚举存储 key，无需手动设置初始值</p></blockquote><h4 id="扩展-UserDefault-自定义方法"><a href="#扩展-UserDefault-自定义方法" class="headerlink" title="扩展 UserDefault 自定义方法"></a>扩展 UserDefault 自定义方法</h4><pre><code class="hljs 扩展">extension UserDefaults &#123;    enum AccountKeys: String &#123;        case userName        case age        &#125;    static func set(value: String, forKey key: AccountKeys) &#123;        let key = key.rawValue UserDefaults.standard.set(value, forKey: key)    &#125;    static func string(forKey key: AccountKeys) -&gt; String? &#123;        let key = key.rawValue        return UserDefaults.standard.string(forKey: key)    &#125;&#125;// 存取数据  UserDefaults.set(value: &quot;chilli cheng&quot;, forKey: .userName)  UserDefaults.string(forKey: .userName)</code></pre><h5 id="前置上下文"><a href="#前置上下文" class="headerlink" title="前置上下文"></a>前置上下文</h5><blockquote><p>实现前置，需扩展 UserDefault ，添加 AccountInfo 属性，再调用 AccountInfo 方法，key 值由 AccountInfo 来提供,<br>因为 AccountInfo 提供分组的 key，自定义的一个分组信息, 需要实现既定方法，想到使用协议。<br>Swift 中可以对协议 protocol 进行扩展, 提供协议方法的默认实现, 如果遵守协议的类/结构体/枚举实现了该方法, 就会覆盖掉默认的方法.</p></blockquote><pre><code class="hljs 上下文">    protocol UserDefaultsSettable &#123;    /* 只要 AccountInfo 类/结构体/枚举遵守这个协议, 就能调用存取方法,至关重要的问题在于， AccountKeys 从哪儿来?    我们上面是把 AccountKeys 写在UserDefaults扩展里面的, 在协议里面如何知道这个变量是什么类型呢?    而且还使用到了 rawValue, 为了通用性, 那就需要在协议里关联类型, 而且传入的值能拿到 rawValue,    那么这个关联类型需要遵守 RawRepresentable 协议, 这个很关键!!! */    associatedtype defaultKeys: RawRepresentable &#125;    /*必须在扩展中使用 where 子语句限制关联类型是字符串类型, 因为 UserDefaults 的 key 就是字符串类型.    where defaultKeys.RawValue==String，其他类型同理*/    extension UserDefaultsSettable where defaultKeys.RawValue==String &#123;        static func set(value: String?, forKey key: defaultKeys) &#123;            let aKey = key.rawValue            UserDefaults.standard.set(value, forKey: aKey)        &#125;            static func string(forKey key: defaultKeys) -&gt; String? &#123;                let aKey = key.rawValue                return UserDefaults.standard.string(forKey: aKey)            &#125;    &#125;```上下文在 UserDefault 的扩展中定义分组```上下文    extension UserDefaults &#123;        // 账户信息        struct AccountInfo: UserDefaultsSettable &#123;                enum defaultKeys: String &#123;                  case userName                  case age                  &#125;            &#125;        // 登录信息        struct LoginInfo: UserDefaultsSettable &#123;            enum defaultKeys: String &#123;                case token                case userId            &#125;        &#125;    &#125;    //存取数据    UserDefaults.AccountInfo.set(value: &quot;chilli cheng&quot;, forKey: .userName)    UserDefaults.AccountInfo.string(forKey: .userName)    UserDefaults.LoginInfo.set(value: &quot;ahdsjhad&quot;, forKey: .token)    UserDefaults.LoginInfo.string(forKey: .token)</code></pre><p>如果还有需要存储的分类数据, 同样在 UserDefaults extension 中添加一个结构体, 遵守 UserDefaultsSettable 协议, 实现 defaultKeys 枚举属性</p><p>在枚举中设置该分类存储数据所需要的 key.UserDefaultsSettable 协议中只实现了存取 string 类型的数据,可以自行在 UserDefaultsSettable 协议中添加 Int, Bool 等类型方法</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>基础</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>沙盒</tag>
+      
+      <tag>数据库</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>正则表达式</title>
+    <link href="/2018/09/05/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
+    <url>/2018/09/05/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/</url>
+    
+    <content type="html"><![CDATA[<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><blockquote><p>正则表达式也是用来进行文本匹配的工具<br>能更精确地描述你的需求——当然，代价就是更复杂<br>比如你可以编写一个正则表达式，用来查找所有以 0 开头，后面跟着 2-3 个数字，然后是一个连字号“-”，最后是 7 或 8 位数字的字符串(像 010-12345678 或 0376-7654321)。</p></blockquote><h2 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h2><span id="more"></span><h3 id="元字符"><a href="#元字符" class="headerlink" title="元字符"></a>元字符</h3><ul><li><p>\b<br>\b 是正则表达式规定的一个特殊代码（好吧，某些人叫它元字符，metacharacter），代表着单词的开头或结尾，也就是单词的分界处。虽然通常英文的单词是由空格，标点符号或者换行来分隔的，但是\b 并不匹配这些单词分隔字符中的任何一个，它只匹配一个位置<br>当查找的对象为 hi 时，包含此对象的比如 him，history 等也会被找出来，所以准确查找 hi 时，可以使用 \bhi\b</p></li><li><p>. (英文句号)<br>元字符，匹配除了换行符以外的任意字符</p></li><li><p>*<br>元字符，指定 * 前边的内容可以连续重复使用任意次以使整个表达式得到匹配</p><blockquote><p>. _ 代表任意数量的不包含换行的字符<br>要找的是 hi 后面不远处跟着一个 Lucy，你应该用 \bhi\b._\bLucy\b</p></blockquote></li><li><p>\d<br>元字符，匹配一位数字(0，或 1，或 2，或……)</p><blockquote><p>\d+ 匹配 1 个或更多连续的数字。这里的 + 是和 * 类似的元字符，不同的是 * 匹配重复任意次(可能是 0 次)，而 + 则匹配重复 1 次或更多次</p></blockquote></li><li><p>-<br>连字符，只匹配它本身</p><blockquote><p>0\d\d-\d\d\d\d\d\d\d\d 匹配这样的字符串：以 0 开头，然后是两个数字，然后是一个连字号 “-”，最后是 8 个数字(也就是中国的电话号码。当然，这个例子只能匹配区号为 3 位的情形)<br>为了避免那么多烦人的重复，我们也可以这样写这个表达式：0\d{2}-\d{8}。这里 \d 后面的{2}({8})的意思是前面\d 必须连续重复匹配 2 次(8 次)</p></blockquote></li><li><p>\s<br>匹配任意的空白符，包括空格，制表符(Tab)，换行符，中文全角空格等</p></li><li><p>\w<br>匹配字母或数字或下划线或汉字等</p><blockquote><p>\ba\w<em>\b 匹配以字母 a 开头的单词——先是某个单词开始处 (\b)，然后是字母 a ,然后是任意数量的字母或数字 (\w</em>)，最后是单词结束处 (\b)<br>\b\w{6}\b 匹配刚好 6 个字符的单词</p></blockquote></li><li><p>^</p><blockquote><p>匹配字符串的开始</p></blockquote></li><li><p>$</p><blockquote><p>匹配字符串的结束<br>元字符 ^（和数字 6 在同一个键位上的符号）和 $ 都匹配一个位置，这和 \b 有点类似。^ 匹配你要用来查找的字符串的开头，$ 匹配结尾<br>比如一个网站如果要求你填写的 QQ 号必须为 5 位到 12 位数字时，可以使用：^\d{5,12}$</p></blockquote></li><li><p>查找元字符本身时，使用 \ 来进行字符转义</p><blockquote><p>例如：deerchao.net 匹配 deerchao.net，C:\Windows 匹配 C:\Windows</p></blockquote></li></ul><h2 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h2><ul><li>*<blockquote><p>重复零次或更多次</p></blockquote></li><li>+<blockquote><p>重复一次或更多次</p></blockquote></li><li>?<blockquote><p>重复零次或一次</p></blockquote></li><li>{n}<blockquote><p>重复 n 次</p></blockquote></li><li>{n,}<blockquote><p>重复 n 次或更多次</p></blockquote></li><li>{n,m}<blockquote><p>重复 n 到 m 次</p></blockquote></li></ul><p>[参考资料]<a href="http://deerchao.net/tutorials/regex/regex.htm">正则表达式入门教程</a><br><a href="https://stackoverflow.com/tags/regex/info">StackFlow</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>基础</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>正则</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>关键字</title>
+    <link href="/2018/09/04/%E5%85%B3%E9%94%AE%E5%AD%97/"/>
+    <url>/2018/09/04/%E5%85%B3%E9%94%AE%E5%AD%97/</url>
+    
+    <content type="html"><![CDATA[<h1 id="lt-T-gt"><a href="#lt-T-gt" class="headerlink" title="&lt; T &gt;"></a>&lt; T &gt;</h1><ol><li>函数名后</li></ol><pre><code class="hljs 示例">func swapTwoValues&lt;T&gt;(inout a:T, inout _ b:T) &#123;    let tempValue = a    a = b    b = tempValue&#125;var someInt = 3,someIntTwo = 5var oneGenericValue = &quot;one&quot;var twoGenericValue = &quot;two&quot;swapTwoValues(&amp;oneGenericValue, &amp;twoGenericValue)swapTwoValues(&amp;someInt, &amp;someIntTwo)print(oneGenericValue) // twoprint(someIntTwo)      // 3</code></pre><span id="more"></span><ul><li>上面的代码可以看<em>泛型</em> Generics 语法</li><li>占位类型名 T 放在 &lt;&gt; 中，尖括号告诉 Swift ，T 在上述函数中是一个占位类型名</li><li>T 没有明确表示是什么类型，但是上述函数中可以看出 a 和 b 必须是 T 类型</li></ul><blockquote><p>引申：泛型<br>泛型 能让我们写出灵活可重复使用的方法和类型<br>Array 和 Dictionary 都是泛型容器</p></blockquote><ul><li>举例</li></ul><pre><code class="hljs Head">struct GenericStack&lt;T&gt; &#123;    var items = [T]()    mutating func push(item: T) &#123;        items.append(item)    &#125;    mutating func pop() -&gt;T &#123;        return items.removeLast()    &#125;&#125;var stackOfStrings = GenericStack&lt;String&gt;()stackOfStrings.push(&quot;uno&quot;)stackOfStrings.push(&quot;dos&quot;)stackOfStrings.push(&quot;tres&quot;)stackOfStrings.push(&quot;cuatro&quot;)let popItem = stackOfStrings.pop() // popItem 等于 &quot;cuatro&quot;</code></pre><h1 id="mutating"><a href="#mutating" class="headerlink" title="mutating"></a>mutating</h1><ol><li>Swift 中的 protocol 不仅可以被 class 类型实现，也适用于 struct 和 enum</li><li>mutating 修饰方法为了能在该方法中修改 struct 或者是 enum 的变量</li></ol><pre><code class="hljs 示例">protocol Vehicle&#123;    var numberOfWheels: Int &#123;get&#125;    var color: UIColor &#123;get set&#125;    mutating func changeColor()&#125;struct MyCar: Vehicle &#123;    let numberOfWheels = 4    var color = UIColor.blueColor()    mutating func changeColor() &#123;        color = UIColor.redColor()    &#125;&#125;</code></pre><ul><li>如果如果把 protocol 定义中的 mutating 去掉的话，MyCar 就怎么都过不了编译了，会报错说没有实现接口</li><li>如果去掉 struct 中的 mutating 的话，会报错说不能改变结构体成员</li><li>另一个例子</li></ul><pre><code class="hljs 示例">struct IntStack &#123;    var items = [Int]()    mutating func push(item: Int) &#123;        items.append(item)    &#125;    mutating func pop() -&gt;Int &#123;        return items.removeLast()    &#125;&#125;let pushItem = 5var intStack = IntStack()intStack.push(pushItem)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>开发</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>泛型</tag>
+      
+      <tag>高级函数</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Xcode</title>
+    <link href="/2018/09/03/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/"/>
+    <url>/2018/09/03/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/</url>
+    
+    <content type="html"><![CDATA[<h1 id="先前"><a href="#先前" class="headerlink" title="先前"></a>先前</h1><blockquote><p>使用带有插件的 Xcode，容易卡死和 crash，所以使用自签名 xcode</p></blockquote><ol><li><p>先复制备份一个 Xcode，不带任何插件（复制版 xcode 使用时模拟器提示连不上网络，无法启动，需要改动名字）</p></li><li><p>重新创建证书<br>打开电脑里的钥匙串 -&gt; 菜单栏钥匙串访问 -&gt; 证书助理 -&gt; 创建证书… -&gt; 名称 XcodeSinger，自签名根证书身份类型，代码签名证书类型</p></li><li><p>命令行<br>先跟名字，后跟的 app 路径</p><pre><code class="hljs 示例">sudo codesign -f -s XcodeSigner /Applications/Xcode.app</code></pre></li><li><p>重启，选择 loadBuddle</p></li><li><p>失效插件解决</p><pre><code class="hljs 示例">find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I&#123;&#125; defaults write &#123;&#125; DVTPlugInCompatibilityUUIDs -array-add `defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID`</code></pre></li><li><p>不支持的插件或不兼容插件需要删除</p></li></ol><span id="more"></span><h1 id="简单安装-Alcatraz-—-插件管理器"><a href="#简单安装-Alcatraz-—-插件管理器" class="headerlink" title="简单安装 Alcatraz — 插件管理器"></a>简单安装 Alcatraz — 插件管理器</h1><ol><li><p>简介<br>Alcatraz 是一个能帮你管理 Xcode 插件丶模版及颜色配置的工具.它可以直接集成在 Xcode 的图形界面中,让你感觉就像在使用 Xcode 自带的功能一样.</p></li><li><p>安装和删除<br>使用如下的终端来安装 Alcatraz:</p><pre><code class="hljs 示例">curl -fsSL https://raw.github.com/supermarin/Alcatraz/master/Scripts/install.sh | sh</code></pre><p>如果你不想使用 Alcatraz 了,可以使用如下命令来删除:</p><pre><code class="hljs 示例">rm -rf ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/Alcatraz.xcplugin</code></pre><p>删除所有通过 Alcatraz 安装的安装包</p><pre><code class="hljs 示例">rm -rf ~/Library/Application\ Support/Alcatraz/</code></pre></li><li><p>重启 Xcode，弹出‘Load Buddle’选项提示框</p></li></ol><h1 id="真机手机系统-beat-版测试"><a href="#真机手机系统-beat-版测试" class="headerlink" title="真机手机系统 beat 版测试"></a>真机手机系统 beat 版测试</h1><ol><li><p>在 xcode 中增加测试版系统调试包，这是调试包位置</p><pre><code class="hljs 示例">/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport</code></pre></li><li><p>最新调试包下载，（iOS12）</p></li></ol><p><a href="https://pan.baidu.com/s/1nSn9dkzuYHBig6mzLymbZA">百度网盘下载地址</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>工具</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>xcode</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Delegate</title>
+    <link href="/2018/08/30/Delegate/"/>
+    <url>/2018/08/30/Delegate/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Delegate-使用"><a href="#Delegate-使用" class="headerlink" title="Delegate 使用"></a>Delegate 使用</h1><ul><li>在被代理的对象中，声明代理和代理方法。在类中弱引用代理对象<br>弱引用原因:因为 View 作为 delegate 对 ViewController 是强引用，同时 ViewController 对 View 也是强引用，这就出现了循环引用。ViewController 引用着 View，并且 View 引用着 ViewController，两者的引用计数都不会变成 0，所以它们都不会被销毁，从而造成内存泄露</li></ul><pre><code class="hljs 示例">//在类之前声明protocol objectNeedDelegate: class &#123;    // class关键字用来约束协议，使得只能被引用类型的数据(也就是类)使用    func objectMethod() -&gt; Void&#125;//在类中声明class className: superClass&#123;    //弱引用变量，指向引用类型（UIViewController）    weak var delegate : objectNeedDelegate?    func useDelegate()&#123;        delegate.?.objectMethod()    &#125;&#125;</code></pre><span id="more"></span><p><img src="/images/delegate.png" alt="DelegateImage"></p><ul><li>在代理对象中，声明实现代理和代理方法。</li></ul><pre><code class="hljs 示例">//在类之前声明class  delegateMakeClass: superClass,objectNeedDelegate &#123;    let object = className()    object.delegate = self    func useDelegate()&#123;        //实现代理方法    &#125;&#125;</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>基础</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>代理</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>LeetCode --- 字符串</title>
+    <link href="/2018/08/28/LeetCodeString/"/>
+    <url>/2018/08/28/LeetCodeString/</url>
+    
+    <content type="html"><![CDATA[<h1 id="字符串倒叙输出"><a href="#字符串倒叙输出" class="headerlink" title="字符串倒叙输出"></a>字符串倒叙输出</h1><h2 id="原题是在Codewars上要求是reverse（“hello-world”）-“world-hello-”-reverse（“hi-there”）-“there-hi”"><a href="#原题是在Codewars上要求是reverse（“hello-world”）-“world-hello-”-reverse（“hi-there”）-“there-hi”" class="headerlink" title="原题是在Codewars上要求是reverse（“hello world”）==“world hello ”   reverse（“hi there”）==“there hi”"></a>原题是在Codewars上要求是reverse（“hello world”）==“world hello ”   reverse（“hi there”）==“there hi”</h2><pre><code class="hljs Head">#import &lt;Foundation / Foundation.h&gt;NSString * reverse（NSString * text）&#123;    //字符串变成数据，根据引号里对象分离    NSArray * words = [text componentsSeparatedByString：@“”];    //数据倒序遍历，所有对象    NSArray * reversed = [[words reverseObjectEnumerator] allObjects];    //数组变成字符串，根据引号内对象隔开    return [reversed componentsJoinedByString：@“”];&#125;</code></pre><span id="more"></span><p>下面的是题目中一开始给好的方法结构</p><pre><code class="hljs Head">＃import&lt;Foundation/ Foundation.h&gt;NSString*   reverse(NSString *text)&#123;    return text;&#125;</code></pre><p>在上述的解决方案中，存在一个隐患。如果存在多个空格符，不影响输出结果，但是在内存地址上有问题</p><p>如“I am a boy”中有三个空格符，当使用下面的方法中</p><pre><code class="hljs Head">NSArray *words = [text componentsSeparatedByString:@&quot; &quot;];</code></pre><p>三个空位符的内存是同一个，如果要根据空格符做出操作会出现跳过其中两个空格符的情况。<br><a href="https://blog.csdn.net/leikezhu1981/article/details/16802635">参考</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>字符串</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>LeetCode --- 数组类算法</title>
+    <link href="/2018/08/28/LeetCodeNarray/"/>
+    <url>/2018/08/28/LeetCodeNarray/</url>
+    
+    <content type="html"><![CDATA[<h1 id="LeetCode-—-数组算法"><a href="#LeetCode-—-数组算法" class="headerlink" title="LeetCode —  数组算法"></a>LeetCode —  数组算法</h1><h2 id="从排序数组中删除重复项"><a href="#从排序数组中删除重复项" class="headerlink" title="从排序数组中删除重复项"></a>从排序数组中删除重复项</h2><blockquote><p>不使用额外的数组空间，空间复杂度为O(1)<br>排序数组，不考虑非连续重复<br>原地修改输入，修改输入数组，返回数组长度</p></blockquote><pre><code class="hljs 示例">class Solution &#123;    func removeDuplicates(_ nums: inout [Int]) -&gt; Int &#123;        if nums.count == 0 || nums.count == 1&#123;            return nums.count        &#125;        var position = 0 //第二个指针，指向当前不重复位置            for i in 0..&lt;nums.count &#123; //第一个指针，指向对比位置                if nums[position] != nums[i]&#123;//遍历比较到第一个不相等的元素                    position += 1 //移动第二个指针，准备修改数组                    nums[position] = nums[i]                &#125;            &#125;        return position + 1//末位修改元素下角标    &#125;&#125;let solution = Solution()var numsArray = [0,0,1,2,3,3,5,5]let len = solution.removeDuplicates(&amp;numsArray)print(&quot;\(len)&quot;)</code></pre><span id="more"></span><h2 id="买卖股票的最佳时机"><a href="#买卖股票的最佳时机" class="headerlink" title="买卖股票的最佳时机"></a>买卖股票的最佳时机</h2><blockquote><p>前一个数比后一个数小的时候，买入股票<br>不可连续买入，即连续增大时时候不做操作<br>前一个数比后一个数大的时候，卖出股票<br>连续减下时，如若已经买入则最后一个值收益最大，未买入则一直不操作</p></blockquote><pre><code class="hljs 示例">class Solution &#123;    func maxProfit(_ prices: [Int]) -&gt; Int &#123;        if prices.count &lt;= 1 &#123;            return 0        &#125;        var profit = 0 //收益        var price = -1 //价格,特殊情况 -- 数组为零时会出现漏算        for j in 0..&lt;prices.count&#123;            if j  == (prices.count - 1) &#123;                if price != -1&#123;                    profit += prices[j] - price                &#125;            &#125;else&#123;                if prices[j+1] &gt; prices[j]&#123;                    if price == -1 &#123;                        price = prices[j]                    &#125;                &#125;else&#123;                if price != -1 &#123;                    profit += prices[j] - price                    price = -1                    &#125;                &#125;            &#125;        &#125;        return profit    &#125;&#125;</code></pre><h2 id="旋转数组"><a href="#旋转数组" class="headerlink" title="旋转数组"></a>旋转数组</h2><blockquote><p>思考：即最后一位数插入到第一个位置上<br>旋转几步，即是插入几次<br>要求是 使用空间复杂度为 O(1) 的原地算法 ，尽可能多解</p></blockquote><h3 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h3><ul><li>此方法适用于循环次数较少</li></ul><pre><code class="hljs 解答">class Solution &#123;    func rotate(_ nums: inout [Int], _ k: Int) &#123;        if k &gt; = nums.count&#123;            k = k%nums.count        &#125;        for _ in 0..&lt;k&#123;            //移除最后一个元素并返回此对象            let lastnum = nums.removeLast()            nums.insert(lastnum,at: 0)        &#125;    &#125;&#125;</code></pre><h3 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h3><ul><li>此方法适用于循环次数较大，根据下角标直接修改数值</li></ul><pre><code class="hljs 解答">class Solution &#123;    func rotate(_ nums: inout [Int], _ k: Int) &#123;        // 此方法中，应该是在底层额外保存了一份数组，所以不会出现数据错误        for (index,value) in nums.enumerated()&#123;            let curIndex = (index + k)%nums.count            nums[curIndex] = value        &#125;    &#125;&#125;</code></pre><h1 id="存在重复"><a href="#存在重复" class="headerlink" title="存在重复"></a>存在重复</h1><blockquote><p>当数组过大时，时间复杂度过大</p></blockquote><pre><code class="hljs 解答">class Solution &#123;    func containsDuplicate(_ nums: [Int]) -&gt; Bool &#123;        for i in 0..&lt;nums.count&#123;            for j in i..&lt;nums.count&#123;                if i != j&#123;                    if nums[i] == nums[j] &#123;                        return true                    &#125;                &#125;            &#125;        &#125;        return false    &#125;&#125;</code></pre><ul><li>网上优秀答案思路<ol><li>先排序，然后对比前后两个元素的值</li><li>利用 Set 集合去重，若和数组长度不一致则是有相同元素</li><li>利用字典，元素为key，无重复则添加到字典里</li></ol></li></ul><h1 id="只出现一次的数字"><a href="#只出现一次的数字" class="headerlink" title="只出现一次的数字"></a>只出现一次的数字</h1><blockquote><p>先进行了衣蛾大小排序，题目已确定有且仅有，所以目标元素会在偶数下角标</p></blockquote><pre><code class="hljs 解答">class Solution &#123;    func singleNumber(_ nums: [Int]) -&gt; Int &#123;        if nums.count == 1&#123;            return nums[0]        &#125;        var numArr =  nums        numArr.sort()        print(&quot;\(numArr)&quot;)        for i in 0..&lt;numArr.count-1&#123;            print(&quot;\(i)&quot;)            if i%2 == 0&#123;                if numArr[i] != numArr[i+1]&#123;                    return numArr[i]                &#125;            &#125;            if i == numArr.count-2&#123;                    return numArr[i+1]                &#125;        &#125;        return 999    &#125;&#125;</code></pre><h1 id="两个数组的交集"><a href="#两个数组的交集" class="headerlink" title="两个数组的交集"></a>两个数组的交集</h1><blockquote><p>数组转化成 Set 集合求交集<br>判断交集中每个元素的出现次数，选取在两个数组中相等或较小的次数</p></blockquote><pre><code class="hljs 解答">class Solution &#123;    func intersect(_ nums1: [Int], _ nums2: [Int]) -&gt; [Int] &#123;        let set1 = Set.init(nums1)        let set2 = Set(nums2)        let setIn = set1.intersection(set2)        var tagetArr = Array(setIn)        for temp in setIn&#123;        var i = 0        var j = 0            for  numone in nums1&#123;                if temp == numone&#123;                    i += 1                &#125;            &#125;            for numtwo in nums2&#123;                if temp == numtwo&#123;                    j += 1                &#125;            &#125;            var minNum = 0            if j &gt;= i &#123;                minNum = i            &#125; else&#123;                minNum = j            &#125;            if minNum &gt;= 2 &#123;                for _ in 0..&lt;(minNum-1)&#123;                    tagetArr.append(temp)                &#125;            &#125;        &#125;        return tagetArr    &#125;&#125;</code></pre><h1 id="加一"><a href="#加一" class="headerlink" title="加一"></a>加一</h1><blockquote><p>数组中每个元素都是单个正整数<br>特殊情况是在当前数为 9 ，需要进位时改变高位数字</p></blockquote><pre><code class="解答">class Solution &#123;    func plusOne(_ digits: [Int]) -&gt; [Int] &#123;        var nums1 = digits        let count = nums1.count        var curIndex = count - 1        let curEle = nums1[curIndex]        if curEle != 9&#123;            nums1[curIndex] += 1        &#125;else&#123;            nums1[curIndex] = 0            while curIndex &gt; 0 &#123;                curIndex -= 1                if nums1[curIndex] != 9&#123;                    nums1[curIndex] += 1                    break                &#125;else&#123;                    nums1[curIndex] = 0                &#125;            &#125;            if nums1[0] == 0 &#123;                nums1.insert(1, at: 0)            &#125;        &#125;        return nums1`</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>算法</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>数组</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>书签整理</title>
+    <link href="/2018/08/27/BookmarkConverter/"/>
+    <url>/2018/08/27/BookmarkConverter/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Swift"><a href="#Swift" class="headerlink" title="Swift"></a>Swift</h1><p><a href="http://www.swiftguide.cn/">学习指引</a><br><a href="https://swift.zeef.com/robin.eggenkamp">编程全面信息</a><br><a href="https://www.appcoda.com/swift-2/">AppCode</a><br><a href="https://exercism.io/my/tracks/swift">代码练习</a><br><a href="https://www.raywenderlich.com/">raywenderlich</a><br><a href="https://github.com/CocoaChina-editors/Welcome-to-Swift/blob/master/UsingSwiftwithCocoaandObjective-C%E4%B8%AD%E6%96%87%E6%89%8B%E5%86%8C.md">UsingSwiftwithCocoaandObjective-C中文手册</a><br><a href="http://wiki.jikexueyuan.com/project/swift/">The Swift Programming Language开发中文手册</a><br><a href="http://swift.gg/2016/05/18/api-design-guidelines/">SwiftGG 翻译组</a><br><a href="https://developer.apple.com/ios/human-interface-guidelines/overview/themes/">官方交互UI教程</a></p><span id="more"></span><h1 id="计算机"><a href="#计算机" class="headerlink" title="计算机"></a>计算机</h1><p><a href="https://study.163.com/curricula/cs.htm">网易云课堂</a><br><a href="https://xiaozhuanlan.com/ios-swift-interview">小专栏</a></p><h1 id="在线编码"><a href="#在线编码" class="headerlink" title="在线编码"></a>在线编码</h1><p><a href="https://www.topcoder.com/">topCode</a><br><a href="https://leetcode-cn.com/">LeetCode</a><br><a href="https://projecteuler.net/archives">Projecteuler</a><br><a href="https://codesignal.com/">codesignal</a><br><a href="https://www.lintcode.com/">https://www.lintcode.com/</a><br><a href="https://icpc.baylor.edu/worldfinals/problems">ACM-ICPC</a></p><h1 id="论坛社区"><a href="#论坛社区" class="headerlink" title="论坛社区"></a>论坛社区</h1><p><a href="https://learn-anything.xyz/">搜索和上传学习资料</a><br><a href="https://www.objc.io/">objc</a><br><a href="https://objccn.io/">objc中国</a><br><a href="http://jijiangshe.com/">技匠社</a><br><a href="https://isux.tencent.com/">原创馆–腾讯</a><br><a href="https://love2.io/">计算机类书籍在线阅读</a></p><h1 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h1><p><a href="http://blog.cnbang.net/archives/">Bang</a><br><a href="http://swifter.tips/">Swift-Tips</a><br><a href="https://github.com/Draveness/analyze">系统框架源码分析</a><br><a href="https://www.liaoxuefeng.com/">廖雪峰</a></p><h1 id="设计类"><a href="#设计类" class="headerlink" title="设计类"></a>设计类</h1><p><a href="https://alpha.wallhaven.cc/">图片精选</a><br><a href="https://www.pexels.com/">多尺寸图片下载</a><br><a href="https://www.chuangkit.com/">在线图片PS</a></p><h1 id="在线"><a href="#在线" class="headerlink" title="在线"></a>在线</h1><p><a href="http://app.xunjiepdf.com/pdf2excel">PDF格式转其他格式</a><br><a href="http://cv.qiaobutang.com/">乔布简历</a></p><h1 id="搜索类"><a href="#搜索类" class="headerlink" title="搜索类"></a>搜索类</h1><p><a href="https://www.zhongzijun.com/">种子帝</a><br><a href="https://librestock.com/">学术搜索</a></p><h1 id="个人"><a href="#个人" class="headerlink" title="个人"></a>个人</h1><p><a href="http://www.timecigar.com/">雪茄</a><br><a href="https://one-piece.cn/comic/">One Piece</a></p><h1 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h1><p><a href="http://pai.xunlei.com/">迅雷–下载地址转二维码</a><br><a href="http://idman.ys168.com/">IDM</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>资源</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>网站收录</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>博客初始化完成</title>
+    <link href="/2018/08/27/BlogStart/"/>
+    <url>/2018/08/27/BlogStart/</url>
+    
+    <content type="html"><![CDATA[<h1 id="博客搭建回顾"><a href="#博客搭建回顾" class="headerlink" title="博客搭建回顾"></a>博客搭建回顾</h1><h1 id="搭建-‘username-github-io‘-个人博客，参考网上教程即可"><a href="#搭建-‘username-github-io‘-个人博客，参考网上教程即可" class="headerlink" title="搭建 ‘username.github.io‘ 个人博客，参考网上教程即可"></a>搭建 ‘<em>username.github.io</em>‘ 个人博客，参考网上教程即可</h1><span id="more"></span><ul><li><p>遇到的问题</p><ol><li>在于实现本地页面部署到 github page 上，出现404问题<br> 解决方式：清空重新部署</li><li>绑定个人域名时，未录入正确解析地址<br> 获取当前 GitHub 地址，重新录入解析地址。DNS 使用默认推荐</li><li>自定义模块位置大小缺少技术支持<br> css，js 等<blockquote><p>ping + url地址可获取到 ip</p></blockquote></li></ol></li><li><p>标签，分类使用</p></li></ul><p>直接在文章内使用即可，模板框架内完成基本功能。</p><ul><li>参考地址</li></ul><p><a href="https://github.com/klugjo/hexo-theme-alpha-dust">旧博客模型 GitHub 地址</a><br><a href="https://zhuanlan.zhihu.com/p/32957389">搭建博客参考之一</a><br><a href="https://www.jianshu.com/p/bcdbe7347c8d">博客主题推荐参考</a><br><a href="https://hexo.io/zh-cn/">官方Hexo</a><br><a href="https://fontawesome.com/">博客图标来源</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>博客</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>博客框架搭建</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/2018/08/23/Hello-World/"/>
+    <url>/2018/08/23/Hello-World/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><!-- ## Quick Start --><span id="more"></span><h1 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h1><h2 id="新建文章"><a href="#新建文章" class="headerlink" title="新建文章"></a>新建文章</h2><pre><code class="hljs 示例">hexo new &quot;My New Post&quot;</code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h1 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h1><h2 id="运行本地服务"><a href="#运行本地服务" class="headerlink" title="运行本地服务"></a>运行本地服务</h2><pre><code class="hljs bash">hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h2 id="删除所有静态文件"><a href="#删除所有静态文件" class="headerlink" title="删除所有静态文件"></a>删除所有静态文件</h2><pre><code class="hljs bash">hexo c</code></pre><h1 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h1><h2 id="生成静态文件"><a href="#生成静态文件" class="headerlink" title="生成静态文件"></a>生成静态文件</h2><pre><code class="hljs bash">hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h1 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h1><h2 id="推送到远程仓库"><a href="#推送到远程仓库" class="headerlink" title="推送到远程仓库"></a>推送到远程仓库</h2><pre><code class="hljs bash">hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/deployment.html">Deployment</a></p><h1 id="图片使用"><a href="#图片使用" class="headerlink" title="图片使用"></a>图片使用</h1><h2 id="images-图片名"><a href="#images-图片名" class="headerlink" title="/images/图片名"></a>/images/图片名</h2><blockquote><p>图片地址 images 开头，在 VSC 中打不开，能在网页中显示，用 source 开头则相反</p></blockquote><pre><code class="hljs 示例">！[imagealt](iamgePath &quot;imagetitle&quot;)</code></pre>]]></content>
+    
+    
+    <categories>
+      
+      <category>基础</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>博客相关语法</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>

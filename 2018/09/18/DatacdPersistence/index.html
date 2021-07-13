@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/Icon/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="CBH">
+  <meta name="keywords" content="">
+  <title>数据持久化 - ZNCheng</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>ZNCheng</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/abouts/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2018-09-18 15:03">
+      Tuesday, September 18th 2018, 3:03 pm
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="UserDefaults"><a href="#UserDefaults" class="headerlink" title="UserDefaults"></a>UserDefaults</h2><pre><code>Let uf = UserDefaults.standard</code></pre><blockquote>
+<p>一般用来存储用户信息和基础配置信息 （参考 ： <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3796886b4953">简书数据持久化思路</a>）</p>
+</blockquote>
+<pre><code class="hljs 简单示例">uf.setValue(value,forKey : &quot;Key&quot;)   //存
+uf.integer(forKey : &quot;Key&quot;)    // 取(返回 Int 类型)</code></pre>
+
+<ul>
+<li>OC 中需要调用 synchronize 方法同步</li>
+<li>Swift 则已废弃了此方法，不需要手动调用</li>
+<li>以上是最基本的用法，但是也是最危险的用法<ol>
+<li>在应用内随意覆盖删除数据，直接使用字符串作为 key 值，在存数据和取数据时所使用的 key 时不一致</li>
+<li>作为一个全局的单例, 如果需要存储账户信息, 配置信息, 此时按照最基本的使用方式, 简单的使用 key 来存取数据, 那么 key 值会随着存储的数据越来越多, 到时候不管是新接手的小伙伴还是我们自己都很难明白每个 key 值对应的意义. 也就是说我们不能根据方法调用的上下文明确知道我存取数据的具体含义, 代码的可读性和可维护性就不高</li>
+</ol>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="进阶的两个方面-—–-一致性和上下文"><a href="#进阶的两个方面-—–-一致性和上下文" class="headerlink" title="进阶的两个方面 —– 一致性和上下文"></a>进阶的两个方面 —– 一致性和上下文</h2><h3 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h3><ul>
+<li>常量保存</li>
+</ul>
+<pre><code class="hljs 示例">    let defaultStand = UserDefaults.standard
+    let defaultKey = &quot;defaultKey&quot;
+    defaultStand.set(123, forKey: defaultKey)
+    defaultStand.integer(forKey: defaultKey)
+//分组存储
+    struct AccountInfo
+    &#123; let userName = &quot;userName&quot;
+    let avatar = &quot;avatar&quot;
+    let password = &quot;password&quot;
+    let gender = &quot;gender&quot;
+    let age = &quot;age&quot; &#125;
+// 登录信息
+    struct LoginInfo
+    &#123; let token = &quot;token&quot;
+    let userId = &quot;userId&quot; &#125;
+// 配置信息
+    struct SettingInfo
+    &#123; let font = &quot;font&quot;
+    let backgroundImage = &quot;backgroundImage&quot; &#125;
+
+    let defaultStand = UserDefaults.standard
+// 账户信息
+    defaultStand.set(&quot;Chilli Cheng&quot;, forKey: AccountInfo().avatar)
+    defaultStand.set(18, forKey: AccountInfo().age)
+// 登录信息
+    defaultStand.set(&quot;achj167&quot;, forKey: LoginInfo().token)
+// 配置信息
+    defaultStand.set(24, forKey: SettingInfo().font)
+    let userName = defaultStand.string(forKey: AccountInfo().avatar)
+    let age = defaultStand.integer(forKey: AccountInfo().age)
+    let token = defaultStand.string(forKey: LoginInfo().token)
+    let font = defaultStand.integer(forKey: SettingInfo().font)</code></pre>
+
+<blockquote>
+<p>以上述为例，将配置信息，用户信息，登录信息三个类归到一个大类中，解决上下文问题</p>
+</blockquote>
+<ul>
+<li>上下文</li>
+</ul>
+<pre><code class="hljs 示例">    struct UserDefaultKeys
+        &#123; // 账户信息
+            struct AccountInfo
+                &#123;
+                    let userName = &quot;userName&quot;
+                    let avatar = &quot;avatar&quot;
+                    let password = &quot;password&quot;
+                    let gender = &quot;gender&quot; let age = &quot;age&quot;
+                &#125;
+        // 登录信息
+            struct LoginInfo
+                &#123;
+                    let token = &quot;token&quot;
+                    let userId = &quot;userId&quot;
+                &#125;
+        // 配置信息
+            struct SettingInfo
+                &#123;
+                    let font = &quot;font&quot;
+                    let backgroundImage = &quot;backgroundImage&quot;
+                &#125;
+        &#125;
+    let defaultStand = UserDefaults.standard
+// 账户信息
+    defaultStand.set(&quot;Chilli Cheng&quot;, forKey:UserDefaultKeys.AccountInfo().userName)
+    defaultStand.string(forKey: UserDefaultKeys.AccountInfo().userName)</code></pre>
+
+<blockquote>
+<p>上述方法有一个可改进的地方，就是避免初始化。使用静态变量，直接通过类型名字访问属性的值。</p>
+</blockquote>
+<pre><code class="hljs 上下文">struct AccountInfo &#123;
+    static let userName = &quot;userName&quot;
+    static let avatar = &quot;avatar&quot;
+    static let password = &quot;password&quot;
+    static let gender = &quot;gender&quot;
+    static let age = &quot;age&quot; &#125;
+
+    defaultStand.set(&quot;Chilli Cheng&quot;, forKey: UserDefaultKeys.AccountInfo.userName)
+    defaultStand.string(forKey: UserDefaultKeys.AccountInfo.userName)</code></pre>
+
+<h4 id="枚举分组存储"><a href="#枚举分组存储" class="headerlink" title="枚举分组存储"></a>枚举分组存储</h4><blockquote>
+<p>可以让我们不用每次都手动设置初始值，前提是遵守 String 协议<br>不设置 rawValue 的时候，系统会默认给枚举 case 设置跟成员名字相同的原始值 （rawValue）</p>
+</blockquote>
+<pre><code class="hljs 枚举">struct UserDefaultKeys &#123;
+// 账户信息
+    enum AccountInfo: String &#123;
+        case userName
+        case age
+    &#125;
+&#125;
+// 存账户信息
+  defaultStand.set(&quot;Chilli Cheng&quot;, forKey: UserDefaultKeys.AccountInfo.userName.rawValue)
+  defaultStand.set(18, forKey: UserDefaultKeys.AccountInfo.age.rawValue)
+// 取存账户信息
+  defaultStand.string(forKey: UserDefaultKeys.AccountInfo.userName.rawValue)
+  defaultStand.integer(forKey: UserDefaultKeys.AccountInfo.age.rawValue)</code></pre>
+
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><blockquote>
+<p>代码过于冗余<br>优化 —— 先抓鱼，砍熊掌<br>Key 值路径过长 — 原因： 分组存储 key，让 key 有上下文，可读性高<br>rawValue 没有必要写 — 原因： 使用枚举存储 key，无需手动设置初始值</p>
+</blockquote>
+<h4 id="扩展-UserDefault-自定义方法"><a href="#扩展-UserDefault-自定义方法" class="headerlink" title="扩展 UserDefault 自定义方法"></a>扩展 UserDefault 自定义方法</h4><pre><code class="hljs 扩展">extension UserDefaults &#123;
+    enum AccountKeys: String &#123;
+        case userName
+        case age
+        &#125;
+    static func set(value: String, forKey key: AccountKeys) &#123;
+        let key = key.rawValue UserDefaults.standard.set(value, forKey: key)
+    &#125;
+    static func string(forKey key: AccountKeys) -&gt; String? &#123;
+        let key = key.rawValue
+        return UserDefaults.standard.string(forKey: key)
+    &#125;
+&#125;
+// 存取数据
+  UserDefaults.set(value: &quot;chilli cheng&quot;, forKey: .userName)
+  UserDefaults.string(forKey: .userName)</code></pre>
+
+<h5 id="前置上下文"><a href="#前置上下文" class="headerlink" title="前置上下文"></a>前置上下文</h5><blockquote>
+<p>实现前置，需扩展 UserDefault ，添加 AccountInfo 属性，再调用 AccountInfo 方法，key 值由 AccountInfo 来提供,<br>因为 AccountInfo 提供分组的 key，自定义的一个分组信息, 需要实现既定方法，想到使用协议。<br>Swift 中可以对协议 protocol 进行扩展, 提供协议方法的默认实现, 如果遵守协议的类/结构体/枚举实现了该方法, 就会覆盖掉默认的方法.</p>
+</blockquote>
+<pre><code class="hljs 上下文">    protocol UserDefaultsSettable &#123;
+
+    /* 只要 AccountInfo 类/结构体/枚举遵守这个协议, 就能调用存取方法,至关重要的问题在于， AccountKeys 从哪儿来?
+    我们上面是把 AccountKeys 写在UserDefaults扩展里面的, 在协议里面如何知道这个变量是什么类型呢?
+    而且还使用到了 rawValue, 为了通用性, 那就需要在协议里关联类型, 而且传入的值能拿到 rawValue,
+    那么这个关联类型需要遵守 RawRepresentable 协议, 这个很关键!!! */
+
+    associatedtype defaultKeys: RawRepresentable &#125;
+
+    /*必须在扩展中使用 where 子语句限制关联类型是字符串类型, 因为 UserDefaults 的 key 就是字符串类型.
+    where defaultKeys.RawValue==String，其他类型同理*/
+
+    extension UserDefaultsSettable where defaultKeys.RawValue==String &#123;
+        static func set(value: String?, forKey key: defaultKeys) &#123;
+            let aKey = key.rawValue
+            UserDefaults.standard.set(value, forKey: aKey)
+        &#125;
+            static func string(forKey key: defaultKeys) -&gt; String? &#123;
+                let aKey = key.rawValue
+                return UserDefaults.standard.string(forKey: aKey)
+            &#125;
+    &#125;
+
+```上下文
+
+在 UserDefault 的扩展中定义分组
+
+```上下文
+    extension UserDefaults &#123;
+        // 账户信息
+        struct AccountInfo: UserDefaultsSettable &#123;
+                enum defaultKeys: String &#123;
+                  case userName
+                  case age
+                  &#125;
+            &#125;
+        // 登录信息
+        struct LoginInfo: UserDefaultsSettable &#123;
+            enum defaultKeys: String &#123;
+                case token
+                case userId
+            &#125;
+        &#125;
+    &#125;
+    //存取数据
+    UserDefaults.AccountInfo.set(value: &quot;chilli cheng&quot;, forKey: .userName)
+    UserDefaults.AccountInfo.string(forKey: .userName)
+
+    UserDefaults.LoginInfo.set(value: &quot;ahdsjhad&quot;, forKey: .token)
+    UserDefaults.LoginInfo.string(forKey: .token)</code></pre>
+
+<p>如果还有需要存储的分类数据, 同样在 UserDefaults extension 中添加一个结构体, 遵守 UserDefaultsSettable 协议, 实现 defaultKeys 枚举属性</p>
+<p>在枚举中设置该分类存储数据所需要的 key.UserDefaultsSettable 协议中只实现了存取 string 类型的数据,可以自行在 UserDefaultsSettable 协议中添加 Int, Bool 等类型方法</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%9F%BA%E7%A1%80/">基础</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B2%99%E7%9B%92/">沙盒</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/10/29/Postman/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Postman</span>
+                        <span class="visible-mobile">Previous</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/2018/09/05/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+                        <span class="hidden-mobile">正则表达式</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;TOC</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "数据持久化&nbsp;",
+      ],
+      cursorChar: "￥",
+      typeSpeed: 200,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+      icon: "❡"
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="/images/Icon/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="CBH">
+  <meta name="keywords" content="">
+  <title>ZNCheng</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script  src="/js/utils.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>ZNCheng</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                Home
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                Archives
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                Categories
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                Tags
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/abouts/">
+                <i class="iconfont icon-user-fill"></i>
+                About
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" target="_self">
+          <img src="/images/CoverImage/wallhaven-28d1q6.jpg" srcset="/img/loading.gif" alt="小数点的截取">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/">小数点的截取</a>
+
+      <a href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" class="index-excerpt">
+        
+        
+          
+        
+        <div>最简单的截取小数位的方法：
+/// 保留_位小数
+func afterDecimalNum(_ count: Int) -&gt; String &#123;
+    guard count &gt;= 0 else &#123; return &quot;&quot; &#125;
+    let format = &quot;%.\(count)f&quot;
+    return Strin</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2021-07-13
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Swift/">Swift</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%B0%8F%E6%95%B0%E7%82%B9/">小数点</a>
+            
+              <a href="/tags/NumberFormatter/">NumberFormatter</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/" target="_self">
+          <img src="/images/CoverImage/wallhaven-k716d6.jpg" srcset="/img/loading.gif" alt="Swift-闭包">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/">Swift-闭包</a>
+
+      <a href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/" class="index-excerpt">
+        
+        
+          
+        
+        <div>尾随闭包
+官方定义：如果需要将闭包表达式作为函数的最终参数传递给函数，并且闭包表达式很长，则可以将其写为尾随闭包。写法：尾随闭包写在函数调用的圆括号之后，即使它是函数的最终参数。如果尾随闭包作为函数的最终参数，并且定义了相应的参数标签，在使用尾随闭包语法时，不能将闭包的参数标签写为函数调用的一部分。
+
+实际需求中需要的将尾随闭包变成可选，也就是根据参数来判断是否需要执行。虽然没有用 @escapi</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-03
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Swift/">Swift</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%97%AD%E5%8C%85/">闭包</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/" target="_self">
+          <img src="/images/CoverImage/wallhaven-ym6lrk.jpg" srcset="/img/loading.gif" alt="WKWebView默认缓存策略与HTTP缓存协议">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/">WKWebView默认缓存策略与HTTP缓存协议</a>
+
+      <a href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/" class="index-excerpt">
+        
+        
+          
+        
+        <div>原文地址：WKWebView默认缓存策略与HTTP缓存协议可能是最被误用的 HTTP 响应头之一 Cache-Control: must-revalidate
+https://juejin.im/post/5df75e3a6fb9a016266459da
+今天同事反应H5更新了资源，但iOS App里面仍然使用的是旧的缓存资源。为什么会这样呢？要弄清楚这个问题，首先得弄清楚WKWebView的缓存</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-05-26
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%BD%91%E7%BB%9C/">网络</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/WKWebView/">WKWebView</a>
+            
+              <a href="/tags/HTTP/">HTTP</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/" target="_self">
+          <img src="/images/CoverImage/wallhaven-3zwzw9.jpg" srcset="/img/loading.gif" alt="‘反向对’问题解决思路的一般原则">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/">‘反向对’问题解决思路的一般原则</a>
+
+      <a href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/" class="index-excerpt">
+        
+        
+          
+        
+        <div>此文是对 LeetCode-493. 翻转对 国际站上高票回答中，一遍总结回答的翻译原地址在此
+‘反向对’问题解决思路的一般原则看起来有一系列的解题思路（ (BST-based, BIT-based, Merge-sort-based)）。在这里，我想集中讨论这些解决方案背后的一般原则，以及这些解决方案可能应用于一些类似的问题。
+基本思想很简单：分解数组并解决子问题。
+数组的分解自然使我们想起子数</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-05-10
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/LeetCode/">LeetCode</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DP/">DP</a>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          <img src="/images/CoverImage/wallhaven-eylwkw.jpg" srcset="/img/loading.gif" alt="3. 无重复字符的最长子串位运算">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/">3. 无重复字符的最长子串位运算</a>
+
+      <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/" class="index-excerpt">
+        
+        
+          
+        
+        <div>字符串# 时间复杂度是 O(N*N)，每次拿到新的字符都要和之前的做比较
+class Solution &#123;
+    func lengthOfLongestSubstring(_ s: String) -&gt; Int &#123;
+        var tmp = &quot;&quot;
+        var count = 0
+        for ch in s &#12</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-05-03
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/LeetCode/">LeetCode</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%98%9F%E5%88%97/">队列</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          <img src="/images/CoverImage/wallhaven-6k6wjw.jpg" srcset="/img/loading.gif" alt="位运算">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/">位运算</a>
+
+      <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" class="index-excerpt">
+        
+        
+          
+        
+        <div>位运算符&lt;&lt; //左移
+
+&gt;&gt; //右移
+
+|  //或
+
+&amp;  //与
+
+~  //取反
+
+^  //异或
+
+实战使用
+// 判断奇偶
+x%2 == 1 -&gt;  x&amp;1 == 1
+x%2 == 0 -&gt;  x&amp;1 == 0
+
+x &gt;&gt; 1 -&gt; x/2
+
+// 清零最低位的 1
+x = x&amp;(x-1)  
+
+/</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-05-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+            
+              <a href="/tags/%E4%BD%8D%E8%BF%90%E7%AE%97/">位运算</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_self">
+          <img src="/images/CoverImage/wallhaven-wyjdgr.jpg" srcset="/img/loading.gif" alt="十大经典排序算法（Swift）">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大经典排序算法（Swift）</a>
+
+      <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" class="index-excerpt">
+        
+        
+          
+        
+        <div>排序
+比较类排序通过比较来决定元素间的相对次序，由于其时间复杂度不能突破 O(logn)，（在数学上证明了），因此也称为非线性时间比较类排序
+
+非比较类排序不通过比较来决定元素间的相对次序，他可以突破基于比较排序的时间下界，以线性时间运行，一次也称为线性时间非比较类排序
+
+
+初级排序 O(n*n)
+选择排序每次找最小值，然后放到待排序的起始位置
+
+插入排序从前到后逐步构建有序序列，对于未排序的数据</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-05-01
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">排序</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/" target="_self">
+          <img src="/images/CoverImage/wallhaven-wyjl16.jpg" srcset="/img/loading.gif" alt="N 皇后">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/">N 皇后</a>
+
+      <a href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/" class="index-excerpt">
+        
+        
+          
+        
+        <div>位运算解答class Solution &#123;
+    var size = 0
+    var count = 0
+    func totalNQueens(_ n: Int) -&gt; Int &#123;
+        size = (1 &lt;&lt; n) - 1
+        dfs(0,0,0)
+        return count
+    &#125;
+    </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-04-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/LeetCode/">LeetCode</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%9B%9E%E6%BA%AF/">回溯</a>
+            
+              <a href="/tags/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/" target="_self">
+          <img src="/images/CoverImage/wallhaven-kw5ylq.jpg" srcset="/img/loading.gif" alt="LRU Cache">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/">LRU Cache</a>
+
+      <a href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/" class="index-excerpt">
+        
+        
+          
+        
+        <div>Cache
+记忆
+钱包 - 钱柜
+
+LRU Cache
+两个要素： 大小，替换策略
+Hash Table + Double LinkedList
+O(1) 查询 O(1)修改更新
+
+
+
+实战题目
+146. LRU缓存机制
+
+</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-04-30
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+            
+          </div>
+        
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/" target="_self">
+          <img src="/images/CoverImage/wallhaven-g8gxo3.png" srcset="/img/loading.gif" alt="Swift 字符串">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/">Swift 字符串</a>
+
+      <a href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="index-excerpt">
+        
+        
+          
+        
+        <div></div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-04-10
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/Swift/">Swift</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">字符串</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+  
+  <script>
+    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
+      ele.href += '#board';
+    }
+  </script>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/js/debouncer.js" ></script>
+<script  src="/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "生命如花，都当灿烂的绽放&nbsp;",
+      ],
+      cursorChar: "￥",
+      typeSpeed: 200,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    var path = "/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
