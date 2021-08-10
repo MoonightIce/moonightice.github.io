@@ -1,14 +1,14 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-Hans">
-
-
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="/images/Icon/favicon.png">
+  <link rel="icon" href="/images/Icon/favicon.png">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -17,19 +17,20 @@
   <meta name="description" content="">
   <meta name="author" content="CBH">
   <meta name="keywords" content="">
-  <title>ZNCheng</title>
+  
+  <title>Rec</title>
 
-  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
 
 
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
 
 
 <link  rel="stylesheet" href="/css/main.css" />
@@ -37,7 +38,12 @@
 <!-- 自定义样式保持在最底部 -->
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":200,"cursorChar":"￥","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null},"tajs":null},"search_path":"/local-search.xml"};
+  </script>
   <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 
@@ -46,7 +52,7 @@
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
-       href="/">&nbsp;<strong>ZNCheng</strong>&nbsp;</a>
+       href="/">&nbsp;<strong>Rec</strong>&nbsp;</a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -120,8 +126,14 @@
         
         
           <li class="nav-item" id="search-btn">
-            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
           </li>
         
       </ul>
@@ -129,13 +141,13 @@
   </div>
 </nav>
 
-    <div class="view intro-2" id="background" parallax=true
+    <div class="banner" id="banner" parallax=true
          style="background: url('/img/default.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="container text-center white-text fadeInUp">
-            <span class="h2" id="subtitle">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="生命如花，都当灿烂的绽放">
               
             </span>
 
@@ -154,7 +166,7 @@
 
   <main>
     
-      <div class="container nopadding-md">
+      <div class="container nopadding-x-md">
         <div class="py-5" id="board"
           style=margin-top:0>
           
@@ -168,31 +180,41 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2019/03/14/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" target="_self">
-          <img src="/images/OnePiece/backgroundimage.jpg" srcset="/img/loading.gif" alt="网络接口数据处理结构">
+        <a href="/2019/03/14/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" target="_self">
+          <img src="/images/OnePiece/backgroundimage.jpg" srcset="/img/loading.gif" lazyload alt="网络接口数据处理结构">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2019/03/14/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">网络接口数据处理结构</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2019/03/14/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" target="_self">
+          网络接口数据处理结构
+        </a>
+      </h1>
 
-      <a href="/2019/03/14/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2019/03/14/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E7%BD%91%E7%BB%9C%E6%8E%A5%E5%8F%A3%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/" target="_self">
           
-        
-        <div>
+          
+            
+          
+          
 原项目中，封装了一层网络请求和一个简单的 JSon 数据格式转换，代码多且复用成都低界面中的数据数组类型是 NSMutableArray，没用制定数组中的数据类型在获取到网络数据后，先转成数组，然后字典数组再转换成模型数组
 
 新版本请求模式
 初始化数据数组的通知，指定数组的数据类型 var array = [Model]()
-现在请求方法返回的还是 json 格式的数据，没有实现根据数据结构返回</div>
-      </a>
+现在请求方法返回的还是 json 格式的数据，没有实现根据数据结构返回
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2019-03-14
+            <i class="iconfont icon-date"></i>
+            <time datetime="2019-03-14 20:18" pubdate>
+              2019-03-14
+            </time>
           </div>
         
         
@@ -214,34 +236,44 @@
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/11/19/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/" target="_self">
-          <img src="/images/CoverImage/wallhaven-lmjv6r.jpg" srcset="/img/loading.gif" alt="学习安排复盘">
+        <a href="/2018/11/19/%E4%B8%AA%E4%BA%BA%E6%80%9D%E8%80%83/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/" target="_self">
+          <img src="/images/CoverImage/wallhaven-lmjv6r.jpg" srcset="/img/loading.gif" lazyload alt="学习安排复盘">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/11/19/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/">学习安排复盘</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/11/19/%E4%B8%AA%E4%BA%BA%E6%80%9D%E8%80%83/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/" target="_self">
+          学习安排复盘
+        </a>
+      </h1>
 
-      <a href="/2018/11/19/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/11/19/%E4%B8%AA%E4%BA%BA%E6%80%9D%E8%80%83/%E5%AD%A6%E4%B9%A0%E5%AE%89%E6%8E%92%E5%A4%8D%E7%9B%98/" target="_self">
           
-        
-        <div>复盘一下又一天的自主学习进步。最近一周没有具体的任务项，没有明确的需求更改，没有啥学习目标。
-今天上午看完了周末两天积攒下来的公众号文章，现在觉得花上一整个半天去看碎片性质的文章不是很好，很浪费这整块时间的学习。公众号文章本就是碎片时间最佳的消耗，不应该本末倒置的使用整块的时间去接受碎片化的信息。所以以后公众号文章就是在个种碎片化时间中消化。</div>
-      </a>
+          
+            
+          
+          复盘一下又一天的自主学习进步。最近一周没有具体的任务项，没有明确的需求更改，没有啥学习目标。
+今天上午看完了周末两天积攒下来的公众号文章，现在觉得花上一整个半天去看碎片性质的文章不是很好，很浪费这整块时间的学习。公众号文章本就是碎片时间最佳的消耗，不应该本末倒置的使用整块的时间去接受碎片化的信息。所以以后公众号文章就是在个种碎片化时间中消化。
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-11-19
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-11-19 17:39" pubdate>
+              2018-11-19
+            </time>
           </div>
         
         
@@ -261,36 +293,46 @@
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/10/29/Postman/" target="_self">
-          <img src="/images/CoverImage/wallhaven-r2pqk1.jpg" srcset="/img/loading.gif" alt="Postman">
+        <a href="/2018/10/29/%E7%BD%91%E7%BB%9C/Postman/" target="_self">
+          <img src="/images/CoverImage/wallhaven-r2pqk1.jpg" srcset="/img/loading.gif" lazyload alt="Postman">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/10/29/Postman/">Postman</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/10/29/%E7%BD%91%E7%BB%9C/Postman/" target="_self">
+          Postman
+        </a>
+      </h1>
 
-      <a href="/2018/10/29/Postman/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/10/29/%E7%BD%91%E7%BB%9C/Postman/" target="_self">
           
-        
-        <div>PostMan 使用笔记
+          
+            
+          
+          PostMan 使用笔记
 
 一次使用 API 调试工具，之间都是之间采用的网页端输入各项信息，耗费时间过多且内容重复，学习使用 Postman
-</div>
-      </a>
+
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-10-29
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-10-29 16:36" pubdate>
+              2018-10-29
+            </time>
           </div>
         
         
@@ -310,40 +352,49 @@
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/09/18/DatacdPersistence/" target="_self">
-          <img src="/images/CoverImage/wallhaven-499mvw.jpg" srcset="/img/loading.gif" alt="数据持久化">
+        <a href="/2018/09/18/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/DatacdPersistence/" target="_self">
+          <img src="/images/CoverImage/wallhaven-499mvw.jpg" srcset="/img/loading.gif" lazyload alt="数据持久化">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/09/18/DatacdPersistence/">数据持久化</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/09/18/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/DatacdPersistence/" target="_self">
+          数据持久化
+        </a>
+      </h1>
 
-      <a href="/2018/09/18/DatacdPersistence/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/09/18/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/DatacdPersistence/" target="_self">
           
-        
-        <div>UserDefaultsLet uf = UserDefaults.standard
+          
+            
+          
+          UserDefaultsLet uf = UserDefaults.standard
 一般用来存储用户信息和基础配置信息 （参考 ： 简书数据持久化思路）
 
-uf.setValue(value,forKey : &quot;Key&quot;)   //存
-uf.integer(forKey : &quot;Key&quot;)    // 取(返回 Int 类型)
+12uf.setValue(value,forKey : &quot;Key&quot;)   //存uf.integer(forKey : &quot;Key&quot;)    // 取(返回 Int 类型)
 
 
-OC 中需要调用 sync</div>
-      </a>
+OC 中需要调用 syn
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-09-18
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-09-18 15:03" pubdate>
+              2018-09-18
+            </time>
           </div>
         
         
@@ -365,36 +416,46 @@ OC 中需要调用 sync</div>
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/09/05/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
-          <img src="/images/CoverImage/person-s-feet-2425664.jpg" srcset="/img/loading.gif" alt="正则表达式">
+        <a href="/2018/09/05/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
+          <img src="/images/CoverImage/person-s-feet-2425664.jpg" srcset="/img/loading.gif" lazyload alt="正则表达式">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/09/05/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/09/05/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
+          正则表达式
+        </a>
+      </h1>
 
-      <a href="/2018/09/05/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/09/05/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" target="_self">
           
-        
-        <div>介绍
+          
+            
+          
+          介绍
 正则表达式也是用来进行文本匹配的工具能更精确地描述你的需求——当然，代价就是更复杂比如你可以编写一个正则表达式，用来查找所有以 0 开头，后面跟着 2-3 个数字，然后是一个连字号“-”，最后是 7 或 8 位数字的字符串(像 010-12345678 或 0376-7654321)。
 
-入门</div>
-      </a>
+入门
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-09-05
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-09-05 09:59" pubdate>
+              2018-09-05
+            </time>
           </div>
         
         
@@ -414,43 +475,46 @@ OC 中需要调用 sync</div>
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/09/04/%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
-          <img src="/images/CoverImage/wallhaven-2eo156.jpg" srcset="/img/loading.gif" alt="关键字">
+        <a href="/2018/09/04/Swift/%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
+          <img src="/images/CoverImage/wallhaven-2eo156.jpg" srcset="/img/loading.gif" lazyload alt="关键字">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/09/04/%E5%85%B3%E9%94%AE%E5%AD%97/">关键字</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/09/04/Swift/%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
+          关键字
+        </a>
+      </h1>
 
-      <a href="/2018/09/04/%E5%85%B3%E9%94%AE%E5%AD%97/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/09/04/Swift/%E5%85%B3%E9%94%AE%E5%AD%97/" target="_self">
           
-        
-        <div>&lt; T &gt;
+          
+            
+          
+          &lt; T &gt;
 函数名后
 
-func swapTwoValues&lt;T&gt;(inout a:T, inout _ b:T) &#123;
-    let tempValue = a
-    a = b
-    b = tempValue
-&#125;
-
-var someInt = 3,someIntTwo = 5
-var oneGenericValue = &quot;one&qu</div>
-      </a>
+12345678910111213func swapTwoValues&lt;T&gt;(inout a:T, inout _ b:T) &#123;    let tempValue = a    a = b    b = tempValue&#125;var someInt = 3,someIntTwo = 5var oneGenericValue = &q
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-09-04
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-09-04 11:38" pubdate>
+              2018-09-04
+            </time>
           </div>
         
         
@@ -472,27 +536,33 @@ var oneGenericValue = &quot;one&qu</div>
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/09/03/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/" target="_self">
-          <img src="/images/CoverImage/wallhaven-73kq69.jpg" srcset="/img/loading.gif" alt="Xcode">
+        <a href="/2018/09/03/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/" target="_self">
+          <img src="/images/CoverImage/wallhaven-73kq69.jpg" srcset="/img/loading.gif" lazyload alt="Xcode">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/09/03/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/">Xcode</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/09/03/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/" target="_self">
+          Xcode
+        </a>
+      </h1>
 
-      <a href="/2018/09/03/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/09/03/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/Alcatraz-Xcode%E6%8F%92%E4%BB%B6%E7%AE%A1%E7%90%86%E5%99%A8/" target="_self">
           
-        
-        <div>先前
+          
+            
+          
+          先前
 使用带有插件的 Xcode，容易卡死和 crash，所以使用自签名 xcode
 
 
@@ -500,13 +570,17 @@ var oneGenericValue = &quot;one&qu</div>
 
 重新创建证书打开电脑里的钥匙串 -&gt; 菜单栏钥匙串访问 -&gt; 证书助理 -&gt; 创建证书… -&gt; 名称 XcodeSinger，自签名根证书身份类型，代码签名证书类型
 
-</div>
-      </a>
+
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-09-03
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-09-03 14:53" pubdate>
+              2018-09-03
+            </time>
           </div>
         
         
@@ -526,34 +600,44 @@ var oneGenericValue = &quot;one&qu</div>
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/08/30/Delegate/" target="_self">
-          <img src="/images/CoverImage/wallhaven-eyz82r.jpg" srcset="/img/loading.gif" alt="Delegate">
+        <a href="/2018/08/30/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/Delegate/" target="_self">
+          <img src="/images/CoverImage/wallhaven-eyz82r.jpg" srcset="/img/loading.gif" lazyload alt="Delegate">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/08/30/Delegate/">Delegate</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/08/30/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/Delegate/" target="_self">
+          Delegate
+        </a>
+      </h1>
 
-      <a href="/2018/08/30/Delegate/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/08/30/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/Delegate/" target="_self">
           
-        
-        <div>Delegate 使用
-在被代理的对象中，声明代理和代理方法。在类中弱引用代理对象弱引用原因:因为 View 作为 delegate 对 ViewController 是强引用，同时 ViewController 对 View 也是强引用，这就出现了循环引用。ViewController 引用着 View，并且 View 引用着 ViewController，两者的引用计数都不会变成 0，所以它们</div>
-      </a>
+          
+            
+          
+          Delegate 使用
+在被代理的对象中，声明代理和代理方法。在类中弱引用代理对象弱引用原因:因为 View 作为 delegate 对 ViewController 是强引用，同时 ViewController 对 View 也是强引用，这就出现了循环引用。ViewController 引用着 View，并且 View 引用着 ViewController，两者的引用计数都不会变成 0，所以它们
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-08-30
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-08-30 14:54" pubdate>
+              2018-08-30
+            </time>
           </div>
         
         
@@ -573,35 +657,43 @@ var oneGenericValue = &quot;one&qu</div>
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/08/28/LeetCodeString/" target="_self">
-          <img src="/images/CoverImage/wallhaven-j5xlow.jpg" srcset="/img/loading.gif" alt="LeetCode --- 字符串">
+        <a href="/2018/08/28/LeetCode/LeetCodeString/" target="_self">
+          <img src="/images/CoverImage/wallhaven-j5xlow.jpg" srcset="/img/loading.gif" lazyload alt="LeetCode --- 字符串">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/08/28/LeetCodeString/">LeetCode --- 字符串</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/08/28/LeetCode/LeetCodeString/" target="_self">
+          LeetCode --- 字符串
+        </a>
+      </h1>
 
-      <a href="/2018/08/28/LeetCodeString/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/08/28/LeetCode/LeetCodeString/" target="_self">
           
-        
-        <div>字符串倒叙输出原题是在Codewars上要求是reverse（“hello world”）==“world hello ”   reverse（“hi there”）==“there hi”#import &lt;Foundation / Foundation.h&gt;
-NSString * reverse（NSString * text）&#123;
-    //字符串变成数据，根据引号里对象</div>
-      </a>
+          
+            
+          
+          字符串倒叙输出原题是在Codewars上要求是reverse（“hello world”）==“world hello ”   reverse（“hi there”）==“there hi”123456789#import &lt;Foundation / Foundation.h&gt;NSString * reverse（NSString * text）&#123;    //字符串变成数据，
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-08-28
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-08-28 15:24" pubdate>
+              2018-08-28
+            </time>
           </div>
         
         
@@ -621,38 +713,46 @@ NSString * reverse（NSString * text）&#123;
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2018/08/28/LeetCodeNarray/" target="_self">
-          <img src="/images/CoverImage/wallhaven-yj6ep7.jpg" srcset="/img/loading.gif" alt="LeetCode --- 数组类算法">
+        <a href="/2018/08/28/LeetCode/LeetCodeNarray/" target="_self">
+          <img src="/images/CoverImage/wallhaven-yj6ep7.jpg" srcset="/img/loading.gif" lazyload alt="LeetCode --- 数组类算法">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2018/08/28/LeetCodeNarray/">LeetCode --- 数组类算法</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/08/28/LeetCode/LeetCodeNarray/" target="_self">
+          LeetCode --- 数组类算法
+        </a>
+      </h1>
 
-      <a href="/2018/08/28/LeetCodeNarray/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2018/08/28/LeetCode/LeetCodeNarray/" target="_self">
           
-        
-        <div>LeetCode —  数组算法从排序数组中删除重复项
+          
+            
+          
+          LeetCode —  数组算法从排序数组中删除重复项
 不使用额外的数组空间，空间复杂度为O(1)排序数组，不考虑非连续重复原地修改输入，修改输入数组，返回数组长度
 
-class Solution &#123;
-    func removeDuplicates(_ nums: inout [Int]) -&gt; Int &#123;
-        if nums.count == 0 || </div>
-      </a>
+1234567891011121314151617181920212223class Solution &#123;    func removeDuplicates(_ nums: inout [Int]) -&gt; Int &
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2018-08-28
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-08-28 09:24" pubdate>
+              2018-08-28
+            </time>
           </div>
         
         
@@ -672,22 +772,16 @@ class Solution &#123;
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/4/"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
-  
-  <script>
-    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
-      ele.href += '#board';
-    }
-  </script>
 
 
 
@@ -697,16 +791,15 @@ class Solution &#123;
         </div>
       </div>
     
-  </main>
 
-  
-    <a id="scroll-top-button" href="#" role="button">
-      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-    </a>
-  
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-  
-    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
      aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content">
@@ -727,45 +820,52 @@ class Solution &#123;
     </div>
   </div>
 </div>
-  
-
-  
-
-  
-
-  <footer class="mt-5">
-  <div class="text-center py-3">
-    <div>
-      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
-      <i class="iconfont icon-love"></i>
-      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
-        <span>Fluid</span></a>
-    </div>
     
 
     
+  </main>
 
-    
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
   </div>
+  
+
+  
+
+  
 </footer>
 
-<!-- SCRIPTS -->
-<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
-<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
-<script  src="/js/debouncer.js" ></script>
-<script  src="/js/main.js" ></script>
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
 <!-- Plugins -->
 
 
   
-    <script  src="/js/lazyload.js" ></script>
+    <script  src="/js/img-lazyload.js" ></script>
   
 
 
 
-  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
-  <script  src="/js/clipboard-use.js" ></script>
+  
 
 
 
@@ -775,36 +875,26 @@ class Solution &#123;
 
 
 
-  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
-  <script>
-    var typed = new Typed('#subtitle', {
-      strings: [
-        '  ',
-        "生命如花，都当灿烂的绽放&nbsp;",
-      ],
-      cursorChar: "￥",
-      typeSpeed: 200,
-      loop: false,
-    });
-    typed.stop();
-    $(document).ready(function () {
-      $(".typed-cursor").addClass("h2");
-      typed.start();
-    });
-  </script>
-
-
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
 
 
 
   <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
   <script>
-    var path = "/local-search.xml";
-    var inputArea = document.querySelector("#local-search-input");
-    inputArea.onclick = function () {
-      searchFunc(path, 'local-search-input', 'local-search-result');
-      this.onclick = null
-    }
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
   </script>
 
 
@@ -821,11 +911,8 @@ class Solution &#123;
 
 
 
-
-
-
-
-
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
 
 
 </body>

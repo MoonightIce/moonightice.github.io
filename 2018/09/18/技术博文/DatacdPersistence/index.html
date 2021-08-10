@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
+  <link rel="icon" href="/images/Icon/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="UserDefaultsLet uf = UserDefaults.standard
+一般用来存储用户信息和基础配置信息 （参考 ： 简书数据持久化思路）
+
+12uf.setValue(value,forKey : &amp;quot;Key&amp;quot;)   //存uf.integer(forKey : &amp;quot;Key&amp;quot;)    // 取(返回 Int 类型)
+
+
+OC 中需要调用 syn">
+  <meta name="author" content="CBH">
+  <meta name="keywords" content="">
+  
+  <title>数据持久化 - Rec</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":200,"cursorChar":"￥","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null},"tajs":null},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Rec</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/abouts/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="数据持久化">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-09-18 15:03" pubdate>
+        星期二, 九月 18日 2018, 3:03 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">数据持久化</h1>
+            
+            <div class="markdown-body">
+              <h2 id="UserDefaults"><a href="#UserDefaults" class="headerlink" title="UserDefaults"></a>UserDefaults</h2><pre><code>Let uf = UserDefaults.standard</code></pre><blockquote>
+<p>一般用来存储用户信息和基础配置信息 （参考 ： <a target="_blank" rel="noopener" href="https://www.jianshu.com/p/3796886b4953">简书数据持久化思路</a>）</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs 简单示例">uf.setValue(value,forKey : &quot;Key&quot;)   //存<br>uf.integer(forKey : &quot;Key&quot;)    // 取(返回 Int 类型)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>OC 中需要调用 synchronize 方法同步</li>
+<li>Swift 则已废弃了此方法，不需要手动调用</li>
+<li>以上是最基本的用法，但是也是最危险的用法<ol>
+<li>在应用内随意覆盖删除数据，直接使用字符串作为 key 值，在存数据和取数据时所使用的 key 时不一致</li>
+<li>作为一个全局的单例, 如果需要存储账户信息, 配置信息, 此时按照最基本的使用方式, 简单的使用 key 来存取数据, 那么 key 值会随着存储的数据越来越多, 到时候不管是新接手的小伙伴还是我们自己都很难明白每个 key 值对应的意义. 也就是说我们不能根据方法调用的上下文明确知道我存取数据的具体含义, 代码的可读性和可维护性就不高</li>
+</ol>
+</li>
+</ul>
+<span id="more"></span>
+
+<h2 id="进阶的两个方面-—–-一致性和上下文"><a href="#进阶的两个方面-—–-一致性和上下文" class="headerlink" title="进阶的两个方面 —– 一致性和上下文"></a>进阶的两个方面 —– 一致性和上下文</h2><h3 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h3><ul>
+<li>常量保存</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs 示例">    let defaultStand = UserDefaults.standard<br>    let defaultKey = &quot;defaultKey&quot;<br>    defaultStand.set(123, forKey: defaultKey)<br>    defaultStand.integer(forKey: defaultKey)<br>//分组存储<br>    struct AccountInfo<br>    &#123; let userName = &quot;userName&quot;<br>    let avatar = &quot;avatar&quot;<br>    let password = &quot;password&quot;<br>    let gender = &quot;gender&quot;<br>    let age = &quot;age&quot; &#125;<br>// 登录信息<br>    struct LoginInfo<br>    &#123; let token = &quot;token&quot;<br>    let userId = &quot;userId&quot; &#125;<br>// 配置信息<br>    struct SettingInfo<br>    &#123; let font = &quot;font&quot;<br>    let backgroundImage = &quot;backgroundImage&quot; &#125;<br><br>    let defaultStand = UserDefaults.standard<br>// 账户信息<br>    defaultStand.set(&quot;Chilli Cheng&quot;, forKey: AccountInfo().avatar)<br>    defaultStand.set(18, forKey: AccountInfo().age)<br>// 登录信息<br>    defaultStand.set(&quot;achj167&quot;, forKey: LoginInfo().token)<br>// 配置信息<br>    defaultStand.set(24, forKey: SettingInfo().font)<br>    let userName = defaultStand.string(forKey: AccountInfo().avatar)<br>    let age = defaultStand.integer(forKey: AccountInfo().age)<br>    let token = defaultStand.string(forKey: LoginInfo().token)<br>    let font = defaultStand.integer(forKey: SettingInfo().font)<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>以上述为例，将配置信息，用户信息，登录信息三个类归到一个大类中，解决上下文问题</p>
+</blockquote>
+<ul>
+<li>上下文</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs 示例">    struct UserDefaultKeys<br>        &#123; // 账户信息<br>            struct AccountInfo<br>                &#123;<br>                    let userName = &quot;userName&quot;<br>                    let avatar = &quot;avatar&quot;<br>                    let password = &quot;password&quot;<br>                    let gender = &quot;gender&quot; let age = &quot;age&quot;<br>                &#125;<br>        // 登录信息<br>            struct LoginInfo<br>                &#123;<br>                    let token = &quot;token&quot;<br>                    let userId = &quot;userId&quot;<br>                &#125;<br>        // 配置信息<br>            struct SettingInfo<br>                &#123;<br>                    let font = &quot;font&quot;<br>                    let backgroundImage = &quot;backgroundImage&quot;<br>                &#125;<br>        &#125;<br>    let defaultStand = UserDefaults.standard<br>// 账户信息<br>    defaultStand.set(&quot;Chilli Cheng&quot;, forKey:UserDefaultKeys.AccountInfo().userName)<br>    defaultStand.string(forKey: UserDefaultKeys.AccountInfo().userName)<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上述方法有一个可改进的地方，就是避免初始化。使用静态变量，直接通过类型名字访问属性的值。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs 上下文">struct AccountInfo &#123;<br>    static let userName = &quot;userName&quot;<br>    static let avatar = &quot;avatar&quot;<br>    static let password = &quot;password&quot;<br>    static let gender = &quot;gender&quot;<br>    static let age = &quot;age&quot; &#125;<br><br>    defaultStand.set(&quot;Chilli Cheng&quot;, forKey: UserDefaultKeys.AccountInfo.userName)<br>    defaultStand.string(forKey: UserDefaultKeys.AccountInfo.userName)<br></code></pre></td></tr></table></figure>
+
+<h4 id="枚举分组存储"><a href="#枚举分组存储" class="headerlink" title="枚举分组存储"></a>枚举分组存储</h4><blockquote>
+<p>可以让我们不用每次都手动设置初始值，前提是遵守 String 协议<br>不设置 rawValue 的时候，系统会默认给枚举 case 设置跟成员名字相同的原始值 （rawValue）</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs 枚举">struct UserDefaultKeys &#123;<br>// 账户信息<br>    enum AccountInfo: String &#123;<br>        case userName<br>        case age<br>    &#125;<br>&#125;<br>// 存账户信息<br>  defaultStand.set(&quot;Chilli Cheng&quot;, forKey: UserDefaultKeys.AccountInfo.userName.rawValue)<br>  defaultStand.set(18, forKey: UserDefaultKeys.AccountInfo.age.rawValue)<br>// 取存账户信息<br>  defaultStand.string(forKey: UserDefaultKeys.AccountInfo.userName.rawValue)<br>  defaultStand.integer(forKey: UserDefaultKeys.AccountInfo.age.rawValue)<br></code></pre></td></tr></table></figure>
+
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><blockquote>
+<p>代码过于冗余<br>优化 —— 先抓鱼，砍熊掌<br>Key 值路径过长 — 原因： 分组存储 key，让 key 有上下文，可读性高<br>rawValue 没有必要写 — 原因： 使用枚举存储 key，无需手动设置初始值</p>
+</blockquote>
+<h4 id="扩展-UserDefault-自定义方法"><a href="#扩展-UserDefault-自定义方法" class="headerlink" title="扩展 UserDefault 自定义方法"></a>扩展 UserDefault 自定义方法</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs 扩展">extension UserDefaults &#123;<br>    enum AccountKeys: String &#123;<br>        case userName<br>        case age<br>        &#125;<br>    static func set(value: String, forKey key: AccountKeys) &#123;<br>        let key = key.rawValue UserDefaults.standard.set(value, forKey: key)<br>    &#125;<br>    static func string(forKey key: AccountKeys) -&gt; String? &#123;<br>        let key = key.rawValue<br>        return UserDefaults.standard.string(forKey: key)<br>    &#125;<br>&#125;<br>// 存取数据<br>  UserDefaults.set(value: &quot;chilli cheng&quot;, forKey: .userName)<br>  UserDefaults.string(forKey: .userName)<br></code></pre></td></tr></table></figure>
+
+<h5 id="前置上下文"><a href="#前置上下文" class="headerlink" title="前置上下文"></a>前置上下文</h5><blockquote>
+<p>实现前置，需扩展 UserDefault ，添加 AccountInfo 属性，再调用 AccountInfo 方法，key 值由 AccountInfo 来提供,<br>因为 AccountInfo 提供分组的 key，自定义的一个分组信息, 需要实现既定方法，想到使用协议。<br>Swift 中可以对协议 protocol 进行扩展, 提供协议方法的默认实现, 如果遵守协议的类/结构体/枚举实现了该方法, 就会覆盖掉默认的方法.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><code class="hljs 上下文">    protocol UserDefaultsSettable &#123;<br><br>    /* 只要 AccountInfo 类/结构体/枚举遵守这个协议, 就能调用存取方法,至关重要的问题在于， AccountKeys 从哪儿来?<br>    我们上面是把 AccountKeys 写在UserDefaults扩展里面的, 在协议里面如何知道这个变量是什么类型呢?<br>    而且还使用到了 rawValue, 为了通用性, 那就需要在协议里关联类型, 而且传入的值能拿到 rawValue,<br>    那么这个关联类型需要遵守 RawRepresentable 协议, 这个很关键!!! */<br><br>    associatedtype defaultKeys: RawRepresentable &#125;<br><br>    /*必须在扩展中使用 where 子语句限制关联类型是字符串类型, 因为 UserDefaults 的 key 就是字符串类型.<br>    where defaultKeys.RawValue==String，其他类型同理*/<br><br>    extension UserDefaultsSettable where defaultKeys.RawValue==String &#123;<br>        static func set(value: String?, forKey key: defaultKeys) &#123;<br>            let aKey = key.rawValue<br>            UserDefaults.standard.set(value, forKey: aKey)<br>        &#125;<br>            static func string(forKey key: defaultKeys) -&gt; String? &#123;<br>                let aKey = key.rawValue<br>                return UserDefaults.standard.string(forKey: aKey)<br>            &#125;<br>    &#125;<br><br>```上下文<br><br>在 UserDefault 的扩展中定义分组<br><br>```上下文<br>    extension UserDefaults &#123;<br>        // 账户信息<br>        struct AccountInfo: UserDefaultsSettable &#123;<br>                enum defaultKeys: String &#123;<br>                  case userName<br>                  case age<br>                  &#125;<br>            &#125;<br>        // 登录信息<br>        struct LoginInfo: UserDefaultsSettable &#123;<br>            enum defaultKeys: String &#123;<br>                case token<br>                case userId<br>            &#125;<br>        &#125;<br>    &#125;<br>    //存取数据<br>    UserDefaults.AccountInfo.set(value: &quot;chilli cheng&quot;, forKey: .userName)<br>    UserDefaults.AccountInfo.string(forKey: .userName)<br><br>    UserDefaults.LoginInfo.set(value: &quot;ahdsjhad&quot;, forKey: .token)<br>    UserDefaults.LoginInfo.string(forKey: .token)<br></code></pre></td></tr></table></figure>
+
+<p>如果还有需要存储的分类数据, 同样在 UserDefaults extension 中添加一个结构体, 遵守 UserDefaultsSettable 协议, 实现 defaultKeys 枚举属性</p>
+<p>在枚举中设置该分类存储数据所需要的 key.UserDefaultsSettable 协议中只实现了存取 string 类型的数据,可以自行在 UserDefaultsSettable 协议中添加 Int, Bool 等类型方法</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%9F%BA%E7%A1%80/">基础</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B2%99%E7%9B%92/">沙盒</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/10/29/%E7%BD%91%E7%BB%9C/Postman/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Postman</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/09/05/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+                        <span class="hidden-mobile">正则表达式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

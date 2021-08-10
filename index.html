@@ -1,14 +1,14 @@
+
+
 <!DOCTYPE html>
-<html lang="zh-Hans">
-
-
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
 
 
 
 <head>
   <meta charset="UTF-8">
   <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="/images/Icon/favicon.png">
+  <link rel="icon" href="/images/Icon/favicon.png">
   <meta name="viewport"
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -17,19 +17,20 @@
   <meta name="description" content="">
   <meta name="author" content="CBH">
   <meta name="keywords" content="">
-  <title>ZNCheng</title>
+  
+  <title>Rec</title>
 
-  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
 
 
 <!-- 主题依赖的图标库，不要自行修改 -->
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
 
 
 
-<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
 
 
 <link  rel="stylesheet" href="/css/main.css" />
@@ -37,7 +38,12 @@
 <!-- 自定义样式保持在最底部 -->
 
 
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":200,"cursorChar":"￥","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null},"tajs":null},"search_path":"/local-search.xml"};
+  </script>
   <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
 <meta name="generator" content="Hexo 5.4.0"></head>
 
 
@@ -46,7 +52,7 @@
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
-       href="/">&nbsp;<strong>ZNCheng</strong>&nbsp;</a>
+       href="/">&nbsp;<strong>Rec</strong>&nbsp;</a>
 
     <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
@@ -120,8 +126,14 @@
         
         
           <li class="nav-item" id="search-btn">
-            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
-                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
           </li>
         
       </ul>
@@ -129,13 +141,13 @@
   </div>
 </nav>
 
-    <div class="view intro-2" id="background" parallax=true
+    <div class="banner" id="banner" parallax=true
          style="background: url('/img/default.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-          <div class="container text-center white-text fadeInUp">
-            <span class="h2" id="subtitle">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="生命如花，都当灿烂的绽放">
               
             </span>
 
@@ -154,7 +166,7 @@
 
   <main>
     
-      <div class="container nopadding-md">
+      <div class="container nopadding-x-md">
         <div class="py-5" id="board"
           style=margin-top:0>
           
@@ -168,31 +180,37 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" target="_self">
-          <img src="/images/CoverImage/wallhaven-28d1q6.jpg" srcset="/img/loading.gif" alt="小数点的截取">
+        <a href="/2021/07/13/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" target="_self">
+          <img src="/images/CoverImage/wallhaven-28d1q6.jpg" srcset="/img/loading.gif" lazyload alt="小数点的截取">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/">小数点的截取</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/07/13/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" target="_self">
+          小数点的截取
+        </a>
+      </h1>
 
-      <a href="/2021/07/13/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2021/07/13/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E5%B0%8F%E6%95%B0%E7%82%B9%E7%9A%84%E6%88%AA%E5%8F%96/" target="_self">
           
-        
-        <div>最简单的截取小数位的方法：
-/// 保留_位小数
-func afterDecimalNum(_ count: Int) -&gt; String &#123;
-    guard count &gt;= 0 else &#123; return &quot;&quot; &#125;
-    let format = &quot;%.\(count)f&quot;
-    return Strin</div>
-      </a>
+          
+            
+          
+          最简单的截取小数位的方法：
+123456/// 保留_位小数func afterDecimalNum(_ count: Int) -&gt; String &#123;    guard count &gt;= 0 else &#123; return &quot;&quot; &#125;    let format = &quot;%.\(count)f&quot;    return Str
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2021-07-13
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-13 18:15" pubdate>
+              2021-07-13
+            </time>
           </div>
         
         
@@ -214,7 +232,7 @@ func afterDecimalNum(_ count: Int) -&gt; String &#123;
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -222,28 +240,38 @@ func afterDecimalNum(_ count: Int) -&gt; String &#123;
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/" target="_self">
-          <img src="/images/CoverImage/wallhaven-k716d6.jpg" srcset="/img/loading.gif" alt="Swift-闭包">
+          <img src="/images/CoverImage/wallhaven-k716d6.jpg" srcset="/img/loading.gif" lazyload alt="Swift-闭包">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/">Swift-闭包</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/" target="_self">
+          Swift-闭包
+        </a>
+      </h1>
 
-      <a href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/06/03/Swift/Swift-%E9%97%AD%E5%8C%85/" target="_self">
           
-        
-        <div>尾随闭包
+          
+            
+          
+          尾随闭包
 官方定义：如果需要将闭包表达式作为函数的最终参数传递给函数，并且闭包表达式很长，则可以将其写为尾随闭包。写法：尾随闭包写在函数调用的圆括号之后，即使它是函数的最终参数。如果尾随闭包作为函数的最终参数，并且定义了相应的参数标签，在使用尾随闭包语法时，不能将闭包的参数标签写为函数调用的一部分。
 
-实际需求中需要的将尾随闭包变成可选，也就是根据参数来判断是否需要执行。虽然没有用 @escapi</div>
-      </a>
+实际需求中需要的将尾随闭包变成可选，也就是根据参数来判断是否需要执行。虽然没有用 @escapi
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-03
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-06-03 09:55" pubdate>
+              2020-06-03
+            </time>
           </div>
         
         
@@ -263,7 +291,7 @@ func afterDecimalNum(_ count: Int) -&gt; String &#123;
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -271,27 +299,37 @@ func afterDecimalNum(_ count: Int) -&gt; String &#123;
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/" target="_self">
-          <img src="/images/CoverImage/wallhaven-ym6lrk.jpg" srcset="/img/loading.gif" alt="WKWebView默认缓存策略与HTTP缓存协议">
+          <img src="/images/CoverImage/wallhaven-ym6lrk.jpg" srcset="/img/loading.gif" lazyload alt="WKWebView默认缓存策略与HTTP缓存协议">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/">WKWebView默认缓存策略与HTTP缓存协议</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/" target="_self">
+          WKWebView默认缓存策略与HTTP缓存协议
+        </a>
+      </h1>
 
-      <a href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/05/26/%E7%BD%91%E7%BB%9C/WKWebView%E9%BB%98%E8%AE%A4%E7%BC%93%E5%AD%98%E7%AD%96%E7%95%A5%E4%B8%8EHTTP%E7%BC%93%E5%AD%98%E5%8D%8F%E8%AE%AE/" target="_self">
           
-        
-        <div>原文地址：WKWebView默认缓存策略与HTTP缓存协议可能是最被误用的 HTTP 响应头之一 Cache-Control: must-revalidate
+          
+            
+          
+          原文地址：WKWebView默认缓存策略与HTTP缓存协议可能是最被误用的 HTTP 响应头之一 Cache-Control: must-revalidate
 https://juejin.im/post/5df75e3a6fb9a016266459da
-今天同事反应H5更新了资源，但iOS App里面仍然使用的是旧的缓存资源。为什么会这样呢？要弄清楚这个问题，首先得弄清楚WKWebView的缓存</div>
-      </a>
+今天同事反应H5更新了资源，但iOS App里面仍然使用的是旧的缓存资源。为什么会这样呢？要弄清楚这个问题，首先得弄清楚WKWebView的缓存
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-26
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-05-26 09:03" pubdate>
+              2020-05-26
+            </time>
           </div>
         
         
@@ -313,7 +351,7 @@ https://juejin.im/post/5df75e3a6fb9a016266459da
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -321,28 +359,38 @@ https://juejin.im/post/5df75e3a6fb9a016266459da
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/" target="_self">
-          <img src="/images/CoverImage/wallhaven-3zwzw9.jpg" srcset="/img/loading.gif" alt="‘反向对’问题解决思路的一般原则">
+          <img src="/images/CoverImage/wallhaven-3zwzw9.jpg" srcset="/img/loading.gif" lazyload alt="‘反向对’问题解决思路的一般原则">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/">‘反向对’问题解决思路的一般原则</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/" target="_self">
+          ‘反向对’问题解决思路的一般原则
+        </a>
+      </h1>
 
-      <a href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/05/10/LeetCode/%E2%80%98%E5%8F%8D%E5%90%91%E5%AF%B9%E2%80%99%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%80%9D%E8%B7%AF%E7%9A%84%E4%B8%80%E8%88%AC%E5%8E%9F%E5%88%99/" target="_self">
           
-        
-        <div>此文是对 LeetCode-493. 翻转对 国际站上高票回答中，一遍总结回答的翻译原地址在此
+          
+            
+          
+          此文是对 LeetCode-493. 翻转对 国际站上高票回答中，一遍总结回答的翻译原地址在此
 ‘反向对’问题解决思路的一般原则看起来有一系列的解题思路（ (BST-based, BIT-based, Merge-sort-based)）。在这里，我想集中讨论这些解决方案背后的一般原则，以及这些解决方案可能应用于一些类似的问题。
 基本思想很简单：分解数组并解决子问题。
-数组的分解自然使我们想起子数</div>
-      </a>
+数组的分解自然使我们想起子数
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-10
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-05-10 19:34" pubdate>
+              2020-05-10
+            </time>
           </div>
         
         
@@ -364,7 +412,7 @@ https://juejin.im/post/5df75e3a6fb9a016266459da
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -372,30 +420,35 @@ https://juejin.im/post/5df75e3a6fb9a016266459da
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
-          <img src="/images/CoverImage/wallhaven-eylwkw.jpg" srcset="/img/loading.gif" alt="3. 无重复字符的最长子串位运算">
+          <img src="/images/CoverImage/wallhaven-eylwkw.jpg" srcset="/img/loading.gif" lazyload alt="3. 无重复字符的最长子串位运算">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/">3. 无重复字符的最长子串位运算</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          3. 无重复字符的最长子串位运算
+        </a>
+      </h1>
 
-      <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/05/03/LeetCode/3-%E6%97%A0%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E6%9C%80%E9%95%BF%E5%AD%90%E4%B8%B2%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
           
-        
-        <div>字符串# 时间复杂度是 O(N*N)，每次拿到新的字符都要和之前的做比较
-class Solution &#123;
-    func lengthOfLongestSubstring(_ s: String) -&gt; Int &#123;
-        var tmp = &quot;&quot;
-        var count = 0
-        for ch in s &#12</div>
-      </a>
+          
+            
+          
+          字符串123456789101112131415# 时间复杂度是 O(N*N)，每次拿到新的字符都要和之前的做比较class Solution &#123;    func lengthOfLongestSubstring(_ s: String) -&gt; Int &#123;        var tmp = &quot;&quot;        var count = 0        
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-03
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-05-03 15:47" pubdate>
+              2020-05-03
+            </time>
           </div>
         
         
@@ -415,7 +468,7 @@ class Solution &#123;
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -423,47 +476,38 @@ class Solution &#123;
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
-          <img src="/images/CoverImage/wallhaven-6k6wjw.jpg" srcset="/img/loading.gif" alt="位运算">
+          <img src="/images/CoverImage/wallhaven-6k6wjw.jpg" srcset="/img/loading.gif" lazyload alt="位运算">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/">位运算</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
+          位运算
+        </a>
+      </h1>
 
-      <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E4%BD%8D%E8%BF%90%E7%AE%97/" target="_self">
           
-        
-        <div>位运算符&lt;&lt; //左移
-
-&gt;&gt; //右移
-
-|  //或
-
-&amp;  //与
-
-~  //取反
-
-^  //异或
+          
+            
+          
+          位运算符1234567891011&lt;&lt; //左移&gt;&gt; //右移|  //或&amp;  //与~  //取反^  //异或
 
 实战使用
-// 判断奇偶
-x%2 == 1 -&gt;  x&amp;1 == 1
-x%2 == 0 -&gt;  x&amp;1 == 0
-
-x &gt;&gt; 1 -&gt; x/2
-
-// 清零最低位的 1
-x = x&amp;(x-1)  
-
-/</div>
-      </a>
+123456789101112131415161718// 判断奇偶x%2 == 1 -&gt;  x&amp;1 == 1x%2 == 0 -&gt;  x&amp;1 == 0x &gt;&gt; 1 -&gt; x/2// 清零最低位
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-01
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-05-01 11:36" pubdate>
+              2020-05-01
+            </time>
           </div>
         
         
@@ -485,7 +529,7 @@ x = x&amp;(x-1)
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -493,19 +537,25 @@ x = x&amp;(x-1)
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_self">
-          <img src="/images/CoverImage/wallhaven-wyjdgr.jpg" srcset="/img/loading.gif" alt="十大经典排序算法（Swift）">
+          <img src="/images/CoverImage/wallhaven-wyjdgr.jpg" srcset="/img/loading.gif" lazyload alt="十大经典排序算法（Swift）">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/">十大经典排序算法（Swift）</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_self">
+          十大经典排序算法（Swift）
+        </a>
+      </h1>
 
-      <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/05/01/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/" target="_self">
           
-        
-        <div>排序
+          
+            
+          
+          排序
 比较类排序通过比较来决定元素间的相对次序，由于其时间复杂度不能突破 O(logn)，（在数学上证明了），因此也称为非线性时间比较类排序
 
 非比较类排序不通过比较来决定元素间的相对次序，他可以突破基于比较排序的时间下界，以线性时间运行，一次也称为线性时间非比较类排序
@@ -514,13 +564,17 @@ x = x&amp;(x-1)
 初级排序 O(n*n)
 选择排序每次找最小值，然后放到待排序的起始位置
 
-插入排序从前到后逐步构建有序序列，对于未排序的数据</div>
-      </a>
+插入排序从前到后逐步构建有序序列，对于未排序的数据
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-01
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-05-01 11:36" pubdate>
+              2020-05-01
+            </time>
           </div>
         
         
@@ -540,7 +594,7 @@ x = x&amp;(x-1)
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -548,33 +602,35 @@ x = x&amp;(x-1)
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/" target="_self">
-          <img src="/images/CoverImage/wallhaven-wyjl16.jpg" srcset="/img/loading.gif" alt="N 皇后">
+          <img src="/images/CoverImage/wallhaven-wyjl16.jpg" srcset="/img/loading.gif" lazyload alt="N 皇后">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/">N 皇后</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/" target="_self">
+          N 皇后
+        </a>
+      </h1>
 
-      <a href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/04/30/LeetCode/N%E7%9A%87%E5%90%8E/" target="_self">
           
-        
-        <div>位运算解答class Solution &#123;
-    var size = 0
-    var count = 0
-    func totalNQueens(_ n: Int) -&gt; Int &#123;
-        size = (1 &lt;&lt; n) - 1
-        dfs(0,0,0)
-        return count
-    &#125;
-    </div>
-      </a>
+          
+            
+          
+          位运算解答123456789101112131415161718192021class Solution &#123;    var size = 0    var count = 0    func totalNQueens(_ n: Int) -&gt; Int &#123;        size = (1 &lt;&lt; n) - 1        dfs(0,0,0)        r
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-04-30
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-04-30 11:36" pubdate>
+              2020-04-30
+            </time>
           </div>
         
         
@@ -596,7 +652,7 @@ x = x&amp;(x-1)
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -604,19 +660,25 @@ x = x&amp;(x-1)
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/" target="_self">
-          <img src="/images/CoverImage/wallhaven-kw5ylq.jpg" srcset="/img/loading.gif" alt="LRU Cache">
+          <img src="/images/CoverImage/wallhaven-kw5ylq.jpg" srcset="/img/loading.gif" lazyload alt="LRU Cache">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/">LRU Cache</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/" target="_self">
+          LRU Cache
+        </a>
+      </h1>
 
-      <a href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/04/30/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LRU%20Cache/" target="_self">
           
-        
-        <div>Cache
+          
+            
+          
+          Cache
 记忆
 钱包 - 钱柜
 
@@ -625,18 +687,22 @@ LRU Cache
 Hash Table + Double LinkedList
 O(1) 查询 O(1)修改更新
 
-
+1
 
 实战题目
 146. LRU缓存机制
 
-</div>
-      </a>
+
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-04-30
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-04-30 11:36" pubdate>
+              2020-04-30
+            </time>
           </div>
         
         
@@ -649,7 +715,7 @@ O(1) 查询 O(1)修改更新
         
         
       </div>
-    </div>
+    </article>
   </div>
 
   <div class="row mx-auto index-card">
@@ -657,25 +723,35 @@ O(1) 查询 O(1)修改更新
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/" target="_self">
-          <img src="/images/CoverImage/wallhaven-g8gxo3.png" srcset="/img/loading.gif" alt="Swift 字符串">
+          <img src="/images/CoverImage/wallhaven-g8gxo3.png" srcset="/img/loading.gif" lazyload alt="Swift 字符串">
         </a>
       </div>
     
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/">Swift 字符串</a>
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/" target="_self">
+          Swift 字符串
+        </a>
+      </h1>
 
-      <a href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/" class="index-excerpt">
-        
-        
+      <p class="index-excerpt">
+        <a href="/2020/04/10/Swift/Swift-%E5%AD%97%E7%AC%A6%E4%B8%B2/" target="_self">
           
-        
-        <div></div>
-      </a>
+          
+            
+          
+          
+        </a>
+      </p>
 
       <div class="index-btm post-metas">
         
           <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-04-10
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-04-10 22:00" pubdate>
+              2020-04-10
+            </time>
           </div>
         
         
@@ -695,22 +771,16 @@ O(1) 查询 O(1)修改更新
           </div>
         
       </div>
-    </div>
+    </article>
   </div>
 
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
-  
-  <script>
-    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
-      ele.href += '#board';
-    }
-  </script>
 
 
 
@@ -720,16 +790,15 @@ O(1) 查询 O(1)修改更新
         </div>
       </div>
     
-  </main>
 
-  
-    <a id="scroll-top-button" href="#" role="button">
-      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
-    </a>
-  
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-  
-    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
      aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
     <div class="modal-content">
@@ -750,45 +819,52 @@ O(1) 查询 O(1)修改更新
     </div>
   </div>
 </div>
-  
-
-  
-
-  
-
-  <footer class="mt-5">
-  <div class="text-center py-3">
-    <div>
-      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
-      <i class="iconfont icon-love"></i>
-      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
-        <span>Fluid</span></a>
-    </div>
     
 
     
+  </main>
 
-    
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
   </div>
+  
+
+  
+
+  
 </footer>
 
-<!-- SCRIPTS -->
-<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
-<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
-<script  src="/js/debouncer.js" ></script>
-<script  src="/js/main.js" ></script>
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
 
 <!-- Plugins -->
 
 
   
-    <script  src="/js/lazyload.js" ></script>
+    <script  src="/js/img-lazyload.js" ></script>
   
 
 
 
-  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
-  <script  src="/js/clipboard-use.js" ></script>
+  
 
 
 
@@ -798,36 +874,26 @@ O(1) 查询 O(1)修改更新
 
 
 
-  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
-  <script>
-    var typed = new Typed('#subtitle', {
-      strings: [
-        '  ',
-        "生命如花，都当灿烂的绽放&nbsp;",
-      ],
-      cursorChar: "￥",
-      typeSpeed: 200,
-      loop: false,
-    });
-    typed.stop();
-    $(document).ready(function () {
-      $(".typed-cursor").addClass("h2");
-      typed.start();
-    });
-  </script>
-
-
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
 
 
 
   <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
   <script>
-    var path = "/local-search.xml";
-    var inputArea = document.querySelector("#local-search-input");
-    inputArea.onclick = function () {
-      searchFunc(path, 'local-search-input', 'local-search-result');
-      this.onclick = null
-    }
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
   </script>
 
 
@@ -844,11 +910,8 @@ O(1) 查询 O(1)修改更新
 
 
 
-
-
-
-
-
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
 
 
 </body>

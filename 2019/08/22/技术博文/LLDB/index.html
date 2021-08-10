@@ -1,0 +1,559 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
+  <link rel="icon" href="/images/Icon/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="CBH">
+  <meta name="keywords" content="">
+  
+  <title>LLDB - Rec</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.7.2/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":200,"cursorChar":"￥","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":"❡"},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null},"tajs":null},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Rec</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/abouts/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="LLDB">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-08-22 11:50" pubdate>
+        星期四, 八月 22日 2019, 11:50 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">LLDB</h1>
+            
+            <div class="markdown-body">
+              <blockquote>
+<p>Discover advanced techniques, and tips and tricks for enhancing your Xcode debugging workflows. Learn how to take advantage of LLDB and custom breakpoints for more powerful debugging. Get the most out of Xcode’s view debugging tools to solve UI issues in your app more efficiently.</p>
+<p>发现先进的技术，技巧和诀窍来提高自己 Xcode 的 debug 工作流程。学习如何利用 LLDB 和定制的断点来获得更有效的调试。充分利用 Xcode 的视图调试工具，更有效地解决应用中的 UI 问题</p>
+</blockquote>
+<h1 id="LLDB"><a href="#LLDB" class="headerlink" title="LLDB"></a>LLDB</h1><h2 id="输出方式"><a href="#输出方式" class="headerlink" title="输出方式"></a>输出方式</h2><h4 id="po-输出对象"><a href="#po-输出对象" class="headerlink" title="po - 输出对象"></a>po - 输出对象</h4><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Alias For</th>
+<th>Steps TO Evaluate</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>po <expression></td>
+<td>expression –object-description – <expression></td>
+<td>1. Expression: evaluate <br/>2. Expression: debug description</td>
+</tr>
+</tbody></table>
+<p>​ po 过程</p>
+<p>​ LLDB 先把语句生成一小段代码</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/12b150c95af8aeeac8c8fd4e46c334a5.png" srcset="/img/loading.gif" lazyload alt="12b150c95af8aeeac8c8fd4e46c334a5"></p>
+<p>​ 编译执行，在生成获取结果的代码</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/87b66f7b2a9b72bb56a81729f472e659.png" srcset="/img/loading.gif" lazyload alt="87b66f7b2a9b72bb56a81729f472e659"></p>
+<p>​ 然后再编译执行，拿到对应的结果，显示出来</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/18f667b879ceb9568b3eeed341b5af75.png" srcset="/img/loading.gif" lazyload alt="18f667b879ceb9568b3eeed341b5af75"></p>
+<h4 id="p-输出-LLDB-格式数据"><a href="#p-输出-LLDB-格式数据" class="headerlink" title="p - 输出 LLDB 格式数据"></a>p - 输出 LLDB 格式数据</h4><table>
+<thead>
+<tr>
+<th>Command</th>
+<th><strong>Alias For</strong></th>
+<th>Steps TO Evaluate</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>p</td>
+<td>expression –</td>
+<td>1. Expression: evaluate <br/>2. Outputs LLDB-formatted description</td>
+</tr>
+</tbody></table>
+<p>p 过程</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/242ff4fcf39db08ab2380c4f58de7f44.png" srcset="/img/loading.gif" lazyload alt="242ff4fcf39db08ab2380c4f58de7f44"></p>
+<p>一直到取到结果，p 和 po 的行为一模一样。区别在于 p 使用了 dynamic type resolution （动态类型推断）</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/7e98e6bc799197d68f8b8ed62a21f7f4.png" srcset="/img/loading.gif" lazyload alt="7e98e6bc799197d68f8b8ed62a21f7f4"></p>
+<p>在动态类型推断之后，还有一步格式化</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/4c88d4ff0d61d22e1ea1143ed47acd68.png" srcset="/img/loading.gif" lazyload alt="4c88d4ff0d61d22e1ea1143ed47acd68"></p>
+<p>####</p>
+<h4 id="V"><a href="#V" class="headerlink" title="V"></a>V</h4><p>（Xcode 10.2 引入的 alias，之前版本需要使用 frame variable）</p>
+<p>frame variable 不同之处的是从当前 frame 调用栈的内存中拿到的值。只接受变量作为参数，不接受表达式。通过<code>frame variable</code>命令，可以打印出当前 frame 调用栈的的所有变量。</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th><strong>Alias For</strong></th>
+<th><strong>Steps TO Evaluate</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>v</td>
+<td>frame variable</td>
+<td>. Reads value of from memory<br/>2. Outputs LLDB-formatted description</td>
+</tr>
+</tbody></table>
+<p>v 并不像<code>p</code>和<code>po</code>一样，<code>v</code>并没有编译执行的能力，但因此速度也更快。它能访问的是当前栈帧能访问到的数据。如果需要一些更复杂的执行代码或是计算一些值，建议还是使用<code>p</code>和<code>po</code></p>
+<p>当执行<code>v variable</code>的时候，会检测当前程序状态，从内存中读出数据，进行（之前说过的）类型推断</p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/9cf14650b78d34d147fcb987f734bb44.png" srcset="/img/loading.gif" lazyload alt="9cf14650b78d34d147fcb987f734bb44"></p>
+<p>如果有访问变量的子属性，例如<code>v variable.field1.field2</code>，则会不断的重复读内存和类型推断的行为，最后再走到（之前在<code>p</code>说过的）格式化。<br><img src="https://images.xiaozhuanlan.com/photo/2019/89e62a823a1d3c1efc8fca104c6d0df8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>如果有访问变量的子属性，例如<code>v variable.field1.field2</code>，则会不断的重复读内存和类型推断的行为，最后再走到（之前在<code>p</code>说过的）格式化。<br><img src="https://images.xiaozhuanlan.com/photo/2019/89e62a823a1d3c1efc8fca104c6d0df8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="https://images.xiaozhuanlan.com/photo/2019/0737e5483eb3fd9a8b379d6828605cd2.png" srcset="/img/loading.gif" lazyload alt="0737e5483eb3fd9a8b379d6828605cd2"></p>
+<ul>
+<li>只有<code>po</code>有描述的过程</li>
+<li><code>p</code>和<code>v</code>都有格式化参与</li>
+<li>因为<code>po</code>和<code>p</code>有编译执行的能力，所以可以更随意的执行一些逻辑</li>
+<li>因为<code>v</code>访问的是内存中实际的值，类型推断可以不断执行，最终再到格式化逻辑</li>
+</ul>
+<p>所以，实际使用还是需要根据情况，需求，选择适合的指令帮助调试</p>
+<h2 id="定制格式化输出"><a href="#定制格式化输出" class="headerlink" title="定制格式化输出"></a>定制格式化输出</h2><h4 id="CustomDebugStringConvertible"><a href="#CustomDebugStringConvertible" class="headerlink" title="CustomDebugStringConvertible"></a>CustomDebugStringConvertible</h4><h4 id="CustomReflectable"><a href="#CustomReflectable" class="headerlink" title="CustomReflectable"></a>CustomReflectable</h4><p><img src="/images/LLDB/CustomReflectable.png" srcset="/img/loading.gif" lazyload alt="image-20190822104654921"></p>
+<h2 id="断点"><a href="#断点" class="headerlink" title="断点"></a>断点</h2><p>​ <code>expression</code>命令可以改变程序当前的各种状态，<code>e</code>、<code>expr</code> 作为简写也可以实现同样的功能</p>
+<p>​ 在 console 和 breakpoint 中都可以使用该命令</p>
+<p>​ 在断点中使用，相当于实时插入代码，勾选 option 则执行代码且不在此断点停留</p>
+<p><img src="/images/LLDB/BreakPointExpression.png" srcset="/img/loading.gif" lazyload alt="image-20190822105843514"></p>
+<h3 id="伪寄存器"><a href="#伪寄存器" class="headerlink" title="伪寄存器"></a>伪寄存器</h3><p>在断点列表界面，选择新增 Symbolic Breakpoint 断点</p>
+<p><img src="/images/LLDB/SymbolicBreakpoint.png" srcset="/img/loading.gif" lazyload alt="B9973C7A-57D6-4E0F-84D5-8677A331CEE7"></p>
+<p>在 symbol 栏目中可以输入任何函数或者方法名称<br>图示中用的是 OC 表达式，因为 UIKit 是一个 OC 的框架</p>
+<p>在确定输入后，在断点下面有一个子行，这是来自调试器的反馈，他告诉我们能够在 UIKit Core 中的一个位置解析这个断点。有可能会解析到多个位置。如果没有看到子条目，表明调试器无法解析你的断点，因此它永远不会命中</p>
+<p><img src="/images/LLDB/SymbolicBreakpointUikit.png" srcset="/img/loading.gif" lazyload alt="6C0795E4-AA93-437D-94BD-5E805F2AC941"></p>
+<p>运行程序后，第一个获取到的断点如图</p>
+<p><img src="/images/LLDB/ResultBreakpoint.png" srcset="/img/loading.gif" lazyload alt="32D6D1FA-4AC4-4425-B45F-0814D1090733"></p>
+<p>arg 为伪寄存器，可用 1，2，3 类似的方法来查看代表着第 1，2，3 个参数的寄存器。<br>熟悉 objc_msgSend（不熟悉） ,第二个参数应该是选择器。<br>直接使用 po arg2 时，我们发现并没有看到相对的参数，因为 LLDB 不会自动知道这些参数的类型，所以我们需要做相应的类型转换，（SEL），然后我们就看到了这个消息的选择器 arg3 是传入方法的第一个参数</p>
+<h3 id="一次性断点"><a href="#一次性断点" class="headerlink" title="一次性断点"></a>一次性断点</h3><p>breakpoint set –one-shot true</p>
+<h3 id="跳过代码"><a href="#跳过代码" class="headerlink" title="跳过代码"></a>跳过代码</h3><p>thread jump –by 2 （跳过两行代码）</p>
+<h3 id="watch-断点"><a href="#watch-断点" class="headerlink" title="watch 断点"></a>watch 断点</h3><p>在变量视图中，查看所有属性。在属性列表中找到目标属性，右键 “watch “属性””，自动添加断点。在下一次变量的值发生改变的时候暂停调试器</p>
+<h2 id="修改-UI"><a href="#修改-UI" class="headerlink" title="修改 UI"></a>修改 UI</h2><h3 id="查找内存地址，仅通过内存地址来操作视图"><a href="#查找内存地址，仅通过内存地址来操作视图" class="headerlink" title="查找内存地址，仅通过内存地址来操作视图"></a>查找内存地址，仅通过内存地址来操作视图</h3><p>有属性或输出口的时候，可以通过 po 命令获取到对应的调试描述，但是这个试图控制器下的所有视图成为了问题</p>
+<p>利用 Xcode 的可视化视图调试器</p>
+<p>使用 UIView 上的调试函数，self.view.recursiveDescription() 。此方法仅用于调试目的，他不是公共 API 的一部分，所以也不会被 Swift 扫描。swift 比较严格，而 OC 代码的运行时特性，可以让调试器使用 OC 语法实现</p>
+<p>expression -l objc -o – [self.view recursiveDescription] 。-l objc 是说给 expression 命令一段 objc 的代码，-o 表示我们调试描述，– 表示没有更多的选项</p>
+<p>但是这段代仍不能实现。这段代码将为 OC 编译创建一个临时表达式上下文，并且不会继承 Swift 框架中的所有变量</p>
+<p>expression -l objc -o – [‘self.view’ recursiveDescription]。将 self.view 放入反引号中，反引号就像预处理器一样，他表示先评估其在当前帧中的内容，并插入结果，然后我们可以评估其余的部分，然后我们就可以得到递归描述了</p>
+<p>po 内存地址，并不能得到，应为 swift 不会讲数字视为指针并为你解引用<br>command alias poc expression -l objc -0 – 这个可以将<code>expression -l objc -0 --</code> 简化为 <code>poc</code>命令<br>poc 内存地址 ，可以查看该对象的调试描述</p>
+<p>swift 方法查看调试描述，<code>po unsafeBitCast(内存地址 ,to: ScoreboardView.self)</code>，不安全的原因是需要你来提供正确的类型。这个方法的好处是返回了一个经过类型转化的结果，我们可以调用它的函数，例如.frame</p>
+<p>修改该对象的中心店位置<code>po unsafeBitCast(内存地址 ,to: ScoreboardView.self).center.y = 300</code></p>
+<p>屏幕中并不会立即显示，我们在调试器中暂停了，所以 Core Animation 目前不会有任何视图模块的更改，应用到屏幕的帧缓冲区</p>
+<p>但是使用表达式 CAtransaction.flush()，这告诉 Core Animation 更新屏幕的帧缓冲区</p>
+<h4 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h4><ul>
+<li><p>expression -l objc -O – [<code>self.view</code> recursiveDescription] 得到的是视图结构，在此拿到内存地址</p>
+<p><img src="/images/LLDB/image-20190822112240319.png" srcset="/img/loading.gif" lazyload alt="image-20190822112240319"></p>
+</li>
+<li><p>根据方法 po unsafeBitCast(内存地址 ,to: ScoreboardView.self) ，可以打印或设置相关属性</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs Swift"><span class="hljs-comment">// 打印对象</span><br>(lldb) po <span class="hljs-built_in">unsafeBitCast</span>(<span class="hljs-number">0x7fe439d13160</span>, <span class="hljs-type">UILabel</span>.<span class="hljs-keyword">self</span>)<br><span class="hljs-operator">&lt;</span><span class="hljs-type">UILabel</span>: <span class="hljs-number">0x7fe439d13160</span>; frame <span class="hljs-operator">=</span> (<span class="hljs-number">57</span> <span class="hljs-number">141</span>; <span class="hljs-number">42</span> <span class="hljs-number">21</span>); text <span class="hljs-operator">=</span> &#x27;<span class="hljs-type">Label</span>&#x27;; opaque <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; autoresize <span class="hljs-operator">=</span> <span class="hljs-type">RM</span><span class="hljs-operator">+</span><span class="hljs-type">BM</span>; userInteractionEnabled <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; layer <span class="hljs-operator">=</span> <span class="hljs-operator">&lt;</span>_UILabelLayer: <span class="hljs-number">0x600003942a30</span><span class="hljs-operator">&gt;&gt;</span><br><br><span class="hljs-comment">// 打印中心点坐标</span><br>(lldb) po <span class="hljs-built_in">unsafeBitCast</span>(<span class="hljs-number">0x7fe439d13160</span>, <span class="hljs-type">UILabel</span>.<span class="hljs-keyword">self</span>).center<br><span class="hljs-operator">▿</span> (<span class="hljs-number">78.0</span>, <span class="hljs-number">151.5</span>)<br>  <span class="hljs-operator">-</span> x : <span class="hljs-number">78.0</span><br>  <span class="hljs-operator">-</span> y : <span class="hljs-number">151.5</span><br><br><span class="hljs-comment">// 设置中心点坐标</span><br>(lldb) po <span class="hljs-built_in">unsafeBitCast</span>(<span class="hljs-number">0x7fe439d13160</span>, <span class="hljs-type">UILabel</span>.<span class="hljs-keyword">self</span>).center.y <span class="hljs-operator">=</span> <span class="hljs-number">300</span><br></code></pre></td></tr></table></figure>
+</li>
+<li><p>expression CATransaction.flush() 刷新页面</p>
+</li>
+</ul>
+<h2 id="自定义-LLDB-命令"><a href="#自定义-LLDB-命令" class="headerlink" title="自定义 LLDB 命令"></a>自定义 LLDB 命令</h2><p>例如上面用到的 poc 命令</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs applescript">command <span class="hljs-built_in">alias</span> poc expression -l objc -O <span class="hljs-comment">--</span><br></code></pre></td></tr></table></figure>
+
+<p>用 poc 命令代替 expression -l objc -O –</p>
+<h2 id="自定义-Python-脚本"><a href="#自定义-Python-脚本" class="headerlink" title="自定义 Python 脚本"></a>自定义 Python 脚本</h2><p>nudge 是 python 脚本文件，有苹果官方提供</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs swift">command alias poc expression <span class="hljs-operator">-</span>l objc <span class="hljs-operator">-</span><span class="hljs-type">O</span> <span class="hljs-operator">--</span><br>command alias 🚽 expression <span class="hljs-operator">-</span>l objc <span class="hljs-operator">--</span> (void)[<span class="hljs-type">CATransaction</span> flush]<br><br><span class="hljs-comment">// 引用 nudge</span><br>(lldb) command script <span class="hljs-keyword">import</span> ~/nudge.py<br><span class="hljs-type">The</span> <span class="hljs-string">&quot;nudge&quot;</span> command has been installed, type <span class="hljs-string">&quot;help nudge&quot;</span> <span class="hljs-keyword">for</span> detailed help.<br><br><span class="hljs-comment">// 拿到对象指针</span><br>(lldb) po myLabel<br><span class="hljs-operator">▿</span> <span class="hljs-type">Optional</span>&lt;<span class="hljs-type">UILabel</span>&gt;<br>  <span class="hljs-operator">-</span> <span class="hljs-keyword">some</span> : <span class="hljs-operator">&lt;</span><span class="hljs-type">UILabel</span>: <span class="hljs-number">0x7fc04a60fff0</span>; frame <span class="hljs-operator">=</span> (<span class="hljs-number">57</span> <span class="hljs-number">141</span>; <span class="hljs-number">42</span> <span class="hljs-number">21</span>); text <span class="hljs-operator">=</span> &#x27;<span class="hljs-type">Label</span>&#x27;; opaque <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; autoresize <span class="hljs-operator">=</span> <span class="hljs-type">RM</span><span class="hljs-operator">+</span><span class="hljs-type">BM</span>; userInteractionEnabled <span class="hljs-operator">=</span> <span class="hljs-type">NO</span>; layer <span class="hljs-operator">=</span> <span class="hljs-operator">&lt;</span>_UILabelLayer: <span class="hljs-number">0x600001d36c10</span><span class="hljs-operator">&gt;&gt;</span><br><br><span class="hljs-comment">// Y轴向上偏移5</span><br>(lldb) nudge <span class="hljs-number">0</span> <span class="hljs-operator">-</span><span class="hljs-number">5</span> <span class="hljs-number">0x7fc04a60fff0</span><br></code></pre></td></tr></table></figure>
+
+<p>参考资料 【1】 Advanced Debugging with Xcode and LLDB – WWDC 2018 - Session 412 - iOS, macOS, tvOS, watchOS</p>
+<p>【2】 WWDC2019 - Session 429 <a target="_blank" rel="noopener" href="https://xiaozhuanlan.com/topic/2683509174">小专栏</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%BC%80%E5%8F%91/">开发</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/DEBUG/">DEBUG</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://zh.wikipedia.org/wiki/Wikipedia:CC_BY-SA_3.0%E5%8D%8F%E8%AE%AE%E6%96%87%E6%9C%AC" rel="nofollow noopener noopener">CC BY-SA 3.0协议</a> 。转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/09/09/%E6%8A%80%E6%9C%AF%E5%8D%9A%E6%96%87/%E5%88%A9%E7%94%A8-Sourcetree-%E6%9D%A5%E7%AE%A1%E7%90%86-SVN-%E4%BB%A3%E7%A0%81%E4%BB%93%E5%BA%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">利用 Sourcetree 来管理 SVN 代码仓库</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2019/08/19/%E4%B8%AA%E4%BA%BA%E6%80%9D%E8%80%83/%E4%B8%89%E8%A7%82%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%AD%A3/">
+                        <span class="hidden-mobile">三观为什么要正</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.3/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.1/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
