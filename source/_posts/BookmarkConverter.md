@@ -56,6 +56,7 @@ index_img: /images/CoverImage/wallhaven-01r6vv.jpg
 [图片精选](https://alpha.wallhaven.cc/)
 [多尺寸图片下载](https://www.pexels.com/)
 [在线图片PS](https://www.chuangkit.com/)
+[GIF图](https://giphy.com/)
 
 # 在线
 
