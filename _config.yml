@@ -99,7 +99,8 @@ theme: fluid
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   - type: git
-    repo: https://github.com/MyTimeforDevIos/mytimefordevios.github.io.git
+    #repo: https://github.com/MyTimeforDevIos/mytimefordevios.github.io.git
+    repo: git@github.com:MyTimeforDevIos/mytimefordevios.github.io.git
     brach: master
     name: MyTimeforDevIos
     email: grecss@163.com
