@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/Icon/apple-touch-icon.png">
+  <link rel="icon" href="/images/Icon/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="LeetCode —  数组算法从排序数组中删除重复项
+不使用额外的数组空间，空间复杂度为O(1)排序数组，不考虑非连续重复原地修改输入，修改输入数组，返回数组长度
+
+1234567891011121314151617181920212223class Solution &amp;#123;    func removeDuplicates(_ nums: inout [Int]) -&amp;gt; Int &amp;">
+  <meta name="author" content="CBH">
+  <meta name="keywords" content="">
+  
+  <title>LeetCode --- 数组类算法 - Rec</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4/github-markdown.min.css" />
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":140,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>BeHuii</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="LeetCode --- 数组类算法">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-08-28 09:24" pubdate>
+        2018年8月28日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">LeetCode --- 数组类算法</h1>
+            
+            <div class="markdown-body">
+              <h1 id="LeetCode-—-数组算法"><a href="#LeetCode-—-数组算法" class="headerlink" title="LeetCode —  数组算法"></a>LeetCode —  数组算法</h1><h2 id="从排序数组中删除重复项"><a href="#从排序数组中删除重复项" class="headerlink" title="从排序数组中删除重复项"></a>从排序数组中删除重复项</h2><blockquote>
+<p>不使用额外的数组空间，空间复杂度为O(1)<br>排序数组，不考虑非连续重复<br>原地修改输入，修改输入数组，返回数组长度</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs 示例">class Solution &#123;<br>    func removeDuplicates(_ nums: inout [Int]) -&gt; Int &#123;<br>        if nums.count == 0 || nums.count == 1&#123;<br>            return nums.count<br>        &#125;<br>        var position = 0 //第二个指针，指向当前不重复位置<br>            for i in 0..&lt;nums.count &#123; //第一个指针，指向对比位置<br>                if nums[position] != nums[i]&#123;//遍历比较到第一个不相等的元素<br>                    position += 1 //移动第二个指针，准备修改数组<br>                    nums[position] = nums[i]<br>                &#125;<br>            &#125;<br>        return position + 1//末位修改元素下角标<br>    &#125;<br>&#125;<br><br>let solution = Solution()<br><br>var numsArray = [0,0,1,2,3,3,5,5]<br><br>let len = solution.removeDuplicates(&amp;numsArray)<br><br>print(&quot;\(len)&quot;)<br></code></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<h2 id="买卖股票的最佳时机"><a href="#买卖股票的最佳时机" class="headerlink" title="买卖股票的最佳时机"></a>买卖股票的最佳时机</h2><blockquote>
+<p>前一个数比后一个数小的时候，买入股票<br>不可连续买入，即连续增大时时候不做操作<br>前一个数比后一个数大的时候，卖出股票<br>连续减下时，如若已经买入则最后一个值收益最大，未买入则一直不操作</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs 示例">class Solution &#123;<br>    func maxProfit(_ prices: [Int]) -&gt; Int &#123;<br>        if prices.count &lt;= 1 &#123;<br>            return 0<br>        &#125;<br>        var profit = 0 //收益<br>        var price = -1 //价格,特殊情况 -- 数组为零时会出现漏算<br>        for j in 0..&lt;prices.count&#123;<br>            if j  == (prices.count - 1) &#123;<br>                if price != -1&#123;<br>                    profit += prices[j] - price<br>                &#125;<br>            &#125;else&#123;<br>                if prices[j+1] &gt; prices[j]&#123;<br>                    if price == -1 &#123;<br>                        price = prices[j]<br>                    &#125;<br>                &#125;else&#123;<br>                if price != -1 &#123;<br>                    profit += prices[j] - price<br>                    price = -1<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;<br>        return profit<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="旋转数组"><a href="#旋转数组" class="headerlink" title="旋转数组"></a>旋转数组</h2><blockquote>
+<p>思考：即最后一位数插入到第一个位置上<br>旋转几步，即是插入几次<br>要求是 使用空间复杂度为 O(1) 的原地算法 ，尽可能多解</p>
+</blockquote>
+<h3 id="解法1"><a href="#解法1" class="headerlink" title="解法1"></a>解法1</h3><ul>
+<li>此方法适用于循环次数较少</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs 解答">class Solution &#123;<br>    func rotate(_ nums: inout [Int], _ k: Int) &#123;<br>        if k &gt; = nums.count&#123;<br>            k = k%nums.count<br>        &#125;<br>        for _ in 0..&lt;k&#123;<br>            //移除最后一个元素并返回此对象<br>            let lastnum = nums.removeLast()<br>            nums.insert(lastnum,at: 0)<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="解法2"><a href="#解法2" class="headerlink" title="解法2"></a>解法2</h3><ul>
+<li>此方法适用于循环次数较大，根据下角标直接修改数值</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs 解答">class Solution &#123;<br>    func rotate(_ nums: inout [Int], _ k: Int) &#123;<br>        // 此方法中，应该是在底层额外保存了一份数组，所以不会出现数据错误<br>        for (index,value) in nums.enumerated()&#123;<br>            let curIndex = (index + k)%nums.count<br>            nums[curIndex] = value<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="存在重复"><a href="#存在重复" class="headerlink" title="存在重复"></a>存在重复</h1><blockquote>
+<p>当数组过大时，时间复杂度过大</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs 解答">class Solution &#123;<br>    func containsDuplicate(_ nums: [Int]) -&gt; Bool &#123;<br>        for i in 0..&lt;nums.count&#123;<br>            for j in i..&lt;nums.count&#123;<br>                if i != j&#123;<br>                    if nums[i] == nums[j] &#123;<br>                        return true<br>                    &#125;<br>                &#125;<br>            &#125;<br>        &#125;<br>        return false<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>网上优秀答案思路<ol>
+<li>先排序，然后对比前后两个元素的值</li>
+<li>利用 Set 集合去重，若和数组长度不一致则是有相同元素</li>
+<li>利用字典，元素为key，无重复则添加到字典里</li>
+</ol>
+</li>
+</ul>
+<h1 id="只出现一次的数字"><a href="#只出现一次的数字" class="headerlink" title="只出现一次的数字"></a>只出现一次的数字</h1><blockquote>
+<p>先进行了衣蛾大小排序，题目已确定有且仅有，所以目标元素会在偶数下角标</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs 解答">class Solution &#123;<br>    func singleNumber(_ nums: [Int]) -&gt; Int &#123;<br>        if nums.count == 1&#123;<br>            return nums[0]<br>        &#125;<br>        var numArr =  nums<br>        numArr.sort()<br>        print(&quot;\(numArr)&quot;)<br>        for i in 0..&lt;numArr.count-1&#123;<br>            print(&quot;\(i)&quot;)<br>            if i%2 == 0&#123;<br>                if numArr[i] != numArr[i+1]&#123;<br>                    return numArr[i]<br>                &#125;<br>            &#125;<br>            if i == numArr.count-2&#123;<br>                    return numArr[i+1]<br>                &#125;<br>        &#125;<br>        return 999<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="两个数组的交集"><a href="#两个数组的交集" class="headerlink" title="两个数组的交集"></a>两个数组的交集</h1><blockquote>
+<p>数组转化成 Set 集合求交集<br>判断交集中每个元素的出现次数，选取在两个数组中相等或较小的次数</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs 解答">class Solution &#123;<br>    func intersect(_ nums1: [Int], _ nums2: [Int]) -&gt; [Int] &#123;<br>        let set1 = Set.init(nums1)<br>        let set2 = Set(nums2)<br>        let setIn = set1.intersection(set2)<br>        var tagetArr = Array(setIn)<br>        for temp in setIn&#123;<br>        var i = 0<br>        var j = 0<br>            for  numone in nums1&#123;<br>                if temp == numone&#123;<br>                    i += 1<br>                &#125;<br>            &#125;<br>            for numtwo in nums2&#123;<br>                if temp == numtwo&#123;<br>                    j += 1<br>                &#125;<br>            &#125;<br>            var minNum = 0<br>            if j &gt;= i &#123;<br>                minNum = i<br>            &#125; else&#123;<br>                minNum = j<br>            &#125;<br><br>            if minNum &gt;= 2 &#123;<br>                for _ in 0..&lt;(minNum-1)&#123;<br>                    tagetArr.append(temp)<br>                &#125;<br>            &#125;<br>        &#125;<br>        return tagetArr<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="加一"><a href="#加一" class="headerlink" title="加一"></a>加一</h1><blockquote>
+<p>数组中每个元素都是单个正整数<br>特殊情况是在当前数为 9 ，需要进位时改变高位数字</p>
+</blockquote>
+<pre><code class="解答">class Solution &#123;
+    func plusOne(_ digits: [Int]) -&gt; [Int] &#123;
+        var nums1 = digits
+        let count = nums1.count
+        var curIndex = count - 1
+        let curEle = nums1[curIndex]
+
+        if curEle != 9&#123;
+            nums1[curIndex] += 1
+        &#125;else&#123;
+            nums1[curIndex] = 0
+            while curIndex &gt; 0 &#123;
+                curIndex -= 1
+                if nums1[curIndex] != 9&#123;
+                    nums1[curIndex] += 1
+                    break
+                &#125;else&#123;
+                    nums1[curIndex] = 0
+                &#125;
+            &#125;
+
+            if nums1[0] == 0 &#123;
+                nums1.insert(1, at: 0)
+            &#125;
+        &#125;
+        return nums1`</code></pre>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E7%BB%84/">数组</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/08/28/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/LeetCodeString/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">LeetCode --- 字符串</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/08/27/BookmarkConverter/">
+                        <span class="hidden-mobile">书签整理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
