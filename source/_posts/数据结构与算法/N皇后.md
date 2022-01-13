@@ -2,10 +2,10 @@
 title: N 皇后
 date: 2020-04-30 11:36:49
 tags: 
-- 回溯
-- 二进制
+    - 回溯
+    - 二进制
 categories: 
-- LeetCode
+    - 算法
 index_img: /images/CoverImage/wallhaven-wyjl16.jpg
 ---
 ## 位运算解答

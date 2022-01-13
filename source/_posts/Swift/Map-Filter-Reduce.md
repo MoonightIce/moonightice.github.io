@@ -3,6 +3,7 @@ title: Map Filter Reduce
 date: 2019-11-05 16:45:11
 tags:
 categories:
+  - Swift
 index_img: /images/CoverImage/woman-in-black-bikini-standing-on-shore-825904.jpg
 ---
 

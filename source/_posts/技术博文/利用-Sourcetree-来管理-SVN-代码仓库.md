@@ -2,9 +2,8 @@
 title: 利用 Sourcetree 来管理 SVN 代码仓库
 date: 2019-09-09 16:45:18
 tags:
-  - 代码管理
 categories:
-  - 基础
+  - 代码管理
 index_img: /images/CoverImage/wallhaven-839voo.jpg
 ---
 

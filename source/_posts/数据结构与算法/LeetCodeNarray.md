@@ -2,8 +2,9 @@
 title: LeetCode --- 数组类算法
 date: 2018-08-28 09:24:31
 tags:
-- 数组
-categories: 算法
+    - 数组
+categories: 
+    - 算法
 index_img: /images/CoverImage/wallhaven-yj6ep7.jpg
 ---
 

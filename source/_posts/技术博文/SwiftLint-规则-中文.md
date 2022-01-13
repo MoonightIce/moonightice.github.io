@@ -4,7 +4,7 @@ date: 2019-05-21 09:56:44
 tags:
   - 静态编译
 categories:
-  - 开发
+  - 基础
 index_img: /images/CoverImage/wallhaven-xldwp3.jpg
 ---
 

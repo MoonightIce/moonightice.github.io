@@ -2,8 +2,8 @@
 title: 博客初始化完成
 date: 2018-08-27 11:50:19
 tags:
-- 博客框架搭建
-categories: 博客
+categories: 
+    - 博客
 index_img: /images/CoverImage/wallhaven-xlyw3v.jpg
 ---
 

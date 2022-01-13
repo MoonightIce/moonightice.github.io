@@ -2,9 +2,8 @@
 title: Hello World
 date: 2018-08-23 11:50:19
 tag:
-  - 博客相关语法
 categories:
-  - 基础
+  - 博客
 index_img: /images/CoverImage/wallhaven-nk2o37.jpg
 ---
 

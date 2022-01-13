@@ -4,7 +4,7 @@ date: 2019-09-09 16:53:25
 tags:
   - 图片去色
 categories:
-  - 开发
+  - 基础
 index_img: /images/CoverImage/wallhaven-wydk1r.jpg
 ---
 

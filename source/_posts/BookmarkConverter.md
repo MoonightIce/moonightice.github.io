@@ -2,8 +2,8 @@
 title: 书签整理
 date: 2018-08-27 14:20:22
 tags:
-- 网站收录
-categories: 资源
+categories: 
+	- 资源集合
 index_img: /images/CoverImage/wallhaven-01r6vv.jpg
 ---
 
@@ -69,9 +69,6 @@ index_img: /images/CoverImage/wallhaven-01r6vv.jpg
 [学术搜索](https://librestock.com/)
 
 # 个人
-
-[雪茄](http://www.timecigar.com/)
-[One Piece](https://one-piece.cn/comic/)
 
 # 工具
 
