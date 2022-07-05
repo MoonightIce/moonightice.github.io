@@ -6,7 +6,7 @@ tags:
 	- WBBlades
 categories:
 	- 底层实现
-index_img:
+index_img: /images/AppSize/wallhaven-72zwm3.png
 ---
 
 以 WBBlades 为源码解读二进制可执行文件 Mach-O
